@@ -17,7 +17,7 @@
 ---
 
 ## 1. Architecture globale Minishell
-   
+
 - REPL
 - Lexer
 - Parser
@@ -34,10 +34,10 @@ Le REPL constitue la boucle principale du shell. Il est responsable de la lectur
 
 ### 2.2 Lecture des entrées
 
-L’entrée utilisateur est récupérée via `readline`, permettant : 
-- l’affichage d’un prompt interactif 
-- la gestion de l’historique des commandes 
-- une lecture ligne par ligne 
+L’entrée utilisateur est récupérée via `readline`, permettant :
+- l’affichage d’un prompt interactif
+- la gestion de l’historique des commandes
+- une lecture ligne par ligne
 
 ### 2.3 Mode interactif
 
@@ -59,7 +59,7 @@ Chaque itération du REPL suit le pipeline suivant :
 ```plaintext
 readline → lexer → parser → executor → free/reset → next input
 			                ↓      ↑
-                             expander 
+                             expander
 ```
 
 ---
@@ -215,7 +215,7 @@ Le parser va recevoir toute la commande qui a été traitée par le lexer. Le le
 
 ### 4.2 Syntaxe BNF
 
-La syntaxe BNF (Backus-Naur Form) est la syntaxe sous laquelle sont présentées les règles de grammaire du shell. 
+La syntaxe BNF (Backus-Naur Form) est la syntaxe sous laquelle sont présentées les règles de grammaire du shell.
 
 Exemple :
 
@@ -245,7 +245,7 @@ MAJUSCULES   → token final (terminal) → vient directement du lexeur
 /*      '>|'   */
 ```
 
-Exemple concret : 
+Exemple concret :
 
 ```plaintext
 and_or : pipeline
@@ -435,25 +435,25 @@ Important: la tilde expansion ne s’applique pas si le `~` est quoté de quelqu
 ### 5.4 Extension des paramètres
 
 Le format d’Extension des paramètres est le suivant:
-`${expression}`, 
+`${expression}`,
 ou expression se compose de tous les caractères jusqu’à correspondance `}`. N’importe quel `}` échappé, présent dans une chaîne entre guillemet, et des caractères dans les extensions arithmétiques intégrées, les substitutions de commandes et les variables les expansions ne doivent pas être examinées pour déterminer la correspondance. La forme de base est celle ci `${EXPRESSION}` ou `$NOM` ( sans accolades, s'arrête au premier caractère invalide dans le nom)
 ```sh
 # Formes simples
 $VAR			# valeur de VAR
 ${VAR}			# idem, forme explicite
 # Valeurs par défaut
-${VAR:-mot} 		# si VAR non défini ou vide → expand mot 
+${VAR:-mot} 		# si VAR non défini ou vide → expand mot
 ${VAR-mot} 		# si VAR non défini → expand mot
 ${VAR:=mot}		# si VAR non défini ou vide → assigne et expand mot
 ${VAR=mot} 		# si VAR non défini → assigne et expand mot
-${VAR:?mot} 		# si VAR non défini ou vide → erreur avec message mot 
-${VAR?mot} 		# si VAR non défini → erreur avec message mot 
+${VAR:?mot} 		# si VAR non défini ou vide → erreur avec message mot
+${VAR?mot} 		# si VAR non défini → erreur avec message mot
 ${VAR:+mot} 		# si VAR défini et non vide → expand mot (sinon vide)
-${VAR+mot} 		# si VAR défini → expand mot (sinon vide) 
+${VAR+mot} 		# si VAR défini → expand mot (sinon vide)
 # Longueur
-${#VAR} 		# longueur de la valeur de VAR 
-# Suppression de sous-chaîne 
-${VAR#motif} 		# supprime le motif le plus court en début 
+${#VAR} 		# longueur de la valeur de VAR
+# Suppression de sous-chaîne
+${VAR#motif} 		# supprime le motif le plus court en début
 ${VAR##motif}		# supprime le motif le plus long en début
 ${VAR%motif} 		# supprime le motif le plus court en fin
 ${VAR%%motif}	# supprime le motif le plus long en fin```
@@ -657,7 +657,7 @@ Exemples :
 - `export`
 - `unset`
 - `env`
-- `exit` 
+- `exit`
 
 Contrairement aux commandes externes, certains builtins doivent être exécutés dans le processus principal du shell afin de modifier son état interne.
 
@@ -813,5 +813,6 @@ Lors de l’exécution :
 - https://learngitbranching.js.org
 - https://docs.google.com/spreadsheets/d/1BPW7k81LJPhGv2fbi35NIIoOC_mGZXQQJDnV0SjulFs/edit?pli=1&gid=0#gid=0
 - https://whimsical.com/qg38/grammaire-shell-posix-TdaU8GwvT9Fy5HcZRTHakW
+- https://pauillac.inria.fr/~remy/poly/system/camlunix/index.html
 
 A voir la partie env d’un minishell ps1 HOME etc determiner si notre shell est interactif (tty) ui il l’est sinon il execute qu’une cmd
