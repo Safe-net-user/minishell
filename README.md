@@ -262,7 +262,7 @@ On va maintenant lister toutes les règles de grammaire du shell et expliquer le
 
 La grammaire du shell est en elle-même assez complexe, mais nous allons essayer de l'expliquer simplement. Plutôt que de tout présenter en syntaxe BNF, peu visuelle, nous allons nous appuyer sur un diagramme semblable à un arbre généalogique.
 
-### 4.3.1 Les trois parties de la grammaire
+#### 4.3.1 Les trois parties de la grammaire
 
 La grammaire du shell se divise en trois catégories distinctes :
 - Les structures (ou non-terminaux) sont des éléments décomposables en d'autres symboles. Elles représentent les règles de production de la grammaire et définissent comment les éléments s'assemblent pour former des commandes ou des scripts.
