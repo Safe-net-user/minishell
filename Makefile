@@ -1,0 +1,125 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2026/05/18 23:16:53 by gd-hallu          #+#    #+#              #
+#    Updated: 2026/06/09 15:32:22 by gd-hallu         ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+MAKEFLAGS		+= --no-print-directory
+
+# ------------------ PROJECT NAME ----------------- #
+NAME			:= minishell
+
+# ------------------- CONSTANTS ------------------- #
+CC				:= cc
+MKDIRP			:= mkdir -p
+RMRF			:= rm -rf
+RMF				:= rm -f
+
+# ------------------- DIRECTORIES ----------------- #
+HDR				:= include
+LIB				:= lib
+LIBFT			:= lib/libft
+OBJ				:= obj
+DEP				:= dep
+SRC				:= src
+ASM				:= asm
+
+# ----------------- SRC DIRECTORIES --------------- #
+CORE			:= core
+BUILTIN			:= builtin
+LEXER			:= lexer
+PARSER			:= parser
+REPL			:= repl
+
+# ---------------------- MODE -------------------- #
+MODE			?= release
+
+# -------------------- SELL CMD ------------------- #
+COMPILER_SH		:= $(shell $(CC) --version)
+
+# ------------------- COMPILER -------------------- #
+ifeq ($(findstring clang, $(COMPILER_SH)), clang)
+	COMPILER		:= clang
+else ifeq ($(findstring GCC, $(COMPILER_SH)), GCC)
+	COMPILER		:= gcc
+else
+	@echo "Your device require clang or gcc to run the program"
+	@exit 1
+endif
+
+# --------------------- FLAGS --------------------- #
+ifeq ($(MODE),release)
+	W_FLAGS			:= -Wall -Wextra -Werror
+else
+	ifeq ($(COMPILER), clang)
+		W_FLAGS			:= 	-Wall -Werror -Wextra -Wvla -Wpedantic -pedantic-errors -Wmisleading-indentation -Wsign-conversion -Wshadow -Wnull-dereference -fshort-enums
+	else ifeq ($(COMPILER), gcc)
+		W_FLAGS			:= 	-Wall -Werror -Wextra -Wvla -Wpedantic -pedantic-errors -Wmisleading-indentation -Wsign-conversion -Wstrict-aliasing=3 -Wduplicated-cond -Wstringop-overflow -Wshadow -Wnull-dereference -Warray-bounds -Wrestrict -Wconversion
+	else
+		@echo "Your device require clang or gcc to run the program"
+		@exit 1
+	endif
+endif
+
+# --------------------- CFLAGS -------------------- #
+ifeq ($(MODE),debug)
+	CFLAGS := -g -O1 -std=c99
+else ifeq ($(MODE),debug_memory)
+	CFLAGS := -g -O1 -std=c99 -fsanitize=address -fsanitize=undefined -fno-omit-frame-pointer
+else ifeq ($(MODE),debug_thread)
+	CFLAGS := -g -O1 -std=c99 -fsanitize=thread -fno-omit-frame-pointer
+else ifeq ($(MODE),release)
+	CFLAGS := -O3 -std=c99
+endif
+
+# --------------------- FILES --------------------- #
+SOURCES 			:= $(SRC)/$(CORE)/test.c
+
+# -------------------- OBJECTS -------------------- #
+OBJECTS 			:= $(patsubst $(SRC)/%.c, $(OBJ)/%.o, $(SOURCES))
+
+# ------------------- DEPENDENCE ------------------ #
+DEPENDENCE			:= $(patsubst $(SRC)/%.c, $(DEP)/%.d, $(SOURCES))
+
+# ------------------- ASM FILES ------------------- #
+ASM_FILES			:= $(patsubst $(SRC)/%.c, $(ASM)/%.s, $(SOURCES))
+
+# ---------------- COMPILATION RULES -------------- #
+all: $(NAME) $(LIBFT)
+
+-include $(DEPENDENCE)
+
+$(LIBFT):
+	-C make ./$(LIBFT)
+	
+$(NAME): $(OBJECTS)
+	$(CC) $(W_FLAGS) $(CFLAGS) $(OBJECTS) -I$(HDR) -o $(NAME)
+
+$(OBJ)/%.o: $(SRC)/%.c
+	@mkdir -p $(dir $@)
+	@$(CC) $(W_FLAGS) $(CFLAGS) -MMD -MP -I$(HDR) -c $< -o $@
+
+# -------------- COMPILATION ASM RULES ------------ #
+f_asm: $(ASM_FILES)
+
+$(ASM)/%.s: $(SRC)/%.c
+	@mkdir -p $(dir $@)
+	@$(CC) $(W_FLAGS) $(CFLAGS) -I$(HDR) -S $< -o $@
+	
+# ------------------ CLEAN UP RULES --------------- #
+clean:
+	$(RMRF) $(OBJ)
+	$(RMRF) $(ASM)
+	
+fclean: clean
+	$(RMF) $(NAME)
+
+re: fclean all
+
+.PHONY: all f_asm re fclean clean
