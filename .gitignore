@@ -1,0 +1,8 @@
+*.o
+*.out
+*.a
+*.d
+./obj
+./asm
+*.s
+.DS_Store
