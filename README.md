@@ -277,25 +277,25 @@ grep "error" file.log > output.txt
 ```
 
 <p align="center">
-    <img src="1.png" width="800">
+    <img src="images/1.png" width="800">
 </p>
 
 C'est une seule commande, ce qui va simplifier les choses. Il n'y a pas de pipe, donc on entre directement dans `command`. On y trouve une commande simple suivie d'une redirection, ce qui nous amène dans `simple_command`.
 
 <p align="center">
-    <img src="2.png" width="800">
+    <img src="images/2.png" width="800">
 </p>
 
 On peut maintenant assigner des terminaux à chaque morceau de la commande. `grep` correspond à `cmd_name`, `"error"` à `cmd_word`, et dans `cmd_suffix` on remarque la possibilité d'avoir une redirection — on entre donc dans `io_redirect`.
 
 <p align="center">
-    <img src="3.png" width="800">
+    <img src="images/3.png" width="800">
 </p>
 
 On peut commencer à assigner des terminaux à des bouts de commandes ! On peut assigner cmd_name a `grep` et “error” a `cmd_word` et on remarque dans `cmd_suffix` on a la possibilité d’avoir une redirection donc on peut rentrer dans io_redirect.
 
 <p align="center">
-    <img src="4.png" width="800">
+    <img src="images/4.png" width="800">
 </p>
 
 On arrive finalement dans `io_file`. La commande est entièrement décomposée selon la grammaire POSIX, en respectant les ordres de priorité.
