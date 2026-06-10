@@ -6,7 +6,7 @@
 #    By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/05/18 23:16:53 by gd-hallu          #+#    #+#              #
-#    Updated: 2026/06/09 15:32:22 by gd-hallu         ###   ########.fr        #
+#    Updated: 2026/06/10 20:00:44 by gd-hallu         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,7 +24,7 @@ RMF				:= rm -f
 # ------------------- DIRECTORIES ----------------- #
 HDR				:= include
 LIB				:= lib
-LIBFT			:= lib/libft
+LIBFT_D			:= $(LIB)/libft
 OBJ				:= obj
 DEP				:= dep
 SRC				:= src
@@ -36,6 +36,11 @@ BUILTIN			:= builtin
 LEXER			:= lexer
 PARSER			:= parser
 REPL			:= repl
+UTILS			:= utils
+ENV				:= env
+
+# ---------------------- LIB --------------------- #
+LIBFT			:= libft.a
 
 # ---------------------- MODE -------------------- #
 MODE			?= release
@@ -79,7 +84,7 @@ else ifeq ($(MODE),release)
 endif
 
 # --------------------- FILES --------------------- #
-SOURCES 			:= $(SRC)/$(CORE)/test.c
+SOURCES 			:= $(SRC)/$(CORE)/main.c $(SRC)/$(ENV)/add_env.c $(SRC)/$(ENV)/del_env.c $(SRC)/$(ENV)/free_env.c $(SRC)/$(ENV)/get_env.c $(SRC)/$(ENV)/init_env.c $(SRC)/$(UTILS)/utils.c
 
 # -------------------- OBJECTS -------------------- #
 OBJECTS 			:= $(patsubst $(SRC)/%.c, $(OBJ)/%.o, $(SOURCES))
@@ -91,19 +96,19 @@ DEPENDENCE			:= $(patsubst $(SRC)/%.c, $(DEP)/%.d, $(SOURCES))
 ASM_FILES			:= $(patsubst $(SRC)/%.c, $(ASM)/%.s, $(SOURCES))
 
 # ---------------- COMPILATION RULES -------------- #
-all: $(NAME) $(LIBFT)
+all: $(NAME)
 
 -include $(DEPENDENCE)
 
 $(LIBFT):
-	-C make ./$(LIBFT)
+	make re -C $(LIBFT_D)
 	
-$(NAME): $(OBJECTS)
-	$(CC) $(W_FLAGS) $(CFLAGS) $(OBJECTS) -I$(HDR) -o $(NAME)
+$(NAME): $(LIBFT) $(OBJECTS)
+	$(CC) $(W_FLAGS) $(CFLAGS) $(OBJECTS) -L$(LIBFT_D) -lft -I$(HDR) -I$(LIBFT_D)/include -o $(NAME)
 
 $(OBJ)/%.o: $(SRC)/%.c
 	@mkdir -p $(dir $@)
-	@$(CC) $(W_FLAGS) $(CFLAGS) -MMD -MP -I$(HDR) -c $< -o $@
+	@$(CC) $(W_FLAGS) $(CFLAGS) -MMD -MP -I$(HDR) -I$(LIBFT_D)/include -c $< -o $@
 
 # -------------- COMPILATION ASM RULES ------------ #
 f_asm: $(ASM_FILES)
