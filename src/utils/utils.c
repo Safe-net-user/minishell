@@ -6,7 +6,7 @@
 /*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/10 14:01:35 by gd-hallu          #+#    #+#             */
-/*   Updated: 2026/06/10 19:53:10 by gd-hallu         ###   ########.fr       */
+/*   Updated: 2026/06/10 20:10:24 by gd-hallu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ int env_arr_to_ht(char **str, t_env *ht)
 	while(str[i])
 	{
         j = 0;
-        if (sb_alloc_part(sb1, sb2) == 0)
+        if (sb_alloc_part(&sb1, &sb2) == 0)
             return (0);
 		while (str[i][j] && str[i][j] != '=')
 			if (append_sb(sb1, &str[i][j++]) == 0)
