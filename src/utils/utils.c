@@ -6,22 +6,22 @@
 /*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/10 14:01:35 by gd-hallu          #+#    #+#             */
-/*   Updated: 2026/06/10 20:10:24 by gd-hallu         ###   ########.fr       */
+/*   Updated: 2026/06/10 20:23:38 by gd-hallu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "env.h"
 #include "ft_string_builder.h"
 
-static int sb_alloc_part(t_sb *sb1, t_sb *sb2)
+static int sb_alloc_part(t_sb **sb1, t_sb **sb2)
 {
-    sb1 = init_sb(64);
-	if (!sb1)
+    *sb1 = init_sb(64);
+	if (!*sb1)
 		return (0);
-	sb2 = init_sb(128);
-	if (!sb2)
+	*sb2 = init_sb(128);
+	if (!*sb2)
 	{
-		free_sb(sb1);
+		free_sb(*sb1);
 		return (0);
 	}
     return (1);
