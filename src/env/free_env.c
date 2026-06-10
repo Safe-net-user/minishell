@@ -6,11 +6,11 @@
 /*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/10 17:05:34 by gd-hallu          #+#    #+#             */
-/*   Updated: 2026/06/10 17:06:37 by gd-hallu         ###   ########.fr       */
+/*   Updated: 2026/06/10 19:47:42 by gd-hallu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stddef.h>
+#include <stdlib.h>
 #include "env.h"
 
 void    free_env(t_env *env)

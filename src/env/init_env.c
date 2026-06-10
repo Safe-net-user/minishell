@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   init_ht.c                                          :+:      :+:    :+:   */
+/*   init_env.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/10 16:37:55 by gd-hallu          #+#    #+#             */
-/*   Updated: 2026/06/10 17:06:44 by gd-hallu         ###   ########.fr       */
+/*   Updated: 2026/06/10 19:29:00 by gd-hallu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,12 @@ t_env    *init_env(size_t n)
 {
     t_env    *env;
 
-    if (n == 0 || n > SIZE_MAX / sizeof(t_entry))
+    if (n == 0 || n > SIZE_MAX / sizeof(t_env_entry))
         return (NULL);
-    env = ft_calloc(1, sizeof(t_entry));
+    env = ft_calloc(1, sizeof(t_env_entry));
     if (!env)
         return (NULL);
-    env->indexes = ft_calloc(n, sizeof(t_entry));
+    env->indexes = ft_calloc(n, sizeof(t_env_entry));
     if (!env->indexes)
     {
         free(env);
