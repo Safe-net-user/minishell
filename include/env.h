@@ -6,7 +6,7 @@
 /*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/10 16:25:31 by gd-hallu          #+#    #+#             */
-/*   Updated: 2026/06/10 19:44:42 by gd-hallu         ###   ########.fr       */
+/*   Updated: 2026/06/11 14:12:56 by gd-hallu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,11 @@
 # define ENV_H
 
 #include <stddef.h>
+#include "minishell.h"
 
 # define DELETED ((void *)-1)
+
+typedef struct s_mms t_mms;
 
 typedef enum e_env_flags
 {
@@ -46,10 +49,18 @@ typedef struct s_env
     
 }   t_env;
 
+/* Hashtable functions */
 t_env_val   add_env(t_env *env, char *key, char *str, t_env_flags flags);
 t_env       *init_env(size_t n);
 t_env_val   del_env(t_env *env, char *key);
 t_env_entry *get_env(t_env *env, char *key);
 void        free_env(t_env *env);
+
+/* Converter functions */
+int         env_arr_to_ht(char **envp, t_env *ht);
+
+/* Setter functions */
+int	set_exported_env_ht(t_mms *mms, char **envp);
+int	set_var_env_ht(t_mms *mms);
 
 #endif
