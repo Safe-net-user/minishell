@@ -6,7 +6,7 @@
 /*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/09 15:49:14 by gd-hallu          #+#    #+#             */
-/*   Updated: 2026/06/10 19:42:30 by gd-hallu         ###   ########.fr       */
+/*   Updated: 2026/06/11 15:04:23 by gd-hallu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,8 @@
 # define INIT_SIZE_HT 1024
 # define INIT_SIZE_SA 32768
 
+typedef struct s_env t_env;
+
 typedef struct s_mms
 {
     t_env           *env;       // variable VAR (env aussi dedans mais portant un flag se quim permet de les skips)
@@ -41,5 +43,8 @@ typedef struct s_mms
     mode_t          umask;      // umask posix norme
     int           last_status;// pour $?
 }   t_mms;
+
+/* Free functions */
+void    free_og_struct(t_mms *mms);
 
 #endif
