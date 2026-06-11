@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/09 15:49:14 by gd-hallu          #+#    #+#             */
-/*   Updated: 2026/06/11 15:04:23 by gd-hallu         ###   ########.fr       */
+/*   Updated: 2026/06/11 21:10:44 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,12 @@ typedef struct s_mms
     int           last_status;// pour $?
 }   t_mms;
 
+void    set_signaux_interactif(void); //signaux interactif
+
+
 /* Free functions */
 void    free_og_struct(t_mms *mms);
+
+extern int g_signal; // la variable globale (signal)
 
 #endif
