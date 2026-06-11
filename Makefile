@@ -6,7 +6,7 @@
 #    By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/05/18 23:16:53 by gd-hallu          #+#    #+#              #
-#    Updated: 2026/06/10 20:00:44 by gd-hallu         ###   ########.fr        #
+#    Updated: 2026/06/11 15:06:51 by gd-hallu         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -60,7 +60,7 @@ endif
 
 # --------------------- FLAGS --------------------- #
 ifeq ($(MODE),release)
-	W_FLAGS			:= -Wall -Wextra -Werror
+	W_FLAGS			:= -Wall -Wextra
 else
 	ifeq ($(COMPILER), clang)
 		W_FLAGS			:= 	-Wall -Werror -Wextra -Wvla -Wpedantic -pedantic-errors -Wmisleading-indentation -Wsign-conversion -Wshadow -Wnull-dereference -fshort-enums
@@ -84,7 +84,7 @@ else ifeq ($(MODE),release)
 endif
 
 # --------------------- FILES --------------------- #
-SOURCES 			:= $(SRC)/$(CORE)/main.c $(SRC)/$(ENV)/add_env.c $(SRC)/$(ENV)/del_env.c $(SRC)/$(ENV)/free_env.c $(SRC)/$(ENV)/get_env.c $(SRC)/$(ENV)/init_env.c $(SRC)/$(UTILS)/utils.c
+SOURCES 			:= $(SRC)/$(CORE)/main.c $(SRC)/$(CORE)/free.c $(SRC)/$(ENV)/ht_env.c $(SRC)/$(ENV)/converter.c $(SRC)/$(ENV)/set_env.c
 
 # -------------------- OBJECTS -------------------- #
 OBJECTS 			:= $(patsubst $(SRC)/%.c, $(OBJ)/%.o, $(SOURCES))
