@@ -3,23 +3,24 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/09 10:30:51 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/06/11 15:45:11 by gd-hallu         ###   ########.fr       */
+/*   Updated: 2026/06/11 21:14:00 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-/*#include <readline/readline.h>
-#include <readline/history.h>*/
-#include <stdlib.h>
 #include <stdio.h>
+#include <readline/readline.h>
+#include <readline/history.h>
+#include <stdlib.h>
 #include <unistd.h>
 #include "minishell.h"
 #include "ft_memory.h"
 #include "ft_string_builder.h"
 #include "ft_strings.h"
 #include "env.h"
+#include <signal.h>
 
 /**
  * A noter que si HOME est change, alors la ht des commandes doit etre videe.
@@ -62,7 +63,7 @@ static	int set_og_struct(t_mms *mms, char **envp)
 
 int main(UNUSED int ac, UNUSED char **av, char **envp)
 {
-	//char 	*result;
+	char 	*result;
 	t_mms	*mms;
 	
 	mms = init_og_struct();
@@ -71,17 +72,26 @@ int main(UNUSED int ac, UNUSED char **av, char **envp)
 		free_og_struct(mms);
 		return (EXIT_FAILURE);
 	}
-	/*while (1) //de ici
+	set_signaux_interactif();
+	while (1) //de ici
 	{
 		result = readline("miniMishell$: ");
+		printf ("arg : %s\n", result);
 		if (!result)
-			break;
+		{
+    		if (g_signal == SIGINT)  // Ctrl+C
+    		{
+        		g_signal = 0;
+        		continue;
+    		}
+    		break;  // vrai Ctrl+D
+		}
 		if (*result)
 			add_history(result);
 		//suite minishell
 		free(result);
-	} // a ici soit une fonction dite "REPL" soit on laisse dans le main*/
+	} // a ici soit une fonction dite "REPL" soit on laisse dans le main
 	return (0);
 }
 
-// compiler avec -lreadline%  
+// compiler avec -lreadline  
