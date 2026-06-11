@@ -6,7 +6,7 @@
 /*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/09 10:30:51 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/06/11 15:05:11 by gd-hallu         ###   ########.fr       */
+/*   Updated: 2026/06/11 15:45:11 by gd-hallu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,11 @@ static	t_mms	*init_og_struct(void)
 	mms->name = ft_strdup("miniMishell");
 	mms->last_status = 0;
 	mms->umask = 0022;
-	if (!mms->env || !mms->alias || !mms->cmd_path || !mms->sa || mms->name)
+	if (!mms->env || !mms->alias || !mms->cmd_path || !mms->sa || !mms->name)
+	{
+		free_og_struct(mms);
 		return (NULL);
+	}
 	return (mms);
 }
 
