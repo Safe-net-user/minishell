@@ -6,7 +6,7 @@
 /*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/11 13:51:41 by gd-hallu          #+#    #+#             */
-/*   Updated: 2026/06/11 14:27:27 by gd-hallu         ###   ########.fr       */
+/*   Updated: 2026/06/11 15:50:04 by gd-hallu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,7 +111,6 @@ void    free_env(t_env *env)
     }
     free(env->indexes);
     free(env);
-    env = NULL;
 }
 
 t_env_val   del_env(t_env *env, char *key)
