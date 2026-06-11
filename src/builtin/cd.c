@@ -6,15 +6,12 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/28 12:07:56 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/06/11 11:16:43 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/06/11 11:22:06 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <unistd.h>
 #include "env.h"
-
-//ici peut etre on va recuperer depuis la structure pwd donc pas besoin de getcwd
-
 
 /*en gros ici dans cd on a plusieurs cas d'office :
 - le cas cd
