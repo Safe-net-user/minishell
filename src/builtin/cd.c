@@ -6,11 +6,12 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/28 12:07:56 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/06/10 11:53:49 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/06/11 11:16:43 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <unistd.h>
+#include "env.h"
 
 //ici peut etre on va recuperer depuis la structure pwd donc pas besoin de getcwd
 
@@ -21,19 +22,28 @@
 - le cas cd -
 - le reste est gerer avec chdir()*/
 
-int builtins_cd(char *path)
+int builtins_cd(t_env *env, char *path)
 {
     char    *actual_pwd;
+    t_env_entry *entry;
     
-    
-    
-    
-    
-    actual_pwd = (actual_pwd, 1024);
-    ft_strjoin(actual_pwd, '/');
-    ft_strjoin(actual_pwd, path);
-    if (chdir(actual_pwd) != 0)
-        return (-1);
-    //update old_pwd & pwd;
+    actual_pwd = getcwd(actual_pwd, 1024);
+    if (!path || strncmp(path, "~") == 0) //cd tout seul || cd ~
+    {
+        if (chdir(get_env(env, "HOME") != 0)) //chercher d'ans l'env le HOME
+            return (-1);
+    }
+    else
+    {
+        if (chdir(path) != 0)
+            return (-1);
+    }
+    entry = get_env(env, "PWD"); //upodate pwd
+    if (entry)
+        entry->value = actual_pwd;
+    actual_pwd = getcwd(actual_pwd, 1024);
+    entry = get_env(env, "OLD_PWD"); //update old_pwd
+    if (entry)
+        entry->value = actual_pwd;
     return (0);
 }
