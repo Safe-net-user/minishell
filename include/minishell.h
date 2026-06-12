@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/09 15:49:14 by gd-hallu          #+#    #+#             */
-/*   Updated: 2026/06/11 21:10:44 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/06/12 11:46:50 by gd-hallu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,28 +20,34 @@
 # include "ft_stack_alloc.h"
 # include "env.h"
 
-/*
- * Macro ARG_MAX designe ici le nombres de bytes max autorises dans les variables d'environement
- * On retrouve cette limite dans <sys/limits.h>, L'erreur retourne est E2BIG (<sys/errno.h>)
- * #ifndef ARG_MAX
- *  # define ARG_MAX 2097152
- * #endif
-*/
 # define INIT_SIZE_HT 1024
 # define INIT_SIZE_SA 32768
 
 typedef struct s_env t_env;
 
+/**
+ * @struct s_mms
+ * @brief Global state of the minishell instance.
+ *
+ * Stores the shell execution environment and all runtime resources
+ * required by the shell. This structure roughly follows the POSIX
+ * Shell Execution Environment model while omitting unsupported
+ * features such as shell functions, traps, job control and shell
+ * options.
+ *
+ * Additional implementation-specific resources are also stored,
+ * including command path hashtable and a stack allocator.
+ */
 typedef struct s_mms
 {
-    t_env           *env;       // variable VAR (env aussi dedans mais portant un flag se quim permet de les skips)
-    t_ht            *cmd_path;  // la par contre c pas posix norme car il s agit du path des cmd deja trouve si path non modifie
-    t_ht            *alias;     // ht pour les alias ca c posix norme
-    t_stack_alloc   *sa;        // stacka lloc ca c pas posix norme
-    char            *name;      // name pour ?0
-    char            *cwd;
-    mode_t          umask;      // umask posix norme
-    int           last_status;// pour $?
+    t_env           *env;           /**< Environment variables */
+    t_ht            *cmd_path;      /**< Command path */
+    t_ht            *alias;         /**< Shell aliases*/
+    t_stack_alloc   *sa;            /**< Stack allocator */
+    char            *name;          /**< Shell executable name and value of special parameter $0 */
+    char            *cwd;           /**< Current working directory */
+    mode_t          umask;          /**< Process file creation mask */
+    int             last_status;    /**< Value of the special parameter $? */
 }   t_mms;
 
 void    set_signaux_interactif(void); //signaux interactif
