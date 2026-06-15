@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/11 11:42:49 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/06/13 11:11:26 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/06/13 16:26:10 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,13 @@
 // export VAR → flag EXPORTED sur variable existante
 // dans env flags on a un EXPORT 1 ou 0
 
-int     export(t_env *env, char *arg)
+int     export(t_env *env, char **arg)
 {
-    if (!arg)
-    {
+    int i = 0;
+
+    while (arg[i])
+        i++;
+    if (i == 1)
         print_env(env);
         return (0);
     }
