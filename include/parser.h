@@ -6,7 +6,7 @@
 /*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/16 10:27:34 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/06/17 10:50:06 by miouali          ###   ########.fr       */
+/*   Updated: 2026/06/18 15:37:55 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,8 @@
 
 #include "minishell.h"
 #include "lexer.h"
-#include "ft_string_builder.h"
+#include "ft_stack_alloc.h"
+#include "lexer.h"
 
 typedef enum e_node_type
 {
