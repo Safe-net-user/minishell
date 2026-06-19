@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+         #
+#    By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/05/18 23:16:53 by gd-hallu          #+#    #+#              #
-#    Updated: 2026/06/11 21:11:36 by fiaudfiz         ###   ########.fr        #
+#    Updated: 2026/06/15 11:25:39 by gd-hallu         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -84,7 +84,15 @@ else ifeq ($(MODE),release)
 endif
 
 # --------------------- FILES --------------------- #
-SOURCES 			:= $(SRC)/$(CORE)/main.c $(SRC)/$(CORE)/free.c $(SRC)/$(ENV)/ht_env.c $(SRC)/$(ENV)/converter.c $(SRC)/$(ENV)/set_env.c $(SRC)/$(CORE)/signaux.c
+SOURCES 			:= \
+$(SRC)/$(CORE)/main.c \
+$(SRC)/$(CORE)/free.c \
+$(SRC)/$(ENV)/ht_env.c \
+$(SRC)/$(ENV)/converter.c \
+$(SRC)/$(ENV)/set_env.c \
+$(SRC)/$(CORE)/signaux.c \
+$(SRC)/$(LEXER)/lexer.c \
+
 
 # -------------------- OBJECTS -------------------- #
 OBJECTS 			:= $(patsubst $(SRC)/%.c, $(OBJ)/%.o, $(SOURCES))
