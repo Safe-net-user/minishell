@@ -3,31 +3,42 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/16 10:27:18 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/06/16 10:30:28 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/06/19 13:46:22 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-typedef enum e_node_type
-{
-    NODE_CMD,
-    NODE_PIPE,
-    NODE_AND,
-    NODE_OR,
-    NODE_REDIR
-} t_node_type;
+#include "parser.h"
+#include "minishell.h"
 
-typedef struct s_ast
+t_token *next_token(t_token *cur)
 {
-    t_node_type type;
-    struct s_ast *left;
-    struct s_ast *right;
-   union u_node
-    {
-    t_cmd cmd;
-    t_redir redir;
-    //t_ast *subshell;
-    };
-} t_ast;
+    t_header *h;
+
+    h = (t_header *)cur - 1;
+    return ((t_token *)((uint8_t *)cur + h->size + sizeof(t_header)));
+}
+
+int parse_or()
+{
+
+}
+
+int parse_and()
+{
+    
+}
+
+int parse_pipe()
+{
+
+}
+
+int parser(t_mms *mms)
+{
+    t_ast *ast;
+}
+
+//besoin de fonction utils: ajouter un noeud, l'arbre sera creer dans la fonction principale et place dans la stack allocator
