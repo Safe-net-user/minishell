@@ -6,13 +6,52 @@
 /*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/12 11:33:11 by gd-hallu          #+#    #+#             */
-/*   Updated: 2026/06/19 11:31:10 by gd-hallu         ###   ########.fr       */
+/*   Updated: 2026/06/19 18:53:03 by gd-hallu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lexer.h"
 #include <stdio.h>
 #include "ft_strings.h"
+
+int     is_special_parameter(char c);
+int     is_valid_ch(char c);
+char    quoting_job(t_lexer *lexer)
+{
+    char    c;
+
+    c = lexer->cmdl[lexer->index];
+    if (c == '"')
+    {
+        lexer->tk->flags |= TOKF_DQUOTED;
+        lexer->state |= ST_DQUOTED;
+        return ('"');
+    }
+    else if (c == '\'')
+    {
+        lexer->tk->flags |= TOKF_SQUOTED;
+        lexer->state |= ST_SQUOTED;
+        return ('\'');
+    }
+    else if (c == '$')
+    {
+        lexer->index++;
+        lexer->tk->flags |= TOKF_SQUOTED;
+        lexer->state |= ST_SQUOTED;
+        return ('\'');
+    }
+    return (0);
+}
+
+int is_quoting(t_lexer *lexer)
+{
+    char    c;
+
+    c = lexer->cmdl[lexer->index];
+    if (c == '\'' || '"' || '$')
+        return (1);
+    return (0);
+}
 
 /**
  * @brief Recognizes compound operators.
@@ -52,6 +91,7 @@ int rule_op_continue(t_lexer *lexer, t_sb *sb)
         token->flags = 0;
         free(sb);
         sb = NULL;
+        clear_op_state(&lexer->state);
         return (1);
     }
     return (0);
@@ -93,6 +133,7 @@ int     rule_op(t_lexer *lexer, t_sb *sb)
         token->flags = 0;
         free(sb);
         sb = NULL;
+        clear_op_state(&lexer->state);
         return (1);
     }
     return (0);
@@ -120,7 +161,7 @@ int rule_quoting(t_lexer *lexer, t_sb *sb)
         return (0);
     if (!is_quoting(lexer))
         return (0);
-    limit = quoting_job(lexer, sb);
+    limit = quoting_job(lexer);
     while (lexer->cmdl[lexer->index] != limit && lexer->cmdl[lexer->index])
     {
         append_ch_sb(sb, lexer->cmdl[lexer->index]);
@@ -231,10 +272,8 @@ int rule_beg_op(t_lexer *lexer, t_sb *sb)
 int rule_blank_ch(t_lexer *lexer, t_sb *sb)
 {
     int     mask_flags;
-    char    c;
     
     mask_flags = ST_BACK_TICK | ST_DQUOTED | ST_ESCAPED | ST_SQUOTED;
-    c = lexer->cmdl[lexer->index];
     if (!lexer || !sb || mask_flags)
         return (0);
     if (lexer->cmdl[lexer->index] == ' ' || \
@@ -277,12 +316,13 @@ int rule_word_continue(t_lexer *lexer, t_sb *sb)
 
 //int rule_commentary(t_mms *mms, int *state, char *cmdl, t_sb *sb);
 
-int rule_begin_word(t_lexer *lexer, t_sb *sb)
+int rule_begin_word(t_lexer *lexer, UNUSED t_sb *sb)
 {
     lexer->tk = stack_alloc(lexer->mms->sa, sizeof(t_token));
     if (!lexer->tk)
         return (0);
-    lexer->tk->flags |= TOK_WORD;   
+    lexer->tk->flags |= TOK_WORD;
+    return (1);
 }
 
 /**
@@ -314,18 +354,22 @@ t_val_lexer    lexer(char *cmdl, t_mms *mms)
         if (!sb)
             sb = init_sb(INIT_SIZE_SB);
         if (!sb)
-            return (0);
+            return (LX_ERROR);
         if (rule_op_continue(&lexer, sb) == 1)
-        {
-            clear_op_state(&lexer.state);
             continue ;
-        }
         if (rule_op(&lexer, sb) == 1)
-        {   
-            clear_op_state(&lexer);
             continue ;
-        }
         if (rule_quoting(&lexer, sb) == 1)
+            continue ;
+        if (rule_expansion(&lexer, sb) == 1)
+            continue ;
+        if (rule_beg_op(&lexer, sb) == 1)
+            continue ;
+        if (rule_blank_ch(&lexer, sb))
+            continue ;
+        if (rule_word_continue(&lexer, sb))
+            continue ;
+        if (rule_begin_word(&lexer, sb))
             continue ;
     }
     return (1);
