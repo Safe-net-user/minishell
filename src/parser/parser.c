@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
+/*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/16 10:27:18 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/06/19 13:46:22 by miouali          ###   ########.fr       */
+/*   Updated: 2026/06/25 12:09:19 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,24 +21,82 @@ t_token *next_token(t_token *cur)
     return ((t_token *)((uint8_t *)cur + h->size + sizeof(t_header)));
 }
 
-int parse_or()
+t_ast *parse_command(t_mms *mms, t_token **token)
 {
+    t_ast   *node;
+    int     i;
 
+    node = stack_alloc(mms->sa, sizeof(t_ast));
+    node->type = NODE_CMD;
+    node->left = NULL;
+    node->right = NULL;
+    node->argv = stack_alloc(mms->sa, sizeof(char *) * 100);
+    node->flags = stack_alloc(mms->sa, sizeof(t_flag_token) * 100);
+    i = 0;
+    while ((*token)->type_tk == TOK_WORD)
+    {
+        node->argv[i] = (*token)->value;
+        node->flags[i] = (*token)->flags;
+        *token = next_token(*token);
+        i++;
+    }
+    node->argv[i] = NULL;
+    return (node);
 }
 
-int parse_and()
+t_ast *parse_pipe(t_mms *mms, t_token **token)
 {
-    
+    t_ast   *node;
+    t_ast   *left;
+    t_ast   *right;
+
+    left = parse_command(mms, token);
+    while ((*token)->type_tk == TOK_PIPE)
+    {
+        node = stack_alloc(mms->sa, sizeof(t_ast));
+        node->type = NODE_PIPE;
+        node->left = left;
+        node->tok_type = (*token)->type_tk;
+        node->flags = 0;
+        node->value = stack_alloc(mms->sa, sizeof(char) * 100);
+        node->value = "|";
+        *token = next_token(*token);
+        node->right = parse_command(mms, token);
+        left = node;
+    }
+    return (left);
 }
 
-int parse_pipe()
+t_ast *parse_or_and(t_mms *mms, t_token **token)
 {
+    t_ast   *node;
+    t_ast   *left;
+    t_ast   *right;
 
+    left = parse_pipe(mms, token);
+    while ((*token)->type_tk == TOK_AND_IF || (*token)->type_tk == TOK_OR_IF)
+    {
+        node = stack_alloc(mms->sa, sizeof(t_ast));
+        if((*token)->type_tk == TOK_AND_IF)
+            node->type = NODE_AND;
+        else
+            node->type = NODE_OR;
+        node->left = left;
+        node->tok_type = (*token)->type_tk;
+        node->flags = 0;
+        *token = next_token(*token);
+        node->right = parse_pipe(mms, token);
+        left = node;
+    }
+    return (left);
 }
 
-int parser(t_mms *mms)
+t_ast *parser(t_mms *mms)
 {
+    t_token *first;
     t_ast *ast;
-}
 
-//besoin de fonction utils: ajouter un noeud, l'arbre sera creer dans la fonction principale et place dans la stack allocator
+    first = (t_token *)(mms->sa->buffer + sizeof(t_header));
+    ast = parse_or_and(mms, &first);
+    return (ast);
+}
