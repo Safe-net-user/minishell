@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
+/*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/16 10:27:34 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/06/19 13:18:20 by miouali          ###   ########.fr       */
+/*   Updated: 2026/06/25 12:09:37 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ typedef struct s_ast
 {
     t_node_type     type;       // type du noeud AST
     t_type_token    tok_type;   // type du token lexer (TOK_LESS, TOK_GREAT, etc.)
-    t_flag_token    flags;      // flags du token lexer (SQUOTED, DQUOTED, etc.)
+    t_flag_token    *flags;      // flags du token lexer (SQUOTED, DQUOTED, etc.)
     struct s_ast    *left;
     struct s_ast    *right;
     union
