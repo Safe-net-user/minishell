@@ -6,7 +6,7 @@
 /*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/12 11:33:11 by gd-hallu          #+#    #+#             */
-/*   Updated: 2026/06/19 18:53:03 by gd-hallu         ###   ########.fr       */
+/*   Updated: 2026/06/30 16:46:07 by gd-hallu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,9 +30,7 @@ int rule_create_token(t_lexer *lexer, t_sb *sb)
     token->value = sb->str;
     token->flags = lexer->tk->flags;
     token->type_tk = lexer->tk->type_tk;
-    printf("Token create dans SA, adress -> %p\ntoken value -> %s\ntoken type tk -> %d\n", &token, token->value, token->type_tk);
-    free(sb);
-    sb = NULL;
+    printf("Token create dans SA, adress -> %p\ntoken value -> %s\ntoken type tk -> %d\n", (void *)token, token->value, token->type_tk);
     return (1);
 }
 
@@ -95,7 +93,6 @@ int is_quoting(t_lexer *lexer)
  */
 int rule_op_continue(t_lexer *lexer, t_sb *sb)
 {
-    write(1, "com_op\n", 7);
     int     mask_flags;
     
     if (!lexer)
@@ -103,6 +100,7 @@ int rule_op_continue(t_lexer *lexer, t_sb *sb)
     mask_flags = ST_OP_AND | ST_OP_GREAT | ST_OP_LESS | ST_OP_OR;
     if (mask_flags & lexer->state && is_op(lexer->cmdl[lexer->index]) && sb != NULL)
     {
+        write(1, "com_op\n", 7);
         if (lexer->cmdl[lexer->index] == '&' && lexer->state & ST_OP_AND)
             lexer->tk->type_tk =  TOK_AND_IF;
         else if (lexer->cmdl[lexer->index] == '|' && lexer->state & ST_OP_OR)
@@ -111,9 +109,12 @@ int rule_op_continue(t_lexer *lexer, t_sb *sb)
             lexer->tk->type_tk = TOK_DLESS;
         else if (lexer->cmdl[lexer->index] == '>' && lexer->state & ST_OP_GREAT)
             lexer->tk->type_tk = TOK_DGREAT;
-        append_ch_sb(sb, lexer->cmdl[lexer->index++]);
-        rule_create_token(lexer, sb);
-        return (1);
+        append_ch_sb(sb, lexer->cmdl[lexer->index]);
+        if (rule_create_token(lexer, sb))
+        {
+            lexer->index++;
+            return (1);
+        }
     }
     return (0);
 }
@@ -129,11 +130,10 @@ int rule_op_continue(t_lexer *lexer, t_sb *sb)
  * @param lexer Lexer context struct
  * @param sb String builder
  * 
- * @return 1 if a compound operator is creted, otherwise it's 0
+ * @return 1 if current character is an operator, otherwise it's 0
  */
 int     rule_op(t_lexer *lexer, t_sb *sb)
 {
-    write(1, "is_op\n", 6);
     int     mask_flags;
     
     if (!lexer)
@@ -141,19 +141,22 @@ int     rule_op(t_lexer *lexer, t_sb *sb)
     mask_flags = ST_OP_AND | ST_OP_GREAT | ST_OP_LESS | ST_OP_OR;
     if (mask_flags & lexer->state && !is_op(lexer->cmdl[lexer->index]))
     {
+         write(1, "is_op\n", 6);
         if (lexer->state & ST_OP_AND)
             lexer->tk->type_tk =  TOK_AMPERSAND;
         else if (lexer->state & ST_OP_OR)
-            lexer->tk->type_tk =  TOK_OR_IF;
+            lexer->tk->type_tk =  TOK_PIPE;
         else if (lexer->state & ST_OP_LESS)
             lexer->tk->type_tk = TOK_LESS;
         else if (lexer->state & ST_OP_GREAT)
             lexer->tk->type_tk = TOK_GREAT;
-        lexer->tk->value = sb->str;
-        lexer->tk->flags = 0;
-        free(sb);
-        sb = NULL;
-        clear_op_state(&lexer->state);
+        rule_create_token(lexer, sb);
+        //clear_op_state(&lexer->state);
+        //printf("state -> %d", lexer->state);
+        lexer->state ^= ST_OP_AND;
+        lexer->state ^= ST_OP_GREAT;
+        lexer->state ^= ST_OP_LESS;
+        lexer->state ^= ST_OP_OR;
         return (1);
     }
     return (0);
@@ -172,10 +175,11 @@ int     rule_op(t_lexer *lexer, t_sb *sb)
  * @param sb String builder
  * 
  * @return 1 whether none error occured, otherwise it's 0.
+ * 
+ * Merci de penser a verifier les newline inclus dans es quotes.
  */
 int rule_quoting(t_lexer *lexer, t_sb *sb)
 {
-    write(1, "quoting\n", 8);
     char    limit;
     
     if (!lexer)
@@ -183,7 +187,13 @@ int rule_quoting(t_lexer *lexer, t_sb *sb)
     if (!is_quoting(lexer))
         return (0);
     limit = quoting_job(lexer);
+    write(1, "quoting\n", 8);
     while (lexer->cmdl[lexer->index] != limit && lexer->cmdl[lexer->index])
+    {
+        append_ch_sb(sb, lexer->cmdl[lexer->index]);
+        lexer->index++;
+    }
+    if (lexer->cmdl[lexer->index] == limit)
     {
         append_ch_sb(sb, lexer->cmdl[lexer->index]);
         lexer->index++;
@@ -233,8 +243,7 @@ int rule_expansion(t_lexer *lexer, t_sb *sb)
             token->type_tk = TOK_WORD;
             token->flags = TOKF_SPEC_PARAM;
             token->value = sb->str;
-            free(sb);
-            sb = NULL;
+            rule_create_token(lexer, sb);
             count--;
         }
         else if (ft_isalnum(lexer->cmdl[lexer->index]))
@@ -277,6 +286,9 @@ int rule_beg_op(t_lexer *lexer, t_sb *sb)
         lexer->state |= ST_OP_LESS;
     else if (c == '>')
         lexer->state |= ST_OP_GREAT;
+    else
+        return (0);
+    append_ch_sb(sb, c);
     lexer->index++;
     return (1);
 }
@@ -299,21 +311,20 @@ int rule_blank_ch(t_lexer *lexer, t_sb *sb)
     int     mask_flags;
     
     mask_flags = ST_BACK_TICK | ST_DQUOTED | ST_ESCAPED | ST_SQUOTED;
-    if (!lexer || !sb || mask_flags)
+    if (!lexer || !sb || mask_flags & lexer->state)
         return (0);
     if (lexer->cmdl[lexer->index] == ' ' || \
 lexer->cmdl[lexer->index] == '\t' || lexer->cmdl[lexer->index] == '\n')
     {
-        if (lexer->tk)
+        if (sb->str)
         {
-            lexer->tk->value = sb->str;
-            free(sb);
             lexer->tk->type_tk = TOK_WORD;
+            rule_create_token(lexer, sb);
         }
-        if (lexer->cmdl[lexer->index] == '\n')
         lexer->index++;
+        return (1);
     }
-    return (1);
+    return (0);
 }
 
 /**
@@ -382,10 +393,20 @@ t_val_lexer    lexer(char *cmdl, t_mms *mms)
         if (!sb)
             return 0;
         write(1, "e", 1);
-        if (rule_op_continue(&lexer, sb) == 1)
+        if (rule_op_continue(&lexer, sb))
+        {
+            free(sb);
+            sb = NULL;
+            lexer.state = 0;
             continue ;
-        if (rule_op(&lexer, sb) == 1)
+        }
+        if (rule_op(&lexer, sb))
+        {
+            free(sb);
+            sb = NULL;
+            lexer.state = 0;
             continue ;
+        }
         if (rule_quoting(&lexer, sb) == 1)
             continue ;
         if (rule_expansion(&lexer, sb) == 1)
@@ -393,12 +414,19 @@ t_val_lexer    lexer(char *cmdl, t_mms *mms)
         if (rule_beg_op(&lexer, sb) == 1)
             continue ;
         if (rule_blank_ch(&lexer, sb))
+        {
+            free(sb);
+            sb = NULL;
+            lexer.state = 0;
             continue ;
+        }
         if (rule_word_continue(&lexer, sb))
             continue ;
         if (rule_begin_word(&lexer, sb))
             continue ;
     }
-    rule_create_token(&lexer, sb);
+    write(1, "c", 1);
+    if (sb != NULL)
+        rule_create_token(&lexer, sb);
     return (1);
 }
