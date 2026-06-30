@@ -6,7 +6,7 @@
 /*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/09 10:30:51 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/06/30 17:24:33 by gd-hallu         ###   ########.fr       */
+/*   Updated: 2026/06/30 19:26:32 by gd-hallu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 #include "ft_string_builder.h"
 #include "ft_strings.h"
 #include "env.h"
+#include "lexer.h"
 #include <signal.h>
 
 /**
