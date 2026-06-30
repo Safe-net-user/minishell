@@ -6,7 +6,7 @@
 /*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/09 15:49:14 by gd-hallu          #+#    #+#             */
-/*   Updated: 2026/06/12 11:46:50 by gd-hallu         ###   ########.fr       */
+/*   Updated: 2026/06/30 13:09:44 by gd-hallu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,11 @@
 # include <sys/types.h>
 # include "ft_hashtable.h"
 # include "ft_stack_alloc.h"
+#include "type.h"
 # include "env.h"
 
 # define INIT_SIZE_HT 1024
 # define INIT_SIZE_SA 32768
-
-typedef struct s_env t_env;
 
 /**
  * @struct s_mms
@@ -38,7 +37,7 @@ typedef struct s_env t_env;
  * Additional implementation-specific resources are also stored,
  * including command path hashtable and a stack allocator.
  */
-typedef struct s_mms
+struct s_mms
 {
     t_env           *env;           /**< Environment variables */
     t_ht            *cmd_path;      /**< Command path */
@@ -48,7 +47,7 @@ typedef struct s_mms
     char            *cwd;           /**< Current working directory */
     mode_t          umask;          /**< Process file creation mask */
     int             last_status;    /**< Value of the special parameter $? */
-}   t_mms;
+};
 
 void    set_signaux_interactif(void); //signaux interactif
 
