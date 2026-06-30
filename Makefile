@@ -84,7 +84,7 @@ else ifeq ($(MODE),release)
 endif
 
 # --------------------- FILES --------------------- #
-SOURCES 			:= $(SRC)/$(CORE)/main.c $(SRC)/$(CORE)/free.c $(SRC)/$(ENV)/ht_env.c $(SRC)/$(ENV)/converter.c $(SRC)/$(ENV)/set_env.c $(SRC)/$(CORE)/signaux.c
+SOURCES 			:= $(SRC)/$(CORE)/main.c $(SRC)/$(CORE)/free.c $(SRC)/$(ENV)/ht_env.c $(SRC)/$(ENV)/converter.c $(SRC)/$(ENV)/set_env.c $(SRC)/$(CORE)/signaux.c $(SRC)/$(LEXER)/lexer.c
 
 # -------------------- OBJECTS -------------------- #
 OBJECTS 			:= $(patsubst $(SRC)/%.c, $(OBJ)/%.o, $(SOURCES))
@@ -104,7 +104,7 @@ $(LIBFT):
 	make re -C $(LIBFT_D)
 	
 $(NAME): $(LIBFT) $(OBJECTS)
-	$(CC) $(W_FLAGS) $(CFLAGS) $(OBJECTS) -L$(LIBFT_D) -lft -lreadline -I$(HDR) -I$(LIBFT_D)/include -o $(NAME)
+	@$(CC) $(W_FLAGS) $(CFLAGS) $(OBJECTS) -L$(LIBFT_D) -lft -lreadline -I$(HDR) -I$(LIBFT_D)/include -o $(NAME)
 
 $(OBJ)/%.o: $(SRC)/%.c
 	@mkdir -p $(dir $@)
