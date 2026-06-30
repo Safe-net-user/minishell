@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/09 10:30:51 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/06/11 21:14:00 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/06/30 13:18:03 by gd-hallu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 #include "ft_string_builder.h"
 #include "ft_strings.h"
 #include "env.h"
+#include "lexer.h"
 #include <signal.h>
 
 /**
@@ -88,7 +89,7 @@ int main(UNUSED int ac, UNUSED char **av, char **envp)
 		}
 		if (*result)
 			add_history(result);
-		//suite minishell
+		lexer(result, mms);
 		free(result);
 	} // a ici soit une fonction dite "REPL" soit on laisse dans le main
 	return (0);
