@@ -6,7 +6,7 @@
 /*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/12 11:33:11 by gd-hallu          #+#    #+#             */
-/*   Updated: 2026/06/30 16:46:07 by gd-hallu         ###   ########.fr       */
+/*   Updated: 2026/06/30 19:29:27 by gd-hallu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,11 +26,9 @@ int rule_create_token(t_lexer *lexer, t_sb *sb)
     token = stack_alloc(lexer->mms->sa, sizeof(t_token));
     if (!token)
         return (0);
-    printf("sb str -> %s\n", sb->str);
     token->value = sb->str;
     token->flags = lexer->tk->flags;
     token->type_tk = lexer->tk->type_tk;
-    printf("Token create dans SA, adress -> %p\ntoken value -> %s\ntoken type tk -> %d\n", (void *)token, token->value, token->type_tk);
     return (1);
 }
 
@@ -100,7 +98,6 @@ int rule_op_continue(t_lexer *lexer, t_sb *sb)
     mask_flags = ST_OP_AND | ST_OP_GREAT | ST_OP_LESS | ST_OP_OR;
     if (mask_flags & lexer->state && is_op(lexer->cmdl[lexer->index]) && sb != NULL)
     {
-        write(1, "com_op\n", 7);
         if (lexer->cmdl[lexer->index] == '&' && lexer->state & ST_OP_AND)
             lexer->tk->type_tk =  TOK_AND_IF;
         else if (lexer->cmdl[lexer->index] == '|' && lexer->state & ST_OP_OR)
@@ -141,7 +138,6 @@ int     rule_op(t_lexer *lexer, t_sb *sb)
     mask_flags = ST_OP_AND | ST_OP_GREAT | ST_OP_LESS | ST_OP_OR;
     if (mask_flags & lexer->state && !is_op(lexer->cmdl[lexer->index]))
     {
-         write(1, "is_op\n", 6);
         if (lexer->state & ST_OP_AND)
             lexer->tk->type_tk =  TOK_AMPERSAND;
         else if (lexer->state & ST_OP_OR)
@@ -151,8 +147,6 @@ int     rule_op(t_lexer *lexer, t_sb *sb)
         else if (lexer->state & ST_OP_GREAT)
             lexer->tk->type_tk = TOK_GREAT;
         rule_create_token(lexer, sb);
-        //clear_op_state(&lexer->state);
-        //printf("state -> %d", lexer->state);
         lexer->state ^= ST_OP_AND;
         lexer->state ^= ST_OP_GREAT;
         lexer->state ^= ST_OP_LESS;
@@ -187,7 +181,6 @@ int rule_quoting(t_lexer *lexer, t_sb *sb)
     if (!is_quoting(lexer))
         return (0);
     limit = quoting_job(lexer);
-    write(1, "quoting\n", 8);
     while (lexer->cmdl[lexer->index] != limit && lexer->cmdl[lexer->index])
     {
         append_ch_sb(sb, lexer->cmdl[lexer->index]);
@@ -221,7 +214,6 @@ int rule_quoting(t_lexer *lexer, t_sb *sb)
  */
 int rule_expansion(t_lexer *lexer, t_sb *sb)
 {
-    write(1, "expansion\n", 10);
     t_token *token;
     int     mask_flags;
     int     count;
@@ -268,7 +260,6 @@ int rule_expansion(t_lexer *lexer, t_sb *sb)
  */
 int rule_beg_op(t_lexer *lexer, t_sb *sb)
 {
-    write(1, "beg_op\n", 7);
     int     mask_flags;
     char    c;
     
@@ -307,7 +298,6 @@ int rule_beg_op(t_lexer *lexer, t_sb *sb)
  */
 int rule_blank_ch(t_lexer *lexer, t_sb *sb)
 {
-    write(1, "blank\n", 6);
     int     mask_flags;
     
     mask_flags = ST_BACK_TICK | ST_DQUOTED | ST_ESCAPED | ST_SQUOTED;
@@ -349,11 +339,8 @@ int rule_word_continue(t_lexer *lexer, t_sb *sb)
     return (0);
 }
 
-//int rule_commentary(t_mms *mms, int *state, char *cmdl, t_sb *sb);
-
 int rule_begin_word(t_lexer *lexer, UNUSED t_sb *sb)
 {
-    write(1, "beg_word\n", 9);
     lexer->tk->flags |= TOK_WORD;
     append_ch_sb(sb, lexer->cmdl[lexer->index]);
     lexer->index++;
@@ -392,7 +379,6 @@ t_val_lexer    lexer(char *cmdl, t_mms *mms)
             sb = init_sb(64);
         if (!sb)
             return 0;
-        write(1, "e", 1);
         if (rule_op_continue(&lexer, sb))
         {
             free(sb);
@@ -425,7 +411,6 @@ t_val_lexer    lexer(char *cmdl, t_mms *mms)
         if (rule_begin_word(&lexer, sb))
             continue ;
     }
-    write(1, "c", 1);
     if (sb != NULL)
         rule_create_token(&lexer, sb);
     return (1);
