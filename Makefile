@@ -6,7 +6,7 @@
 #    By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/05/18 23:16:53 by gd-hallu          #+#    #+#              #
-#    Updated: 2026/06/19 11:34:59 by gd-hallu         ###   ########.fr        #
+#    Updated: 2026/06/30 19:43:40 by gd-hallu         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -109,10 +109,10 @@ all: $(NAME)
 -include $(DEPENDENCE)
 
 $(LIBFT):
-	make re -C $(LIBFT_D)
+	make -C $(LIBFT_D)
 	
 $(NAME): $(LIBFT) $(OBJECTS)
-	$(CC) $(W_FLAGS) $(CFLAGS) $(OBJECTS) -L$(LIBFT_D) -lft -lreadline -I$(HDR) -I$(LIBFT_D)/include -o $(NAME)
+	@$(CC) $(W_FLAGS) $(CFLAGS) $(OBJECTS) -L$(LIBFT_D) -lft -lreadline -I$(HDR) -I$(LIBFT_D)/include -o $(NAME)
 
 $(OBJ)/%.o: $(SRC)/%.c
 	@mkdir -p $(dir $@)
@@ -129,10 +129,13 @@ $(ASM)/%.s: $(SRC)/%.c
 clean:
 	$(RMRF) $(OBJ)
 	$(RMRF) $(ASM)
+	make clean -C $(LIBFT_D)
 	
 fclean: clean
 	$(RMF) $(NAME)
+	make fclean -C $(LIBFT_D)
 
 re: fclean all
+	make re -C $(LIBFT_D)
 
 .PHONY: all f_asm re fclean clean
