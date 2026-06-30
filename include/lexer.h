@@ -90,6 +90,12 @@ typedef enum e_val_lexer
     LX_BQUOTE_NF,
 } t_val_lexer;
 
+typedef struct s_token {
+    char		    *value;
+    t_flag_token	flags;
+    t_type_token	type_tk;
+}   t_token;
+
 typedef struct s_lexer
 {
     t_mms   *mms;
@@ -98,12 +104,6 @@ typedef struct s_lexer
     t_token *tk;
     int     state;
 }   t_lexer;
-
-typedef struct s_token {
-	char		    *value;
-	t_flag_token	flags;
-	t_type_token	type_tk;
-}   t_token;
 
 static inline void  clear_op_state(int *state)
 {
