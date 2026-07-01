@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/16 10:27:34 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/06/25 12:09:37 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/06/29 16:50:57 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,6 @@ typedef struct s_ast
     union
     {
         char    **argv;   // NODE_CMD (par ex [echo] [-n] [hello]) donc avancer while (tok_type == WORD)
-        char    *value;   // NODE_REDIR  (délimiteur) ou par ex juste "&&"
         //t_ast *subshell;
     };
 }   t_ast;
