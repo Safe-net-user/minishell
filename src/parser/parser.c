@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/16 10:27:18 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/06/25 16:58:28 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/06/29 16:52:31 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,22 @@ t_token *next_token(t_token *cur)
 
     h = (t_header *)cur - 1;
     return ((t_token *)((uint8_t *)cur + h->size + sizeof(t_header)));
+}
+
+/**
+ * @brief
+ * 
+ * 
+ * 
+ * 
+ * 
+ * @param
+ * @param
+ */
+
+t_ast   *parse_redirection(t_mms *mms, t_token **token)
+{
+    
 }
 
 /**
@@ -103,8 +119,6 @@ t_ast *parse_pipe(t_mms *mms, t_token **token)
         node->left = left;
         node->tok_type = (*token)->type_tk;
         node->flags = 0;
-        node->value = stack_alloc(mms->sa, sizeof(char) * 100);
-        node->value = "|";
         *token = next_token(*token);
         node->right = parse_command(mms, token);
         left = node;
