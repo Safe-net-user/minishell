@@ -1,0 +1,6 @@
+echo hello
+echo hello | cat
+cat < infile | grep abc > outfile
+cat << EOF | wc -l
+echo "abc" > file
+echo 'abc' >> file

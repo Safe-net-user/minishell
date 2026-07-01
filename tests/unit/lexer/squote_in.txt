@@ -1,0 +1,7 @@
+''
+'a'
+'hello'
+'hello world'
+'   '
+''$HOME''
+echo 'bonjour'
