@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/16 10:27:18 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/06/29 16:52:31 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/01 16:49:29 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,12 +57,24 @@ t_ast   *parse_redirection(t_mms *mms, t_token **token)
 t_ast *parse_command(t_mms *mms, t_token **token)
 {
     t_ast   *node;
+    t_ast   *left;
+    t_ast   *right;
     int     i;
 
     node = stack_alloc(mms->sa, sizeof(t_ast));
+    while ((*token)->type_tk != TOK_WORD)
+    {
+        if ((*token)->type_tk == TOK_LESS || (*token)->type_tk == TOK_DLESS)
+            left = parse_redirection(mms, token);
+        if ((*token)->type_tk == TOK_GREAT || (*token)->type_tk == TOK_DGREAT)
+            right = parse_redirection(mms, token);
+        //*token = next_token(token);
+    }
+  
+    
     node->type = NODE_CMD;
-    node->left = NULL;
-    node->right = NULL;
+    node->left = NULL; //a changer
+    node->right = NULL; //a changer
     node->argv = stack_alloc(mms->sa, sizeof(char *) * 100);
     node->flags = stack_alloc(mms->sa, sizeof(t_flag_token) * 100);
     i = 0;
