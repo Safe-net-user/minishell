@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/16 10:27:34 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/06/29 16:50:57 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/03 10:26:43 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,18 @@ typedef enum e_node_type
     NODE_REDIR
 } t_node_type;
 
+typedef struct s_redir
+{
+    t_type_token    type;
+    char            *file;
+    struct s_redir  *next;
+}   t_redir;
+
+typedef struct s_redirection
+{
+    t_redir     *in; 
+    t_redir     *out;
+}   t_redirection;
 
 typedef struct s_ast
 {
@@ -36,7 +48,8 @@ typedef struct s_ast
     struct s_ast    *right;
     union
     {
-        char    **argv;   // NODE_CMD (par ex [echo] [-n] [hello]) donc avancer while (tok_type == WORD)
+        char            **argv;
+        t_redirection   *redirect;
         //t_ast *subshell;
     };
 }   t_ast;
