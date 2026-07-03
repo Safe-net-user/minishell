@@ -6,7 +6,7 @@
 /*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/16 10:27:34 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/03 10:26:43 by miouali          ###   ########.fr       */
+/*   Updated: 2026/07/03 15:26:04 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,13 +46,14 @@ typedef struct s_ast
     t_flag_token    *flags;      // flags du token lexer (SQUOTED, DQUOTED, etc.)
     struct s_ast    *left;
     struct s_ast    *right;
+    t_redirection   *redirect;
     union
     {
         char            **argv;
-        t_redirection   *redirect;
         //t_ast *subshell;
     };
 }   t_ast;
 
+t_ast *parser(t_mms *mms);
 
 #endif
