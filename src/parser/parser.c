@@ -6,7 +6,7 @@
 /*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/16 10:27:18 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/03 13:58:04 by miouali          ###   ########.fr       */
+/*   Updated: 2026/07/03 15:36:41 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,34 +103,39 @@ void   parse_redirection(t_mms *mms, t_token **token, t_ast *node)
  */
 
 
-t_ast *parse_command(t_mms *mms, t_token **token)
+t_ast	*parse_command(t_mms *mms, t_token **token)
 {
-    t_ast   *node;
-    t_ast   *left;
-    t_ast   *right;
-    int     i;
+	t_ast	*node;
+	int		i;
 
-    node = stack_alloc(mms->sa, sizeof(t_ast));
-    while ((*token)->type_tk != TOK_WORD)
-    {
-        if ((*token)->type_tk == TOK_LESS || (*token)->type_tk == TOK_DLESS || (*token)->type_tk == TOK_GREAT || (*token)->type_tk == TOK_DGREAT)
-            parse_redirection(mms, token, node);
-    }
-    node->type = NODE_CMD;
-    node->left = NULL;
-    node->right = NULL;
-    node->argv = stack_alloc(mms->sa, sizeof(char *) * 100);
-    node->flags = stack_alloc(mms->sa, sizeof(t_flag_token) * 100);
-    i = 0;
-    while ((*token)->type_tk == TOK_WORD)
-    {
-        node->argv[i] = (*token)->value;
-        node->flags[i] = (*token)->flags;
-        *token = next_token(*token);
-        i++;
-    }
-    node->argv[i] = NULL;
-    return (node);
+	node = stack_alloc(mms->sa, sizeof(t_ast));
+	node->redirect = stack_alloc(mms->sa, sizeof(t_redirection));
+	node->redirect->in = NULL;
+	node->redirect->out = NULL;
+	node->type = NODE_CMD;
+	node->left = NULL;
+	node->right = NULL;
+	node->argv = stack_alloc(mms->sa, sizeof(char *) * 100);
+	node->flags = stack_alloc(mms->sa, sizeof(t_flag_token) * 100);
+	i = 0;
+	while ((*token)->type_tk == TOK_WORD
+		|| (*token)->type_tk == TOK_LESS
+		|| (*token)->type_tk == TOK_DLESS
+		|| (*token)->type_tk == TOK_GREAT
+		|| (*token)->type_tk == TOK_DGREAT)
+	{
+		if ((*token)->type_tk == TOK_WORD)
+		{   
+			node->argv[i] = (*token)->value;
+			node->flags[i] = (*token)->flags;
+			*token = next_token(*token);
+			i++;
+		}
+		else
+			parse_redirection(mms, token, node);
+	}
+	node->argv[i] = NULL;
+	return (node);
 }
 
 /**
@@ -165,7 +170,6 @@ t_ast *parse_pipe(t_mms *mms, t_token **token)
 {
     t_ast   *node;
     t_ast   *left;
-    t_ast   *right;
 
     left = parse_command(mms, token);
     while ((*token)->type_tk == TOK_PIPE)
@@ -212,7 +216,6 @@ t_ast *parse_or_and(t_mms *mms, t_token **token)
 {
     t_ast   *node;
     t_ast   *left;
-    t_ast   *right;
 
     left = parse_pipe(mms, token);
     while ((*token)->type_tk == TOK_AND_IF || (*token)->type_tk == TOK_OR_IF)
