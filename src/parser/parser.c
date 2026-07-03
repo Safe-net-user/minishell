@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/16 10:27:18 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/01 16:49:29 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/03 13:58:04 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,52 @@ t_token *next_token(t_token *cur)
     return ((t_token *)((uint8_t *)cur + h->size + sizeof(t_header)));
 }
 
+void    add_redirection_in(t_mms *mms, t_token **token, t_ast *node)
+{
+    t_redir *cur;
+    t_redir *new;
+
+    new = stack_alloc(mms->sa, sizeof(t_redir));
+    new->type = (*token)->type_tk;
+    new->next = NULL;
+    *token = next_token(*token);
+    if ((*token)->type_tk == TOK_WORD)
+        new->file = (*token)->value;
+    *token = next_token(*token);
+    if (node->redirect->in == NULL) 
+    {
+        node->redirect->in = new;
+        return ;
+    }
+    cur = node->redirect->in;
+    while (cur->next != NULL)
+        cur = cur->next;
+    cur->next = new;
+}
+
+void    add_redirection_out(t_mms *mms, t_token **token, t_ast *node)
+{
+    t_redir *cur;
+    t_redir *new;
+
+    new = stack_alloc(mms->sa, sizeof(t_redir));
+    new->type = (*token)->type_tk;
+    new->next = NULL;
+    *token = next_token(*token);
+    if ((*token)->type_tk == TOK_WORD)
+        new->file = (*token)->value;
+    *token = next_token(*token);
+    if (node->redirect->out == NULL)
+    {
+        node->redirect->out = new;
+        return ;
+    }
+    cur = node->redirect->out;
+    while (cur->next != NULL)
+        cur = cur->next;
+    cur->next = new;
+}
+
 /**
  * @brief
  * 
@@ -32,9 +78,12 @@ t_token *next_token(t_token *cur)
  * @param
  */
 
-t_ast   *parse_redirection(t_mms *mms, t_token **token)
+void   parse_redirection(t_mms *mms, t_token **token, t_ast *node)
 {
-    
+    if ((*token)->type_tk == TOK_LESS || (*token)->type_tk == TOK_DLESS)
+        add_redirection_in(mms, token, node);   
+    else
+        add_redirection_out(mms, token, node);
 }
 
 /**
@@ -64,17 +113,12 @@ t_ast *parse_command(t_mms *mms, t_token **token)
     node = stack_alloc(mms->sa, sizeof(t_ast));
     while ((*token)->type_tk != TOK_WORD)
     {
-        if ((*token)->type_tk == TOK_LESS || (*token)->type_tk == TOK_DLESS)
-            left = parse_redirection(mms, token);
-        if ((*token)->type_tk == TOK_GREAT || (*token)->type_tk == TOK_DGREAT)
-            right = parse_redirection(mms, token);
-        //*token = next_token(token);
+        if ((*token)->type_tk == TOK_LESS || (*token)->type_tk == TOK_DLESS || (*token)->type_tk == TOK_GREAT || (*token)->type_tk == TOK_DGREAT)
+            parse_redirection(mms, token, node);
     }
-  
-    
     node->type = NODE_CMD;
-    node->left = NULL; //a changer
-    node->right = NULL; //a changer
+    node->left = NULL;
+    node->right = NULL;
     node->argv = stack_alloc(mms->sa, sizeof(char *) * 100);
     node->flags = stack_alloc(mms->sa, sizeof(t_flag_token) * 100);
     i = 0;
