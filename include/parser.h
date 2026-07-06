@@ -6,7 +6,7 @@
 /*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/16 10:27:34 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/03 15:26:04 by miouali          ###   ########.fr       */
+/*   Updated: 2026/07/06 16:23:00 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include "lexer.h"
 #include "ft_stack_alloc.h"
 #include "lexer.h"
+#include <stdio.h>
 
 typedef enum e_node_type
 {
@@ -55,5 +56,6 @@ typedef struct s_ast
 }   t_ast;
 
 t_ast *parser(t_mms *mms);
+t_token *next_token(t_token *cur);
 
 #endif
