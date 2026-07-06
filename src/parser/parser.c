@@ -6,7 +6,7 @@
 /*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/16 10:27:18 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/06 16:48:51 by miouali          ###   ########.fr       */
+/*   Updated: 2026/07/06 17:37:08 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,17 @@ char *token_to_string(t_type_token type)
     return ("token");
 }
 
+/**
+ * @brief Print a parser syntax error.
+ *
+ * Displays an error message compatible with the shell syntax error format.
+ * If the unexpected token is the end of the input stream, "newline" is
+ * printed instead.
+ *
+ * @param mms Main minishell structure.
+ * @param tok Unexpected token that caused the syntax error.
+ */
+
 void	parser_error(t_mms *mms, t_token *tok)
 {
 	(void)mms;
@@ -54,6 +65,26 @@ void	parser_error(t_mms *mms, t_token *tok)
 			tok->value ? tok->value : token_to_string(tok->type_tk));
 	//g_signal = 2;
 }
+
+/**
+ * @brief Add an input redirection to a command node.
+ *
+ * Parses '<' and '<<' operators. The filename (or heredoc delimiter) must
+ * immediately follow the redirection operator. The created redirection is
+ * appended to the command input redirection list.
+ *
+ * Example:
+ *
+ *     cat < infile << EOF
+ *
+ * creates two input redirections linked together.
+ *
+ * @param mms Main minishell structure.
+ * @param token Pointer to the current token pointer.
+ * @param node Command node receiving the redirection.
+ *
+ * @return true on success, false if a syntax error is encountered.
+ */
 
 bool	add_redirection_in(t_mms *mms, t_token **token, t_ast *node)
 {
@@ -82,6 +113,26 @@ bool	add_redirection_in(t_mms *mms, t_token **token, t_ast *node)
 	cur->next = new;
 	return (true);
 }
+
+/**
+ * @brief Add an output redirection to a command node.
+ *
+ * Parses '>' and '>>' operators. The filename must immediately follow the
+ * redirection operator. The created redirection is appended to the command
+ * output redirection list.
+ *
+ * Example:
+ *
+ *     echo hello > out >> log
+ *
+ * creates two output redirections linked together.
+ *
+ * @param mms Main minishell structure.
+ * @param token Pointer to the current token pointer.
+ * @param node Command node receiving the redirection.
+ *
+ * @return true on success, false if a syntax error is encountered.
+ */
 
 bool	add_redirection_out(t_mms *mms, t_token **token, t_ast *node)
 {
@@ -112,14 +163,21 @@ bool	add_redirection_out(t_mms *mms, t_token **token, t_ast *node)
 }
 
 /**
- * @brief
- * 
- * 
- * 
- * 
- * 
- * @param
- * @param
+ * @brief Parse a redirection operator.
+ *
+ * Dispatches the parsing to either the input or output redirection parser
+ * depending on the current token.
+ *
+ * Supported operators:
+ *
+ *     <   <<
+ *     >   >>
+ *
+ * @param mms Main minishell structure.
+ * @param token Pointer to the current token pointer.
+ * @param node Command node receiving the parsed redirection.
+ *
+ * @return true on success, false if a syntax error occurs.
  */
 
 bool	parse_redirection(t_mms *mms, t_token **token, t_ast *node)
@@ -131,19 +189,23 @@ bool	parse_redirection(t_mms *mms, t_token **token, t_ast *node)
 }
 
 /**
- * @brief Parse a simple shell command into an AST node.
+ * @brief Parse a simple command and its redirections.
  *
  * This function creates a NODE_CMD node and consumes all consecutive
- * WORD tokens. Each word is stored in the argv array of the command.
+ * command words and redirection operators.
  *
- * The function stops parsing when it reaches an operator token
- * such as a pipe, AND, OR, or the end of the token stream.
+ * Every WORD token is stored in the argv array, while redirection
+ * operators are attached to the command redirection lists.
+ *
+ * Parsing stops when an operator with a lower precedence (|, &&, ||)
+ * or the end of the input is reached.
  *
  * @param mms Main minishell structure containing the stack allocator.
  * @param token Pointer to the current token pointer.
  *              The pointer is updated as tokens are consumed.
  *
- * @return Pointer to the created command AST node.
+ * @return Pointer to the created command AST node, or NULL if a syntax
+ *         error is encountered.
  */
 
 
