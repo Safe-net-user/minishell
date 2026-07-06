@@ -6,7 +6,7 @@
 /*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/16 10:27:18 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/03 15:36:41 by miouali          ###   ########.fr       */
+/*   Updated: 2026/07/06 16:48:51 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,50 +21,94 @@ t_token *next_token(t_token *cur)
     return ((t_token *)((uint8_t *)cur + h->size + sizeof(t_header)));
 }
 
-void    add_redirection_in(t_mms *mms, t_token **token, t_ast *node)
+char *token_to_string(t_type_token type)
 {
-    t_redir *cur;
-    t_redir *new;
-
-    new = stack_alloc(mms->sa, sizeof(t_redir));
-    new->type = (*token)->type_tk;
-    new->next = NULL;
-    *token = next_token(*token);
-    if ((*token)->type_tk == TOK_WORD)
-        new->file = (*token)->value;
-    *token = next_token(*token);
-    if (node->redirect->in == NULL) 
-    {
-        node->redirect->in = new;
-        return ;
-    }
-    cur = node->redirect->in;
-    while (cur->next != NULL)
-        cur = cur->next;
-    cur->next = new;
+    if (type == TOK_PIPE)
+        return ("|");
+    if (type == TOK_AND_IF)
+        return ("&&");
+    if (type == TOK_OR_IF)
+        return ("||");
+    if (type == TOK_LESS)
+        return ("<");
+    if (type == TOK_GREAT)
+        return (">");
+    if (type == TOK_DLESS)
+        return ("<<");
+    if (type == TOK_DGREAT)
+        return (">>");
+    if (type == TOK_EOF)
+        return ("newline");
+    return ("token");
 }
 
-void    add_redirection_out(t_mms *mms, t_token **token, t_ast *node)
+void	parser_error(t_mms *mms, t_token *tok)
 {
-    t_redir *cur;
-    t_redir *new;
+	(void)mms;
+	if (tok->type_tk == TOK_EOF)
+		fprintf(stderr,
+			"minishell: syntax error near unexpected token `newline'\n");
+	else
+		fprintf(stderr,
+			"minishell: syntax error near unexpected token `%s'\n",
+			tok->value ? tok->value : token_to_string(tok->type_tk));
+	//g_signal = 2;
+}
 
-    new = stack_alloc(mms->sa, sizeof(t_redir));
-    new->type = (*token)->type_tk;
-    new->next = NULL;
-    *token = next_token(*token);
-    if ((*token)->type_tk == TOK_WORD)
-        new->file = (*token)->value;
-    *token = next_token(*token);
-    if (node->redirect->out == NULL)
-    {
-        node->redirect->out = new;
-        return ;
-    }
-    cur = node->redirect->out;
-    while (cur->next != NULL)
-        cur = cur->next;
-    cur->next = new;
+bool	add_redirection_in(t_mms *mms, t_token **token, t_ast *node)
+{
+	t_redir	*cur;
+	t_redir	*new;
+
+	new = stack_alloc(mms->sa, sizeof(t_redir));
+	new->type = (*token)->type_tk;
+	new->next = NULL;
+	*token = next_token(*token);
+	if ((*token)->type_tk != TOK_WORD)
+	{
+		parser_error(mms, *token);
+		return (false);
+	}
+	new->file = (*token)->value;
+	*token = next_token(*token);
+	if (!node->redirect->in)
+	{
+		node->redirect->in = new;
+		return (true);
+	}
+	cur = node->redirect->in;
+	while (cur->next)
+		cur = cur->next;
+	cur->next = new;
+	return (true);
+}
+
+bool	add_redirection_out(t_mms *mms, t_token **token, t_ast *node)
+{
+	t_redir	*cur;
+	t_redir	*new;
+
+	new = stack_alloc(mms->sa, sizeof(t_redir));
+	new->type = (*token)->type_tk;
+	new->next = NULL;
+	*token = next_token(*token);
+	if ((*token)->type_tk != TOK_WORD)
+	{
+		parser_error(mms, *token);
+		return (false);
+	}
+	new->file = (*token)->value;
+	*token = next_token(*token);
+	if (!node->redirect->out)
+	{
+		node->redirect->out = new;
+		return (true);
+	}
+	cur = node->redirect->out;
+	while (cur->next)
+		cur = cur->next;
+	cur->next = new;
+	return (true);
 }
 
 /**
@@ -78,12 +122,12 @@ void    add_redirection_out(t_mms *mms, t_token **token, t_ast *node)
  * @param
  */
 
-void   parse_redirection(t_mms *mms, t_token **token, t_ast *node)
+bool	parse_redirection(t_mms *mms, t_token **token, t_ast *node)
 {
-    if ((*token)->type_tk == TOK_LESS || (*token)->type_tk == TOK_DLESS)
-        add_redirection_in(mms, token, node);   
-    else
-        add_redirection_out(mms, token, node);
+	if ((*token)->type_tk == TOK_LESS
+		|| (*token)->type_tk == TOK_DLESS)
+		return (add_redirection_in(mms, token, node));
+	return (add_redirection_out(mms, token, node));
 }
 
 /**
@@ -108,6 +152,15 @@ t_ast	*parse_command(t_mms *mms, t_token **token)
 	t_ast	*node;
 	int		i;
 
+	if ((*token)->type_tk != TOK_WORD
+		&& (*token)->type_tk != TOK_LESS
+		&& (*token)->type_tk != TOK_DLESS
+		&& (*token)->type_tk != TOK_GREAT
+		&& (*token)->type_tk != TOK_DGREAT)
+	{
+		parser_error(mms, *token);
+		return (NULL);
+	}
 	node = stack_alloc(mms->sa, sizeof(t_ast));
 	node->redirect = stack_alloc(mms->sa, sizeof(t_redirection));
 	node->redirect->in = NULL;
@@ -125,14 +178,17 @@ t_ast	*parse_command(t_mms *mms, t_token **token)
 		|| (*token)->type_tk == TOK_DGREAT)
 	{
 		if ((*token)->type_tk == TOK_WORD)
-		{   
+		{
 			node->argv[i] = (*token)->value;
 			node->flags[i] = (*token)->flags;
 			*token = next_token(*token);
 			i++;
 		}
 		else
-			parse_redirection(mms, token, node);
+		{
+			if (!parse_redirection(mms, token, node))
+				return (NULL);
+		}
 	}
 	node->argv[i] = NULL;
 	return (node);
@@ -181,6 +237,8 @@ t_ast *parse_pipe(t_mms *mms, t_token **token)
         node->flags = 0;
         *token = next_token(*token);
         node->right = parse_command(mms, token);
+        if (!node->right)
+            return (NULL);
         left = node;
     }
     return (left);
@@ -230,7 +288,9 @@ t_ast *parse_or_and(t_mms *mms, t_token **token)
         node->flags = 0;
         *token = next_token(*token);
         node->right = parse_pipe(mms, token);
-        left = node;
+        if (!node->right)
+            return (NULL);
+;        left = node;
     }
     return (left);
 }
