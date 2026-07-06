@@ -2,8 +2,7 @@
 #                                   CONFIG                                     #
 # **************************************************************************** #
 
-NAME        = integration_tests
-
+NAME        = fuzz_tests
 CC          = cc
 CFLAGS      = -Wall -Wextra -Werror
 
@@ -31,7 +30,7 @@ SRC = \
 # **************************************************************************** #
 
 all: $(NAME)
-	./$(NAME)
+#	./$(NAME)
 
 $(LIBFT):
 	$(MAKE) -C $(LIBFT_DIR)
