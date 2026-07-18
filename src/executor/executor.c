@@ -6,12 +6,52 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/09 17:20:34 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/18 10:24:56 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/18 11:01:02 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "executor.h"
 #include "ft_strings.h"
+
+int redirection(mms, node) //ajouter les redirections de fichiers
+{
+    
+}
+
+int exec_builtin(mms, node) //renvoyer vers les fonction builtins
+{
+
+}
+
+int builtin(node) //recherche bultin
+{
+
+}
+
+int count_cmd_pipeline(node) //compter le nombre de commandes d'un pipeline
+{
+
+}
+
+int     add_cmd_pipeline(temp, pipeline) //ajouter une commande en mode cmd_list[i]
+{
+
+}
+
+/**
+ * @brief Searches for a command executable in the PATH environment variable.
+ *
+ * Splits the PATH variable into its individual directories and checks each
+ * directory for an executable matching the command name. The first valid
+ * executable path found is returned.
+ *
+ * @param mms  Pointer to the main minishell structure containing the
+ *             environment data.
+ * @param node AST node representing the command to search for.
+ * @param exec Execution context associated with the command lookup.
+ *
+ * @return The full path to the executable if found, otherwise NULL.
+ */
 
 char *find_path(t_mms *mms, t_ast *node, t_executor *exec)
 {
@@ -39,6 +79,18 @@ char *find_path(t_mms *mms, t_ast *node, t_executor *exec)
     return (NULL);
 }
 
+/**
+ * @brief Checks whether a command specifies a path explicitly.
+ *
+ * Determines whether the command name contains a slash, indicating that the
+ * command should be executed using the path provided by the user rather than
+ * being searched for in the PATH environment variable.
+ *
+ * @param node AST node representing the command to inspect.
+ *
+ * @return 1 if the command contains a slash, otherwise 0.
+ */
+
 int path_relative(t_ast *node)
 {
     int i;
@@ -53,9 +105,19 @@ int path_relative(t_ast *node)
     return(0);
 }
 
-/*
-on est deja dans un fork on doit trouvre les args de la fonction execute
-*/
+/**
+ * @brief Executes an external command using execve().
+ *
+ * Executes the command using either its directly specified path or the path
+ * resolved by the command lookup mechanism. If execve() fails, the function
+ * returns to the caller.
+ *
+ * @param mms  Pointer to the main minishell structure.
+ * @param node AST node representing the command to execute.
+ * @param exec Execution context containing the resolved command path.
+ *
+ * @return 0 if execve() returns to the caller after a failure.
+ */
 
 int execute(t_mms *mms, t_ast *node, t_executor *exec)
 {
@@ -66,84 +128,21 @@ int execute(t_mms *mms, t_ast *node, t_executor *exec)
     return (0);
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+/**
+ * @brief Executes a command within a pipeline.
+ *
+ * Redirects the command's standard input and output to the provided file
+ * descriptors, applies command redirections and expansions, then executes
+ * builtins or external commands according to the command path.
+ *
+ * @param mms    Pointer to the main minishell structure.
+ * @param cmd    AST node representing the command to execute.
+ * @param fd_in  File descriptor used as the command's standard input.
+ * @param fd_out File descriptor used as the command's standard output.
+ *
+ * @return The exit status of the executed builtin or external command, or a
+ *         non-zero status if a redirection fails.
+ */
 
 int execute_cmd_pipe(t_mms *mms, t_ast *cmd, int fd_in, int fd_out)
 {
@@ -167,6 +166,23 @@ int execute_cmd_pipe(t_mms *mms, t_ast *cmd, int fd_in, int fd_out)
         return (execute(mms, cmd, exec));
     }
 }
+
+/**
+ * @brief Creates and executes the processes of a command pipeline.
+ *
+ * Creates the required pipes and child processes for each command except the
+ * last one, connects each command's standard input to the previous pipe and
+ * its standard output to the next pipe, then executes the last command with
+ * the remaining input descriptor and the standard output.
+ *
+ * @param mms      Pointer to the main minishell structure.
+ * @param node     AST node representing the root of the pipeline.
+ * @param pipeline Pipeline execution context containing the commands, file
+ *                 descriptors, and process identifiers.
+ *
+ * @return 1 if a pipe or fork operation fails, or after the pipeline execution
+ *         has been initiated.
+ */
 
 int execute_pipeline(t_mms *mms, t_ast *node, t_pipeline *pipeline)
 {
@@ -197,16 +213,18 @@ int execute_pipeline(t_mms *mms, t_ast *node, t_pipeline *pipeline)
     return (1);
 }
 
-/*
-* executer tous les pipes d'affilees: 
-* fork
-* activate redirection de pipe
-* activate redirection command
-* expand
-* builtins
-* found path or direct path
-* exceve
-*/
+/**
+ * @brief Prepares and executes a pipeline of commands.
+ *
+ * Counts the number of commands in the pipeline, allocates the array of AST
+ * command nodes and the array of process identifiers, then extracts each
+ * command from the pipeline before delegating their execution.
+ *
+ * @param mms  Pointer to the main minishell structure.
+ * @param node AST node representing the root of the pipeline.
+ *
+ * @return The exit status returned by the pipeline execution.
+ */
 
 int pipeline(t_mms *mms, t_ast *node)
 {
@@ -220,7 +238,7 @@ int pipeline(t_mms *mms, t_ast *node)
     pipeline->cmd_list = stack_alloc(mms->sa, sizeof(t_ast * ) * pipeline->nb_cmd + 1);
     pipeline->pids = stack_alloc(mms->sa, sizeof(pid_t) * pipeline->nb_cmd);
     temp = node;
-    while (temp->left == NODE_PIPE)
+    while (temp->left == NODE_PIPE) //logique a chier
     {
         pipeline->cmd_list[i] = add_cmd_pipeline(temp, pipeline);
         i++;
@@ -230,156 +248,19 @@ int pipeline(t_mms *mms, t_ast *node)
     return (execute_pipeline(mms, node, pipeline));
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-* fork 
-* redirections
-* expand
-* builtins
-* path
-* exceve
-*/
+/**
+ * @brief Executes a single command in a child process.
+ *
+ * Creates a child process to execute the command, applies its redirections,
+ * performs expansion when required, executes builtins directly, and resolves
+ * the executable path before calling execve().
+ *
+ * @param mms  Pointer to the main minishell structure.
+ * @param node AST node representing the command to execute.
+ *
+ * @return The status of the fork operation, or the command execution status
+ *         in the child process.
+ */
 
 int execute_cmd(t_mms *mms, t_ast *node)
 {
@@ -406,6 +287,19 @@ int execute_cmd(t_mms *mms, t_ast *node)
     }
     //voir on return quoi
 }
+
+/**
+ * @brief Executes an AST node according to its type.
+ *
+ * Dispatches the execution of a command, pipeline, logical AND, or logical
+ * OR node. Logical operators are evaluated conditionally based on the exit
+ * status of the left-hand side expression.
+ *
+ * @param mms  Pointer to the main minishell structure.
+ * @param head Root node of the AST subtree to execute.
+ *
+ * @return The exit status of the executed command or expression.
+ */
 
 int executor(t_mms *mms, t_ast *head)
 {
