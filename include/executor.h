@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/11 11:23:14 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/11 17:53:51 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/18 10:17:36 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,19 +19,28 @@ typedef struct s_executor
     int fd_in;
     int fd_out;
     char *cmd_path;
-    char **cmd_tab;
 } t_executor;
 
-typedef int				(*t_format)(t_mms *mms, t_ast *node);
-
-
-typedef struct format_stuct
+typedef struct s_cmd_pipeline
 {
-	char		letter;
-	t_format	format_alias;
-}	t_alias;
+    char **argv;
+    t_flag_token flag;
+    int     fd_in;
+    int     fd_out;
+    t_redirection redirection;
+    pid_t pid;
+}t_cmd;
 
-extern const t_alias	g_format_tab[];
+typedef struct s_pipeline
+{
+    int nb_cmd;
+    int fd_prev;
+    int fd_next;
+    int fd[2];
+    t_ast **cmd_list;
+    pid_t *pids;
+} t_pipeline;
+
 # include <unistd.h>
 # include "minishell.h"
 # include "parser.h"
