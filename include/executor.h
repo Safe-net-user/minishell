@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/11 11:23:14 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/18 10:17:36 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/18 10:39:06 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,16 +20,6 @@ typedef struct s_executor
     int fd_out;
     char *cmd_path;
 } t_executor;
-
-typedef struct s_cmd_pipeline
-{
-    char **argv;
-    t_flag_token flag;
-    int     fd_in;
-    int     fd_out;
-    t_redirection redirection;
-    pid_t pid;
-}t_cmd;
 
 typedef struct s_pipeline
 {
