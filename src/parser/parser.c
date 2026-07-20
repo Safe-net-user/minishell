@@ -6,22 +6,41 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/16 10:27:18 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/20 16:00:17 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/21 00:19:34 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
 #include "minishell.h"
 
-t_token *next_token(t_token *cur)
+t_tk *next_token(t_tk *cur)
 {
     t_header *h;
 
     h = (t_header *)cur - 1;
-    return ((t_token *)((uint8_t *)cur + h->size + sizeof(t_header)));
+    return ((t_tk *)((uint8_t *)cur + h->size + sizeof(t_header)));
 }
 
-char *token_to_string(t_type_token type)
+int count_tokens(t_tk *token)
+{
+    t_tk *temp;
+	int	count;
+
+    temp = token;
+	count = 0;
+	while (temp->type_tk == TOK_WORD
+		|| temp->type_tk == TOK_LESS
+		|| temp->type_tk == TOK_DLESS
+		|| temp->type_tk == TOK_GREAT
+		|| temp->type_tk == TOK_DGREAT)
+	{
+		count++;
+		temp = next_token(temp);
+	}
+	return(count);
+}
+
+char *token_to_string(t_type_tk type)
 {
     if (type == TOK_PIPE)
         return ("|");
@@ -53,7 +72,7 @@ char *token_to_string(t_type_token type)
  * @param tok Unexpected token that caused the syntax error.
  */
 
-void	parser_error(t_mms *mms, t_token *tok)
+void	parser_error(t_mms *mms, t_tk *tok)
 {
 	(void)mms;
 	if (tok->type_tk == TOK_EOF)
@@ -84,13 +103,13 @@ void	parser_error(t_mms *mms, t_token *tok)
  * @return true on success, false if a syntax error occurs.
  */
 
-bool	parse_redirection(t_mms *mms, t_token **token, t_ast *node)
+bool	parse_redirection(t_mms *mms, t_tk **token, t_ast *node)
 {
 	t_redir	*cur;
 	t_redir	*new;
 
 	new = stack_alloc(mms->sa, sizeof(t_redir));
-	new->type = (*token)->type_tk;
+	new->type_tk = (*token)->type_tk;
 	new->next = NULL;
 	*token = next_token(*token);
 	if ((*token)->type_tk != TOK_WORD)
@@ -132,10 +151,11 @@ bool	parse_redirection(t_mms *mms, t_token **token, t_ast *node)
  */
 
 
-t_ast	*parse_command(t_mms *mms, t_token **token)
+t_ast	*parse_command(t_mms *mms, t_tk **token)
 {
 	t_ast	*node;
 	int		i;
+	int 	count_tk;
 
 	if ((*token)->type_tk != TOK_WORD
 		&& (*token)->type_tk != TOK_LESS
@@ -152,8 +172,8 @@ t_ast	*parse_command(t_mms *mms, t_token **token)
 	node->type = NODE_CMD;
 	node->left = NULL;
 	node->right = NULL;
-	node->argv = stack_alloc(mms->sa, sizeof(char *) * 100);
-	node->flags = stack_alloc(mms->sa, sizeof(t_flag_token) * 100);
+	count_tk = count_tokens(*token);
+	node->tokens = stack_alloc(mms->sa, sizeof(t_tk) * count_tk + 1);
 	i = 0;
 	while ((*token)->type_tk == TOK_WORD
 		|| (*token)->type_tk == TOK_LESS
@@ -163,8 +183,7 @@ t_ast	*parse_command(t_mms *mms, t_token **token)
 	{
 		if ((*token)->type_tk == TOK_WORD)
 		{
-			node->argv[i] = (*token)->value;
-			node->flags[i] = (*token)->flags;
+			node->tokens[i] = (*token); //jsp si ca suffit
 			*token = next_token(*token);
 			i++;
 		}
@@ -174,7 +193,7 @@ t_ast	*parse_command(t_mms *mms, t_token **token)
 				return (NULL);
 		}
 	}
-	node->argv[i] = NULL;
+	node->tokens[i] = NULL;
 	return (node);
 }
 
@@ -206,7 +225,7 @@ t_ast	*parse_command(t_mms *mms, t_token **token)
  */
 
 
-t_ast *parse_pipe(t_mms *mms, t_token **token)
+t_ast *parse_pipe(t_mms *mms, t_tk **token)
 {
     t_ast   *node;
     t_ast   *left;
@@ -217,8 +236,6 @@ t_ast *parse_pipe(t_mms *mms, t_token **token)
         node = stack_alloc(mms->sa, sizeof(t_ast));
         node->type = NODE_PIPE;
         node->left = left;
-        node->tok_type = (*token)->type_tk;
-        node->flags = 0;
         *token = next_token(*token);
         node->right = parse_command(mms, token);
         if (!node->right)
@@ -254,7 +271,7 @@ t_ast *parse_pipe(t_mms *mms, t_token **token)
  * @return Pointer to the root of the AND/OR AST.
  */
 
-t_ast *parse_or_and(t_mms *mms, t_token **token)
+t_ast *parse_or_and(t_mms *mms, t_tk **token)
 {
     t_ast   *node;
     t_ast   *left;
@@ -268,8 +285,6 @@ t_ast *parse_or_and(t_mms *mms, t_token **token)
         else
             node->type = NODE_OR;
         node->left = left;
-        node->tok_type = (*token)->type_tk;
-        node->flags = 0;
         *token = next_token(*token);
         node->right = parse_pipe(mms, token);
         if (!node->right)
@@ -302,10 +317,10 @@ t_ast *parse_or_and(t_mms *mms, t_token **token)
 
 t_ast *parser(t_mms *mms)
 {
-    t_token *first;
+    t_tk *first;
     t_ast *ast;
 
-    first = (t_token *)(mms->sa->buffer + sizeof(t_header));
+    first = (t_tk *)(mms->sa->buffer + sizeof(t_header));
     ast = parse_or_and(mms, &first);
     return (ast);
 }
