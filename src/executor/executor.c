@@ -6,34 +6,71 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/09 17:20:34 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/18 11:01:02 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/20 12:07:47 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "executor.h"
 #include "ft_strings.h"
 
-int redirection(mms, node) //ajouter les redirections de fichiers
+/*
+* ici on recoit les redirections sous la forme d'une liste chainee de in et de out
+* elles sont dans l'ordre ou elles ont ete rentres
+* ouvrir le fd pour voir si pb, si un pb tout arreter
+* si non pb activer avec dup 2
+* aller a la suivante
+*/
+
+int redirection(t_mms *mms, t_ast *node) //ajouter les redirections de fichiers attention au heredoc
 {
-    
+    int fd_in;
+    int fd_out;
+
+    fd_in = 0; //peut etre mettre -1
+    fd_out = 0;
+    while (node->redirect->next != NULL)
+    {
+        
+    }
 }
 
-int exec_builtin(mms, node) //renvoyer vers les fonction builtins
+/*
+* renvoyer vers les fonctions builtins, normalement le fork est deja fait
+* il fauudra renvoyer a chaque fois aussi les codes d'erreur
+* update aussi la variable globale
+*/
+
+int exec_builtin(t_mms *mms, t_ast *node) //renvoyer vers les fonction builtins
 {
 
 }
 
-int builtin(node) //recherche bultin
+/*
+* juste rehcercher un builtin donc return 1 ou 0
+*/
+
+int builtin(t_ast *node) //recherche bultin
 {
 
 }
 
-int count_cmd_pipeline(node) //compter le nombre de commandes d'un pipeline
+/*
+* compter le nombre de pipe plus 2
+*/
+
+int count_cmd_pipeline(t_ast *node) //compter le nombre de commandes d'un pipeline
 {
 
 }
 
-int     add_cmd_pipeline(temp, pipeline) //ajouter une commande en mode cmd_list[i]
+/*
+* convertir un pipeline en tableau de commandes
+* il faut dans l'ordre donc on commence en bas a gauche puis on remonte
+* sauf que on a pas d'outil pour remonter donc peut etre remplir par la fin ?
+* fonction a faire en reucrsion je pense
+*/
+
+int     add_cmd_pipeline(t_ast *temp, t_pipeline *pipeline) //ajouter une commande en mode cmd_list[i]
 {
 
 }
