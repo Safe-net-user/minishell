@@ -1,0 +1,6 @@
+ls    -la
+      ls
+ls
+ls    
+ls  pwd
+ls      pwd

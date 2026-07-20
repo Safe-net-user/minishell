@@ -1,0 +1,16 @@
+ls
+pwd
+export
+unset
+exit
+abc
+ABC
+abc123
+_hello
+hello_world
+ls    -la
+      ls
+ls
+ls    
+ls    pwd
+ls      pwd

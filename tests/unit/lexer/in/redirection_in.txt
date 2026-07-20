@@ -1,0 +1,8 @@
+cat<file
+cat>file
+cat>>file
+cat<<EOF
+cat < file
+cat > file
+cat >> file
+cat << EOF
