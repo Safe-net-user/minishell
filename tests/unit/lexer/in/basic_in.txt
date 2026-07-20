@@ -4,3 +4,14 @@ cat < infile | grep abc > outfile
 cat << EOF | wc -l
 echo "abc" > file
 echo 'abc' >> file
+ls || echo fail
+true && echo ok
+echo foo | grep foo | wc -l
+cat < in >> out
+echo ""
+echo ''
+echo "a b c"
+echo 'a b c'
+echo $HOME
+echo "$HOME"
+echo '$HOME'
