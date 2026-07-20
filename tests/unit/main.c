@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
+/*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/03 14:33:39 by miouali           #+#    #+#             */
-/*   Updated: 2026/07/06 17:22:38 by miouali          ###   ########.fr       */
+/*   Updated: 2026/07/20 13:29:24 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,22 +83,15 @@ static void print_ast(t_ast *node, int depth)
 
         if (node->redirect)
         {
-            r = node->redirect->in;
+            r = node->redirect;
             while (r)
             {
                 print_indent(depth + 1);
                 if (r->type == TOK_DLESS)
                     printf(BLUE "<< %s" RESET "\n", r->file);
-                else
+                else if (r->type == TOK_LESS)
                     printf(BLUE "< %s" RESET "\n", r->file);
-                r = r->next;
-            }
-
-            r = node->redirect->out;
-            while (r)
-            {
-                print_indent(depth + 1);
-                if (r->type == TOK_DGREAT)
+                else if (r->type == TOK_DGREAT)
                     printf(BLUE ">> %s" RESET "\n", r->file);
                 else
                     printf(BLUE "> %s" RESET "\n", r->file);
