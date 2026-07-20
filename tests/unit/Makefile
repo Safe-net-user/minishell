@@ -21,7 +21,13 @@ LEXER			:= lexer
 ROOT_PROJECT	:= ../..
 HDR_LEXER		:= $(ROOT_PROJECT)/include
 LIBFT			:= $(ROOT_PROJECT)/lib/libft
-SRC_LEXER_OBJ	:= $(ROOT_PROJECT)/$(OBJ)/$(LEXER)/lexer.o
+SRC_LEXER_OBJ	:= \
+$(ROOT_PROJECT)/$(OBJ)/$(LEXER)/lexer.o \
+$(ROOT_PROJECT)/$(OBJ)/$(LEXER)/lx_normal.o \
+$(ROOT_PROJECT)/$(OBJ)/$(LEXER)/lx_dquote.o \
+$(ROOT_PROJECT)/$(OBJ)/$(LEXER)/lx_squote.o \
+$(ROOT_PROJECT)/$(OBJ)/$(LEXER)/lx_operator.o \
+
 
 # ---------------------- LIB --------------------- #
 LIBFT_LIB			:= libft.a
@@ -45,7 +51,7 @@ LDLIBS			:= -lft
 all: root_project $(LIBFT) lexer
 
 root_project:
-	make re -C ../../
+	make -C ../../
 
 $(LIBFT):
 	make -C $@
