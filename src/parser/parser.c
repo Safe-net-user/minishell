@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
+/*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/16 10:27:18 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/06 18:05:57 by miouali          ###   ########.fr       */
+/*   Updated: 2026/07/20 13:24:39 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,102 +67,6 @@ void	parser_error(t_mms *mms, t_token *tok)
 }
 
 /**
- * @brief Add an input redirection to a command node.
- *
- * Parses '<' and '<<' operators. The filename (or heredoc delimiter) must
- * immediately follow the redirection operator. The created redirection is
- * appended to the command input redirection list.
- *
- * Example:
- *
- *     cat < infile << EOF
- *
- * creates two input redirections linked together.
- *
- * @param mms Main minishell structure.
- * @param token Pointer to the current token pointer.
- * @param node Command node receiving the redirection.
- *
- * @return true on success, false if a syntax error is encountered.
- */
-
-bool	add_redirection_in(t_mms *mms, t_token **token, t_ast *node)
-{
-	t_redir	*cur;
-	t_redir	*new;
-
-	new = stack_alloc(mms->sa, sizeof(t_redir));
-	new->type = (*token)->type_tk;
-	new->next = NULL;
-	*token = next_token(*token);
-	if ((*token)->type_tk != TOK_WORD)
-	{
-		parser_error(mms, *token);
-		return (false);
-	}
-	new->file = (*token)->value;
-	*token = next_token(*token);
-	if (!node->redirect->in)
-	{
-		node->redirect->in = new;
-		return (true);
-	}
-	cur = node->redirect->in;
-	while (cur->next)
-		cur = cur->next;
-	cur->next = new;
-	return (true);
-}
-
-/**
- * @brief Add an output redirection to a command node.
- *
- * Parses '>' and '>>' operators. The filename must immediately follow the
- * redirection operator. The created redirection is appended to the command
- * output redirection list.
- *
- * Example:
- *
- *     echo hello > out >> log
- *
- * creates two output redirections linked together.
- *
- * @param mms Main minishell structure.
- * @param token Pointer to the current token pointer.
- * @param node Command node receiving the redirection.
- *
- * @return true on success, false if a syntax error is encountered.
- */
-
-bool	add_redirection_out(t_mms *mms, t_token **token, t_ast *node)
-{
-	t_redir	*cur;
-	t_redir	*new;
-
-	new = stack_alloc(mms->sa, sizeof(t_redir));
-	new->type = (*token)->type_tk;
-	new->next = NULL;
-	*token = next_token(*token);
-	if ((*token)->type_tk != TOK_WORD)
-	{
-		parser_error(mms, *token);
-		return (false);
-	}
-	new->file = (*token)->value;
-	*token = next_token(*token);
-	if (!node->redirect->out)
-	{
-		node->redirect->out = new;
-		return (true);
-	}
-	cur = node->redirect->out;
-	while (cur->next)
-		cur = cur->next;
-	cur->next = new;
-	return (true);
-}
-
-/**
  * @brief Parse a redirection operator.
  *
  * Dispatches the parsing to either the input or output redirection parser
@@ -182,12 +86,31 @@ bool	add_redirection_out(t_mms *mms, t_token **token, t_ast *node)
 
 bool	parse_redirection(t_mms *mms, t_token **token, t_ast *node)
 {
-	if ((*token)->type_tk == TOK_LESS
-		|| (*token)->type_tk == TOK_DLESS)
-		return (add_redirection_in(mms, token, node));
-	return (add_redirection_out(mms, token, node));
-}
+	t_redir	*cur;
+	t_redir	*new;
 
+	new = stack_alloc(mms->sa, sizeof(t_redir));
+	new->type = (*token)->type_tk;
+	new->next = NULL;
+	*token = next_token(*token);
+	if ((*token)->type_tk != TOK_WORD)
+	{
+		parser_error(mms, *token);
+		return (false);
+	}
+	new->file = (*token)->value;
+	*token = next_token(*token);
+	if (!node->redirect)
+	{
+		node->redirect = new;
+		return (true);
+	}
+	cur = node->redirect;
+	while (cur->next)
+		cur = cur->next;
+	cur->next = new;
+	return (true);
+}
 /**
  * @brief Parse a simple command and its redirections.
  *
@@ -224,9 +147,8 @@ t_ast	*parse_command(t_mms *mms, t_token **token)
 		return (NULL);
 	}
 	node = stack_alloc(mms->sa, sizeof(t_ast));
-	node->redirect = stack_alloc(mms->sa, sizeof(t_redirection));
-	node->redirect->in = NULL;
-	node->redirect->out = NULL;
+	node->redirect = stack_alloc(mms->sa, sizeof(t_redir));
+	node->redirect = NULL;
 	node->type = NODE_CMD;
 	node->left = NULL;
 	node->right = NULL;
