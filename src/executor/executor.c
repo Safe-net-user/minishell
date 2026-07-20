@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/09 17:20:34 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/20 17:02:35 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/21 00:54:55 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ int redirection_out(t_mms *mms, t_redir *redir)
 	int	fd_out;
 
 	(void)mms;
-	if (redir->type == TOK_DGREAT)
+	if (redir->type_tk == TOK_DGREAT)
 		fd_out = open(redir->file,
 				O_WRONLY | O_CREAT | O_APPEND, 0644);
 	else
@@ -83,9 +83,9 @@ int redirection(t_mms *mms, t_ast *node)
 	redir = node->redirect;
 	while (redir != NULL)
 	{
-		if (redir->type == TOK_DLESS)
+		if (redir->type_tk == TOK_DLESS)
 			status = heredoc(mms, node);
-		else if (redir->type == TOK_LESS)
+		else if (redir->type_tk == TOK_LESS)
 			status = redirection_in(mms, redir);
 		else
 			status = redirection_out(mms, redir);
@@ -100,21 +100,23 @@ int redirection(t_mms *mms, t_ast *node)
 * renvoyer vers les fonctions builtins, normalement le fork est deja fait
 * il fauudra renvoyer a chaque fois aussi les codes d'erreur
 * update aussi la variable globale
+* 4. Builtins dans execute_cmd — fork inutile — cd, export, unset, exit doivent tourner dans le processus parent, pas dans un enfant. 
+* Si tu forkes pour cd, le chdir n'affecte pas le shell.
 */
 
 int exec_builtin(t_mms *mms, t_ast *node)
 {
-	if (ft_strcmp(node->argv[0], "echo") == 0)
+	if (ft_strcmp(node->tokens[0]->value, "echo") == 0)
 		return (builtin_echo(mms, node));
-	else if (ft_strcmp(node->argv[0], "cd") == 0)
+	else if (ft_strcmp(node->tokens[0]->value, "cd") == 0)
 		return (builtin_cd(mms, node));
-	else if (ft_strcmp(node->argv[0], "pwd") == 0)
+	else if (ft_strcmp(node->tokens[0]->value, "pwd") == 0)
 		return (builtin_pwd(mms, node));
-	else if (ft_strcmp(node->argv[0], "export") == 0)
+	else if (ft_strcmp(node->tokens[0]->value, "export") == 0)
 		return (builtin_export(mms, node));
-	else if (ft_strcmp(node->argv[0], "unset") == 0)
+	else if (ft_strcmp(node->tokens[0]->value, "unset") == 0)
 		return (builtin_unset(mms, node));
-	else if (ft_strcmp(node->argv[0], "env") == 0)
+	else if (ft_strcmp(node->tokens[0]->value, "env") == 0)
 		return (builtin_env(mms, node));
 	else
 		return (builtin_exit(mms, node));
@@ -126,13 +128,13 @@ int exec_builtin(t_mms *mms, t_ast *node)
 
 int builtin(t_ast *node)
 {
-	if (ft_strcmp(node->argv[0], "echo") == 0
-		|| ft_strcmp(node->argv[0], "cd") == 0
-		|| ft_strcmp(node->argv[0], "pwd") == 0
-		|| ft_strcmp(node->argv[0], "export") == 0
-		|| ft_strcmp(node->argv[0], "unset") == 0
-		|| ft_strcmp(node->argv[0], "env") == 0
-		|| ft_strcmp(node->argv[0], "exit") == 0)
+	if (ft_strcmp(node->tokens[0]->value, "echo") == 0
+		|| ft_strcmp(node->tokens[0]->value, "cd") == 0
+		|| ft_strcmp(node->tokens[0]->value, "pwd") == 0
+		|| ft_strcmp(node->tokens[0]->value, "export") == 0
+		|| ft_strcmp(node->tokens[0]->value, "unset") == 0
+		|| ft_strcmp(node->tokens[0]->value, "env") == 0
+		|| ft_strcmp(node->tokens[0]->value, "exit") == 0)
 		return (1);
 	return (0);
 }
@@ -207,7 +209,7 @@ char *find_path(t_mms *mms, t_ast *node, t_executor *exec)
     int     i;
 
     i = 0;
-    path = ft_split(get_pointer(mms->cmd_path, "PATH"), ':');
+    path = ft_split(get_pointer(mms->cmd_path, "PATH"), ':'); //malloc a free
     if (!path || !path[0])
         return (NULL);
     while (path[i])
@@ -215,7 +217,7 @@ char *find_path(t_mms *mms, t_ast *node, t_executor *exec)
         temp = ft_strjoin(path[i], "/");
 		if (!temp)
 			return (NULL);
-		temp = ft_strjoin_free(temp, node->argv[0], 1);
+		temp = ft_strjoin_free(temp, node->tokens[0]->value, 1);
 		if (!temp)
 			return (NULL);
 		if (access(temp, F_OK | X_OK) == 0)
@@ -240,16 +242,9 @@ char *find_path(t_mms *mms, t_ast *node, t_executor *exec)
 
 int path_relative(t_ast *node)
 {
-    int i;
-
-    i = 0;
-    while(node->argv[0][i])
-    {
-        if (node->argv[0][i] == '/')
-            return(1);
-        i++;
-    }
-    return(0);
+    if (ft_strchr(node->tokens[0]->value, '/'))
+        return (1);
+    return (0);
 }
 
 /**
@@ -269,7 +264,7 @@ int path_relative(t_ast *node)
 int execute(t_mms *mms, t_ast *node, t_executor *exec)
 {
 	(void)mms;
-	if (execve(exec->cmd_path, node->argv, NULL) == -1)
+	if (execve(exec->cmd_path, /*char ** a construire*/, NULL) == -1)
 	{
 		perror("minishell");
 		return (127);
@@ -309,12 +304,11 @@ int execute_cmd_pipe(t_mms *mms, t_ast *cmd, int fd_in, int fd_out)
 	status = redirection(mms, cmd);
 	if (status != 0)
 		return (status);
-	if (/* flag expand active */)
-		expand(mms, cmd);
+	expand(mms, cmd->tokens);
 	if (builtin(cmd))
 		return (exec_builtin(mms, cmd));
 	if (path_relative(cmd))
-		exec.cmd_path = cmd->argv[0];
+		exec.cmd_path = cmd->tokens[0]->value;
 	else
 	{
 		exec.cmd_path = find_path(mms, cmd, &exec);
@@ -349,6 +343,7 @@ int execute_pipeline(t_mms *mms, t_ast *node, t_pipeline *pipeline)
 
 	(void)node;
 	i = 0;
+	last_status = 0;
 	while (pipeline->cmd_list[i + 1] != NULL)
 	{
 		if (pipe(pipeline->fd) == -1)
@@ -460,12 +455,11 @@ int execute_cmd(t_mms *mms, t_ast *node)
 		status = redirection(mms, node);
 		if (status != 0)
 			exit(status);
-		if (/* flag expand active */)
-			expand(mms, node);
+		expand(mms, node->tokens);
 		if (builtin(node))
 			exit(exec_builtin(mms, node));
 		if (path_relative(node))
-			exec.cmd_path = node->argv[0];
+			exec.cmd_path = node->tokens[0]->value;
 		else
 		{
 			exec.cmd_path = find_path(mms, node, &exec);
@@ -475,7 +469,11 @@ int execute_cmd(t_mms *mms, t_ast *node)
 		exit(execute(mms, node, &exec));
 	}
 	waitpid(exec.pid, &status, 0);
-	return (WEXITSTATUS(status));
+	if (WIFEXITED(status))
+		return (WEXITSTATUS(status));
+	if (WIFSIGNALED(status))
+    	return (128 + WTERMSIG(status));
+	return (1);
 }
 
 /**
