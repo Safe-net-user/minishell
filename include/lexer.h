@@ -18,9 +18,9 @@
 #include <stdbool.h>
 
 # define BUFFER_TOKEN 2048
-# define INIT_SIZE_SB 64
+# define DEFAULT_SB_SIZE 64
 
-typedef enum e_type_token
+typedef enum e_type_tk
 {
     TOK_WORD,
     TOK_COMMAND,
@@ -50,78 +50,64 @@ typedef enum e_type_token
     TOK_RPAREN,         // )
     TOK_NEWLINE,
     TOK_EOF
-}	t_type_token;
+}	t_type_tk;
 
-typedef enum e_flag_token
+typedef enum e_flag_tk
 {
-    TOKF_SQUOTED = 1 << 0,
-    TOKF_DQUOTED = 1 << 1,
+    TOKF_SQUOTE = 1 << 0,
+    TOKF_DQUOTE = 1 << 1,
     TOKF_BACK_TICK = 1 << 2,
     TOKF_ARITH = 1 << 3,
     TOKF_COMMENT = 1 << 4,
-    TOKF_ESCAPED = 1 << 5,
+    TOKF_ESCAPE = 1 << 5,
     TOKF_SPEC_PARAM = 1 << 6,
-    TOKF_GLOB = 1 << 7,
+    TOKF_EXPANSION = 1 << 7,
     TOKF_TILDE = 1 << 8,
-}   t_flag_token;
+}   t_flag_tk;
 
-typedef enum e_state_lexer
+typedef enum e_state_lx
 {
-	ST_NORMAL = 1 << 0,
-	ST_SQUOTED = 1 << 1,
-	ST_DQUOTED = 1 << 2,
-	ST_BACK_TICK = 1 << 3,
-	ST_ARITH = 1 << 4,
-	ST_COMMENT = 1 << 5,
-	ST_OP_AND = 1 << 6,
-    ST_OP_OR = 1 << 7,
-    ST_OP_GREAT = 1 << 8,
-    ST_OP_LESS = 1 << 9,
-	ST_ESCAPED = 1 << 10,
-    ST_EXPENSION = 1 << 11,
-} t_state_lexer;
+	LX_NORMAL,
+	LX_SQUOTE,
+	LX_DQUOTE,
+	LX_OPERATOR,
+} t_state_lx;
 
-typedef enum e_val_lexer
+typedef enum e_val_lx
 {
     LX_ERROR,
     LX_SUCCESS,
     LX_DQUOTE_NF,
     LX_SQUOTE_NF,
     LX_BQUOTE_NF,
-} t_val_lexer;
+} t_val_lx;
 
-typedef struct s_token {
+typedef struct s_tk {
     char		    *value;
-    t_flag_token	flags;
-    t_type_token	type_tk;
-}   t_token;
+    t_flag_tk	flags;
+    t_type_tk	type_tk;
+}   t_tk;
 
-typedef struct s_lexer
+typedef struct s_lx
 {
     t_mms   *mms;
     char    *cmdl;
+    t_tk *tk;
+    t_sb    *sb;
     size_t  index;
-    t_token *tk;
     int     state;
-}   t_lexer;
+    bool    is_next_delimiter;
+}   t_lx;
 
-static inline void  clear_op_state(int *state)
-{
-    *state ^= ST_OP_AND;
-    *state ^= ST_OP_GREAT;
-    *state ^= ST_OP_LESS;
-    *state ^= ST_OP_OR;
-    return ;
-}
+typedef t_val_lx (*state_lx_fn)(t_lx *);
 
-static inline bool  is_op(char c)
-{
-    if (c == '&' || c == '|' || c == '<' || c == '>')
-        return (1);
-    return (0);
-}
+t_val_lx    lexer(char *cmdl, t_mms *mms);
+int         emit_tk(t_lx *lx);
+t_lx        *init_s_lx(char *cmdl, t_mms *mms);
 
-t_val_lexer    lexer(char *cmdl, t_mms *mms);
-int    rule_op_continue(t_lexer *lexer, t_sb *sb);
+t_val_lx    lx_normal(t_lx *lx);
+t_val_lx    lx_squote(t_lx *lx);
+t_val_lx    lx_dquote(t_lx *lx);
+t_val_lx    lx_operator(t_lx *lx);
 
 #endif
