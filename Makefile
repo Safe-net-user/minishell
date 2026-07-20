@@ -92,7 +92,10 @@ $(SRC)/$(ENV)/converter.c \
 $(SRC)/$(ENV)/set_env.c \
 $(SRC)/$(CORE)/signaux.c \
 $(SRC)/$(LEXER)/lexer.c \
-
+$(SRC)/$(LEXER)/lx_normal.c \
+$(SRC)/$(LEXER)/lx_squote.c \
+$(SRC)/$(LEXER)/lx_dquote.c \
+$(SRC)/$(LEXER)/lx_operator.c \
 
 # -------------------- OBJECTS -------------------- #
 OBJECTS 			:= $(patsubst $(SRC)/%.c, $(OBJ)/%.o, $(SOURCES))
