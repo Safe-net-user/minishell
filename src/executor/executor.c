@@ -6,12 +6,55 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/09 17:20:34 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/20 12:07:47 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/20 15:49:39 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "executor.h"
 #include "ft_strings.h"
+
+/*juste pour <*/
+
+int redirection_in(t_mms *mms, t_ast *node)
+{
+    int fd_in;
+
+    fd_in = open(node->redirect->file, O_RDONLY);
+    if (fd_in == -1)
+    {
+        stderr("Cannot open file");
+        return (/*err*/);
+    }
+    if (dup2(stdin, fd_in) == -1)
+    {
+        stderr("dup2");
+        return (/*err*/);
+    }
+    return (0);
+}
+
+/*pour > ou >>*/
+
+int redirection_out(t_mms *mms, t_ast *node)
+{
+    int fd_out;
+
+    if (node->redirect->type == TOK_DGREAT)
+        fd_out = open(node->redirect->file, );
+    else
+        fd_out = open(node->redirect->file, );
+    if (fd_out == -1)
+    {
+        stderr("cannot open file");
+        return (/*err*/);
+    }
+    if (dup2(stdout, fd_out));
+    {
+        stderr("dup2");
+        return(/*err*/);
+    }
+    return (0);    
+}
 
 /*
 * ici on recoit les redirections sous la forme d'une liste chainee de in et de out
@@ -23,15 +66,19 @@
 
 int redirection(t_mms *mms, t_ast *node) //ajouter les redirections de fichiers attention au heredoc
 {
-    int fd_in;
-    int fd_out;
-
-    fd_in = 0; //peut etre mettre -1
-    fd_out = 0;
+    if (node->redirect == NULL)
+        return (0); //pas de redirection
     while (node->redirect->next != NULL)
     {
-        
+        if (node->redirect->type == TOK_DLESS)
+            heredoc(mms, node);
+        else if (node->redirect->type == TOK_LESS)
+            redirection_in(mms, node);
+        else
+            redirection_out(mms, node);
+        node->redirect = node->redirect->next;
     }
+    return (0);
 }
 
 /*
@@ -42,7 +89,20 @@ int redirection(t_mms *mms, t_ast *node) //ajouter les redirections de fichiers 
 
 int exec_builtin(t_mms *mms, t_ast *node) //renvoyer vers les fonction builtins
 {
-
+    if (ft_strcmp(node->argv[0], "echo"))
+        return (builtin_echo(mms, node));
+    else if (ft_strcmp(node->argv[0], "cd"))
+        return (builtin_cd(mms, node));
+    else if (ft_strcmp(node->argv[0], "pwd"))
+        return(builtin_pwd(mms, node));
+    else if (ft_strcmp(node->argv[0], "export"))
+        return (builtin_export(mms, node));
+    else if (ft_strcmp(node->argv[0], "unset"))
+        return (builtin_unset(mms, node));
+    else if (ft_strcmp(node->argv[0], "env"))
+        return (builtin_env(mms, node));
+    else
+        return (builtin_exit(mms, node));
 }
 
 /*
@@ -51,7 +111,9 @@ int exec_builtin(t_mms *mms, t_ast *node) //renvoyer vers les fonction builtins
 
 int builtin(t_ast *node) //recherche bultin
 {
-
+    if (ft_strcmp(node->argv[0], "echo") || ft_strcmp(node->argv[0], "cd") || ft_strcmp(node->argv[0], "pwd") || ft_strcmp(node->argv[0], "export")|| ft_strcmp(node->argv[0], "unset") || ft_strcmp(node->argv[0], "env") || ft_strcmp(node->argv[0], "exit"))
+        return (1);
+    return (0);
 }
 
 /*
@@ -63,6 +125,22 @@ int count_cmd_pipeline(t_ast *node) //compter le nombre de commandes d'un pipeli
 
 }
 
+/*fonction*/
+static void	fill_pipeline_cmds(t_ast *node, t_ast **cmd_list, int *i)
+{
+	if (node->type == NODE_PIPE)
+	{
+		fill_pipeline_cmds(node->left, cmd_list, i);
+		cmd_list[*i] = node->right;
+		(*i)++;
+	}
+	else
+	{
+		cmd_list[*i] = node;
+		(*i)++;
+	}
+}
+
 /*
 * convertir un pipeline en tableau de commandes
 * il faut dans l'ordre donc on commence en bas a gauche puis on remonte
@@ -70,9 +148,18 @@ int count_cmd_pipeline(t_ast *node) //compter le nombre de commandes d'un pipeli
 * fonction a faire en reucrsion je pense
 */
 
-int     add_cmd_pipeline(t_ast *temp, t_pipeline *pipeline) //ajouter une commande en mode cmd_list[i]
+t_ast	**add_cmd_pipeline(t_mms *mms, t_ast *node, int nb_cmd)
 {
+	t_ast	**cmd_list;
+	int		i;
 
+	cmd_list = stack_alloc(mms->sa, sizeof(t_ast *) * (nb_cmd + 1));
+	if (!cmd_list)
+		return (NULL);
+	i = 0;
+	fill_pipeline_cmds(node, cmd_list, &i);
+	cmd_list[i] = NULL;
+	return (cmd_list);
 }
 
 /**
@@ -263,26 +350,24 @@ int execute_pipeline(t_mms *mms, t_ast *node, t_pipeline *pipeline)
  * @return The exit status returned by the pipeline execution.
  */
 
-int pipeline(t_mms *mms, t_ast *node)
+int	pipeline(t_mms *mms, t_ast *node)
 {
-    t_pipeline *pipeline;
-    t_ast *temp;
-    int i;
-    
-    i = 0;
-    temp = node;
-    pipeline->nb_cmd = count_cmd_pipeline(node);
-    pipeline->cmd_list = stack_alloc(mms->sa, sizeof(t_ast * ) * pipeline->nb_cmd + 1);
-    pipeline->pids = stack_alloc(mms->sa, sizeof(pid_t) * pipeline->nb_cmd);
-    temp = node;
-    while (temp->left == NODE_PIPE) //logique a chier
-    {
-        pipeline->cmd_list[i] = add_cmd_pipeline(temp, pipeline);
-        i++;
-        temp = temp->left;
-    }
-    pipeline->cmd_list[i] = NULL;
-    return (execute_pipeline(mms, node, pipeline));
+	t_pipeline	*pipeline;
+
+	pipeline = stack_alloc(mms->sa, sizeof(t_pipeline));
+	if (!pipeline)
+		return (1);
+	pipeline->nb_cmd = count_cmd_pipeline(node);
+	pipeline->cmd_list = add_cmd_pipeline(mms, node,
+			pipeline->nb_cmd);
+	if (!pipeline->cmd_list)
+		return (1);
+	pipeline->pids = stack_alloc(mms->sa,
+			sizeof(pid_t) * pipeline->nb_cmd);
+	if (!pipeline->pids)
+		return (1);
+	pipeline->fd_prev = -1;
+	return (execute_pipeline(mms, node, pipeline));
 }
 
 /**
