@@ -6,54 +6,65 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/09 17:20:34 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/20 15:49:39 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/20 17:02:35 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "executor.h"
 #include "ft_strings.h"
+#include <fcntl.h>
+#include <sys/wait.h>
+#include <stdlib.h>
 
 /*juste pour <*/
 
-int redirection_in(t_mms *mms, t_ast *node)
+int redirection_in(t_mms *mms, t_redir *redir)
 {
-    int fd_in;
+	int	fd_in;
 
-    fd_in = open(node->redirect->file, O_RDONLY);
-    if (fd_in == -1)
-    {
-        stderr("Cannot open file");
-        return (/*err*/);
-    }
-    if (dup2(stdin, fd_in) == -1)
-    {
-        stderr("dup2");
-        return (/*err*/);
-    }
-    return (0);
+	(void)mms;
+	fd_in = open(redir->file, O_RDONLY);
+	if (fd_in == -1)
+	{
+		perror("minishell");
+		return (1);
+	}
+	if (dup2(fd_in, STDIN_FILENO) == -1)
+	{
+		perror("minishell");
+		close(fd_in);
+		return (1);
+	}
+	close(fd_in);
+	return (0);
 }
 
 /*pour > ou >>*/
 
-int redirection_out(t_mms *mms, t_ast *node)
+int redirection_out(t_mms *mms, t_redir *redir)
 {
-    int fd_out;
+	int	fd_out;
 
-    if (node->redirect->type == TOK_DGREAT)
-        fd_out = open(node->redirect->file, );
-    else
-        fd_out = open(node->redirect->file, );
-    if (fd_out == -1)
-    {
-        stderr("cannot open file");
-        return (/*err*/);
-    }
-    if (dup2(stdout, fd_out));
-    {
-        stderr("dup2");
-        return(/*err*/);
-    }
-    return (0);    
+	(void)mms;
+	if (redir->type == TOK_DGREAT)
+		fd_out = open(redir->file,
+				O_WRONLY | O_CREAT | O_APPEND, 0644);
+	else
+		fd_out = open(redir->file,
+				O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	if (fd_out == -1)
+	{
+		perror("minishell");
+		return (1);
+	}
+	if (dup2(fd_out, STDOUT_FILENO) == -1)
+	{
+		perror("minishell");
+		close(fd_out);
+		return (1);
+	}
+	close(fd_out);
+	return (0);
 }
 
 /*
@@ -64,21 +75,25 @@ int redirection_out(t_mms *mms, t_ast *node)
 * aller a la suivante
 */
 
-int redirection(t_mms *mms, t_ast *node) //ajouter les redirections de fichiers attention au heredoc
+int redirection(t_mms *mms, t_ast *node)
 {
-    if (node->redirect == NULL)
-        return (0); //pas de redirection
-    while (node->redirect->next != NULL)
-    {
-        if (node->redirect->type == TOK_DLESS)
-            heredoc(mms, node);
-        else if (node->redirect->type == TOK_LESS)
-            redirection_in(mms, node);
-        else
-            redirection_out(mms, node);
-        node->redirect = node->redirect->next;
-    }
-    return (0);
+	t_redir	*redir;
+	int		status;
+
+	redir = node->redirect;
+	while (redir != NULL)
+	{
+		if (redir->type == TOK_DLESS)
+			status = heredoc(mms, node);
+		else if (redir->type == TOK_LESS)
+			status = redirection_in(mms, redir);
+		else
+			status = redirection_out(mms, redir);
+		if (status != 0)
+			return (status);
+		redir = redir->next;
+	}
+	return (0);
 }
 
 /*
@@ -87,42 +102,50 @@ int redirection(t_mms *mms, t_ast *node) //ajouter les redirections de fichiers 
 * update aussi la variable globale
 */
 
-int exec_builtin(t_mms *mms, t_ast *node) //renvoyer vers les fonction builtins
+int exec_builtin(t_mms *mms, t_ast *node)
 {
-    if (ft_strcmp(node->argv[0], "echo"))
-        return (builtin_echo(mms, node));
-    else if (ft_strcmp(node->argv[0], "cd"))
-        return (builtin_cd(mms, node));
-    else if (ft_strcmp(node->argv[0], "pwd"))
-        return(builtin_pwd(mms, node));
-    else if (ft_strcmp(node->argv[0], "export"))
-        return (builtin_export(mms, node));
-    else if (ft_strcmp(node->argv[0], "unset"))
-        return (builtin_unset(mms, node));
-    else if (ft_strcmp(node->argv[0], "env"))
-        return (builtin_env(mms, node));
-    else
-        return (builtin_exit(mms, node));
+	if (ft_strcmp(node->argv[0], "echo") == 0)
+		return (builtin_echo(mms, node));
+	else if (ft_strcmp(node->argv[0], "cd") == 0)
+		return (builtin_cd(mms, node));
+	else if (ft_strcmp(node->argv[0], "pwd") == 0)
+		return (builtin_pwd(mms, node));
+	else if (ft_strcmp(node->argv[0], "export") == 0)
+		return (builtin_export(mms, node));
+	else if (ft_strcmp(node->argv[0], "unset") == 0)
+		return (builtin_unset(mms, node));
+	else if (ft_strcmp(node->argv[0], "env") == 0)
+		return (builtin_env(mms, node));
+	else
+		return (builtin_exit(mms, node));
 }
 
 /*
 * juste rehcercher un builtin donc return 1 ou 0
 */
 
-int builtin(t_ast *node) //recherche bultin
+int builtin(t_ast *node)
 {
-    if (ft_strcmp(node->argv[0], "echo") || ft_strcmp(node->argv[0], "cd") || ft_strcmp(node->argv[0], "pwd") || ft_strcmp(node->argv[0], "export")|| ft_strcmp(node->argv[0], "unset") || ft_strcmp(node->argv[0], "env") || ft_strcmp(node->argv[0], "exit"))
-        return (1);
-    return (0);
+	if (ft_strcmp(node->argv[0], "echo") == 0
+		|| ft_strcmp(node->argv[0], "cd") == 0
+		|| ft_strcmp(node->argv[0], "pwd") == 0
+		|| ft_strcmp(node->argv[0], "export") == 0
+		|| ft_strcmp(node->argv[0], "unset") == 0
+		|| ft_strcmp(node->argv[0], "env") == 0
+		|| ft_strcmp(node->argv[0], "exit") == 0)
+		return (1);
+	return (0);
 }
 
 /*
 * compter le nombre de pipe plus 2
 */
 
-int count_cmd_pipeline(t_ast *node) //compter le nombre de commandes d'un pipeline
+int	count_cmd_pipeline(t_ast *node)
 {
-
+	if (node->type != NODE_PIPE)
+		return (1);
+	return (count_cmd_pipeline(node->left) + 1);
 }
 
 /*fonction*/
@@ -245,11 +268,13 @@ int path_relative(t_ast *node)
 
 int execute(t_mms *mms, t_ast *node, t_executor *exec)
 {
-    if(exec->cmd_path != NULL)
-        execve(node->argv[0], node->argv, NULL); //re-convertir hash table en char **
-    else
-        execve(exec->cmd_path, node->argv, NULL); //error = exceve 127 si == -1 //64
-    return (0);
+	(void)mms;
+	if (execve(exec->cmd_path, node->argv, NULL) == -1)
+	{
+		perror("minishell");
+		return (127);
+	}
+	return (0);
 }
 
 /**
@@ -270,25 +295,33 @@ int execute(t_mms *mms, t_ast *node, t_executor *exec)
 
 int execute_cmd_pipe(t_mms *mms, t_ast *cmd, int fd_in, int fd_out)
 {
-    t_executor *exec;
-    
-    dup2(fd_in, STDIN_FILENO);
-    dup2(fd_out, STDOUT_FILENO);
-    close(fd_in);
-    close(fd_out);
-	if (redirection(mms, cmd) != 0)
-        return (redirection(mms, cmd));
-    if (/*flag expand active*/)
-        expand(mms, cmd);
-    if (builtin(cmd))
-        return (exec_builtin(mms, cmd));
-    if (path_relative(cmd) == 1)
-        return (execute(mms, cmd, exec));
-    else
-    {
-        exec->cmd_path = find_path(mms, cmd, exec); //return NULL = command not found 127
-        return (execute(mms, cmd, exec));
-    }
+	t_executor	exec;
+	int			status;
+
+	if (dup2(fd_in, STDIN_FILENO) == -1)
+		return (1);
+	if (dup2(fd_out, STDOUT_FILENO) == -1)
+		return (1);
+	if (fd_in != STDIN_FILENO)
+		close(fd_in);
+	if (fd_out != STDOUT_FILENO)
+		close(fd_out);
+	status = redirection(mms, cmd);
+	if (status != 0)
+		return (status);
+	if (/* flag expand active */)
+		expand(mms, cmd);
+	if (builtin(cmd))
+		return (exec_builtin(mms, cmd));
+	if (path_relative(cmd))
+		exec.cmd_path = cmd->argv[0];
+	else
+	{
+		exec.cmd_path = find_path(mms, cmd, &exec);
+		if (exec.cmd_path == NULL)
+			return (127);
+	}
+	return (execute(mms, cmd, &exec));
 }
 
 /**
@@ -310,31 +343,61 @@ int execute_cmd_pipe(t_mms *mms, t_ast *cmd, int fd_in, int fd_out)
 
 int execute_pipeline(t_mms *mms, t_ast *node, t_pipeline *pipeline)
 {
-    int i;
+	int	i;
+	int	status;
+	int	last_status;
 
-    i = 0;
-    while (pipeline->cmd_list[i + 1] != NULL) //avant dernier car dernier pas de pipe
-    {
-        if (pipe(pipeline->fd) == -1)
-            return (1);
-        pipeline->pids[i] = fork();
-        if (pipeline->pids[i] == -1)
-            return (1);
-        if (pipeline->pids[i] == 0)
-        {
-            if (i == 0)
-                execute_cmd_pipe(mms, pipeline->cmd_list[i], STDIN_FILENO, pipeline->fd[1]);
-            else
-                execute_cmd_pipe(mms, pipeline->cmd_list[i], pipeline->fd_prev, pipeline->fd[1]);
-        }
-        close(pipeline->fd[1]);
-        if (pipeline->fd_prev != -1)
-            close(pipeline->fd_prev);
-        pipeline->fd_prev = pipeline->fd[0];
-        i++;
-    }
-    execute_cmd_pipe(mms, pipeline->cmd_list[i], pipeline->fd_prev, STDOUT_FILENO);
-    return (1);
+	(void)node;
+	i = 0;
+	while (pipeline->cmd_list[i + 1] != NULL)
+	{
+		if (pipe(pipeline->fd) == -1)
+			return (1);
+		pipeline->pids[i] = fork();
+		if (pipeline->pids[i] == -1)
+			return (1);
+		if (pipeline->pids[i] == 0)
+		{
+			if (i == 0)
+				exit(execute_cmd_pipe(mms,
+						pipeline->cmd_list[i],
+						STDIN_FILENO,
+						pipeline->fd[1]));
+			else
+				exit(execute_cmd_pipe(mms,
+						pipeline->cmd_list[i],
+						pipeline->fd_prev,
+						pipeline->fd[1]));
+		}
+		close(pipeline->fd[1]);
+		if (pipeline->fd_prev != -1)
+			close(pipeline->fd_prev);
+		pipeline->fd_prev = pipeline->fd[0];
+		i++;
+	}
+	pipeline->pids[i] = fork();
+	if (pipeline->pids[i] == -1)
+		return (1);
+	if (pipeline->pids[i] == 0)
+		exit(execute_cmd_pipe(mms,
+				pipeline->cmd_list[i],
+				pipeline->fd_prev,
+				STDOUT_FILENO));
+	if (pipeline->fd_prev != -1)
+		close(pipeline->fd_prev);
+	i = 0;
+	while (i < pipeline->nb_cmd)
+	{
+		waitpid(pipeline->pids[i], &status, 0);
+		if (i == pipeline->nb_cmd - 1)
+			last_status = status;
+		i++;
+	}
+	if (WIFEXITED(last_status))
+		return (WEXITSTATUS(last_status));
+	if (WIFSIGNALED(last_status))
+		return (128 + WTERMSIG(last_status));
+	return (1);
 }
 
 /**
@@ -386,28 +449,33 @@ int	pipeline(t_mms *mms, t_ast *node)
 
 int execute_cmd(t_mms *mms, t_ast *node)
 {
-    t_executor *exec;
+	t_executor	exec;
+	int			status;
 
-    exec->pid = fork();
-	if (exec->pid == -1)
-		return(1); //err in fork 1
-    if (exec->pid == 0)
-    {
-        if (redirection(mms, node) != 0)
-            return (redirection(mms, node));
-        if (/*flag expand active*/)
-            expand(mms, node);
-        if (builtin(node))
-            return (exec_builtin(mms, node));
-        if (path_relative(node) == 1)
-            return (execute(mms, node, exec));
-        else
-        {
-            exec->cmd_path = find_path(mms, node, exec); //return NULL = command not found 127
-            return (execute(mms, node, exec));
-        }
-    }
-    //voir on return quoi
+	exec.pid = fork();
+	if (exec.pid == -1)
+		return (1);
+	if (exec.pid == 0)
+	{
+		status = redirection(mms, node);
+		if (status != 0)
+			exit(status);
+		if (/* flag expand active */)
+			expand(mms, node);
+		if (builtin(node))
+			exit(exec_builtin(mms, node));
+		if (path_relative(node))
+			exec.cmd_path = node->argv[0];
+		else
+		{
+			exec.cmd_path = find_path(mms, node, &exec);
+			if (exec.cmd_path == NULL)
+				exit(127);
+		}
+		exit(execute(mms, node, &exec));
+	}
+	waitpid(exec.pid, &status, 0);
+	return (WEXITSTATUS(status));
 }
 
 /**
