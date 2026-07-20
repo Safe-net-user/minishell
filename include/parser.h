@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
+/*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/16 10:27:34 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/06 16:23:00 by miouali          ###   ########.fr       */
+/*   Updated: 2026/07/20 13:20:34 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,12 +34,6 @@ typedef struct s_redir
     struct s_redir  *next;
 }   t_redir;
 
-typedef struct s_redirection
-{
-    t_redir     *in; 
-    t_redir     *out;
-}   t_redirection;
-
 typedef struct s_ast
 {
     t_node_type     type;       // type du noeud AST
@@ -47,7 +41,7 @@ typedef struct s_ast
     t_flag_token    *flags;      // flags du token lexer (SQUOTED, DQUOTED, etc.)
     struct s_ast    *left;
     struct s_ast    *right;
-    t_redirection   *redirect;
+    t_redir   *redirect;
     union
     {
         char            **argv;
