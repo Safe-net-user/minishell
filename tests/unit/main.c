@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/03 14:33:39 by miouali           #+#    #+#             */
-/*   Updated: 2026/07/20 13:29:24 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/21 00:11:12 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 
 #define ADD(type, val)                             \
 do {                                               \
-    tok = stack_alloc(mms->sa, sizeof(t_token));   \
+    tok = stack_alloc(mms->sa, sizeof(t_tk));   \
     tok->type_tk = (type);                         \
     tok->value = (val);                            \
     tok->flags = 0;                                \
@@ -74,8 +74,8 @@ static void print_ast(t_ast *node, int depth)
         printf(GREEN "CMD" RESET);
 
         i = 0;
-        while (node->argv && node->argv[i])
-            printf(" [%s]", node->argv[i++]);
+        while (node->tokens && node->tokens[i])
+            printf(" [%s]", node->tokens[i++]->value);
         if (i == 0)
             printf(" (vide)");
 
@@ -87,11 +87,11 @@ static void print_ast(t_ast *node, int depth)
             while (r)
             {
                 print_indent(depth + 1);
-                if (r->type == TOK_DLESS)
+                if (r->type_tk == TOK_DLESS)
                     printf(BLUE "<< %s" RESET "\n", r->file);
-                else if (r->type == TOK_LESS)
+                else if (r->type_tk == TOK_LESS)
                     printf(BLUE "< %s" RESET "\n", r->file);
-                else if (r->type == TOK_DGREAT)
+                else if (r->type_tk == TOK_DGREAT)
                     printf(BLUE ">> %s" RESET "\n", r->file);
                 else
                     printf(BLUE "> %s" RESET "\n", r->file);
@@ -143,7 +143,7 @@ static t_stack_alloc *reset_sa(t_mms *mms)
 int main(void)
 {
     t_mms   *mms;
-    t_token *tok;
+    t_tk *tok;
 
     mms = calloc(1, sizeof(t_mms));
     mms->sa = init_stack_allocator(32768);
