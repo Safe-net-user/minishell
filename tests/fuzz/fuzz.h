@@ -23,7 +23,7 @@ static const char *words[] = {
     NULL
 };
 
-static t_type_token ops[] = {
+static t_type_tk ops[] = {
     TOK_PIPE,
     TOK_AND_IF,
     TOK_OR_IF,
@@ -33,6 +33,6 @@ static t_type_token ops[] = {
     TOK_DGREAT
 };
 
-t_token *generate_tokens(t_mms *mms);
+t_tk *generate_tokens(t_mms *mms);
 
 #endif
