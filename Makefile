@@ -38,6 +38,7 @@ PARSER			:= parser
 REPL			:= repl
 UTILS			:= utils
 ENV				:= env
+EXPANDER		:= expander
 
 # ---------------------- LIB --------------------- #
 LIBFT			:= libft.a
@@ -96,6 +97,7 @@ $(SRC)/$(LEXER)/lx_normal.c \
 $(SRC)/$(LEXER)/lx_squote.c \
 $(SRC)/$(LEXER)/lx_dquote.c \
 $(SRC)/$(LEXER)/lx_operator.c \
+$(SRC)/$(EXPANDER)/expander.c
 
 # -------------------- OBJECTS -------------------- #
 OBJECTS 			:= $(patsubst $(SRC)/%.c, $(OBJ)/%.o, $(SOURCES))
