@@ -18,31 +18,42 @@ RMRF			:= rm -rf
 # ------------------- DIRECTORIES ----------------- #
 OBJ				:= obj
 LEXER			:= lexer
+EXPANDER		:= expander
+ENV				:= env
 ROOT_PROJECT	:= ../..
-HDR_LEXER		:= $(ROOT_PROJECT)/include
+HDRS			:= $(ROOT_PROJECT)/include
 LIBFT			:= $(ROOT_PROJECT)/lib/libft
-SRC_LEXER_OBJ	:= \
+
+LEXER_OBJ	:= \
 $(ROOT_PROJECT)/$(OBJ)/$(LEXER)/lexer.o \
 $(ROOT_PROJECT)/$(OBJ)/$(LEXER)/lx_normal.o \
 $(ROOT_PROJECT)/$(OBJ)/$(LEXER)/lx_dquote.o \
 $(ROOT_PROJECT)/$(OBJ)/$(LEXER)/lx_squote.o \
 $(ROOT_PROJECT)/$(OBJ)/$(LEXER)/lx_operator.o \
 
+EXPANDER_OBJ	:= $(ROOT_PROJECT)/$(OBJ)/$(EXPANDER)/expander.o \
+$(ROOT_PROJECT)/$(OBJ)/$(ENV)/ht_env.o \
+$(ROOT_PROJECT)/$(OBJ)/$(ENV)/set_env.o \
+$(ROOT_PROJECT)/$(OBJ)/$(ENV)/converter.o \
+
+
 
 # ---------------------- LIB --------------------- #
 LIBFT_LIB			:= libft.a
 
 # --------------------- FILES --------------------- #
-LEXER_SRC		:= $(LEXER)/unit_lexer.c
+LEXER_UNIT_SRC		:= $(LEXER)/unit_lexer.c
+EXPANDER_UNIT_SRC	:= $(EXPANDER)/unit_expander.c
 
 # ------------------- EXEC NAME ------------------- #
 LEXER_EXEC		:= lexer_unit
+EXPANDER_EXEC	:= expander_unit
 
 # -------------------- CFLAGS --------------------- #
 CFLAGS			:= -Wall -Wextra -Werror -std=c99
 
 # -------------------- HEADER --------------------- #
-CPPFLAGS		:= -I $(HDR_LEXER) -I $(LIBFT)/include
+CPPFLAGS		:= -I $(HDRS) -I $(LIBFT)/include
 
 # ------------------ CFLAGS LIB --------------------#
 LDFLAGS			:= -L$(LIBFT)
@@ -56,13 +67,16 @@ root_project:
 $(LIBFT):
 	make -C $@
 
-lexer: 
-	@$(CC) $(CFLAGS) $(CPPFLAGS) $(LEXER_SRC) $(SRC_LEXER_OBJ) $(LDFLAGS) $(LDLIBS) -o $(LEXER_EXEC)
+lexer: root_project
+	@$(CC) $(CFLAGS) $(CPPFLAGS) $(LEXER_UNIT_SRC) $(SRC_LEXER_OBJ) $(LDFLAGS) $(LDLIBS) -o $(LEXER_EXEC)
 	./$(LEXER_EXEC)
 
+expander: root_project
+	@$(CC) $(CFLAGS) $(CPPFLAGS) $(EXPANDER_UNIT_SRC) $(EXPANDER_OBJ) $(LDFLAGS) $(LDLIBS) -o $(EXPANDER_EXEC)
+	./$(EXPANDER_EXEC)
 clean:
 	$(RMF) $(LEXER)/$(LEXER_EXEC)
 
 re: clean all
 
-.PHONY: all root_project lexer clean
+.PHONY: all root_project lexer expander clean
