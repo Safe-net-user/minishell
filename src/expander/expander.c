@@ -1,15 +1,9 @@
 #include "minishell.h"
 #include "expander.h"
-#include "parser.h"
 #include "ft_hashtable.h"
+#include "ft_strings.h"
+#include "ft_stdlib.h"
 #include <stdlib.h>
-
-static void	init_lut(t_exp_variant_fn *lut)
-{
-	lut[ST_EXP_NORMAL] = exp_normal;
-	lut[ST_EXP_SQUOTE] = exp_squote;
-	lut[ST_EXP_DQUOTE] = exp_dquote;
-}
 
 t_exp	*init_expander(t_mms *mms)
 {
@@ -39,12 +33,9 @@ static void	reset_expander(t_exp *exp, char *str)
 	clear_sb(exp->sb);
 }
 
-int	exp_squote(t_exp *exp)
+t_val_exp	exp_squote(t_exp *exp)
 {
-	if (exp->str[exp->index] == '$')
-		exp->index += 2;
-	else
-		exp->index++;
+	exp->index++;
 	while (exp->str[exp->index]
 		&& exp->str[exp->index] != '\'')
 	{
@@ -54,38 +45,54 @@ int	exp_squote(t_exp *exp)
 	if (exp->str[exp->index] == '\'')
 		exp->index++;
 	exp->state = ST_EXP_NORMAL;
-	return (1);
+	return (EXP_SUCCESS);
 }
 
-static int	exp_append_expansion(t_exp *exp)
+static t_val_exp	exp_append_expansion(t_exp *exp)
 {
-	char	buffer[BUFFER_TOKEN];
-	char	*value;
-	int		i;
+	char		buffer[BUFFER_TOKEN];
+	char		c;
+	int			i;
+	t_env_entry	*env;
 
 	i = 0;
 	exp->index++;
-	while (is_valid_expansion_ch(exp->str[exp->index]))
+	c = exp->str[exp->index];
+	if (c == '?')
 	{
-		if (i >= BUFFER_TOKEN - 1)
-			return (0);
-		buffer[i++] = exp->str[exp->index++];
+		append_sb(exp->sb, ft_itoa(exp->mms->last_status));
+		exp->index++;
 	}
-	buffer[i] = '\0';
-	value = get_pointer(exp->mms->env, buffer);
-	if (value)
-		append_sb(exp->sb, value);
-	return (1);
+	else if (c && c != ' ' && c != '\n' && (ft_isalnum(c) || c == '_'))
+	{
+		while (c && c != ' ' && c != '\n' && (ft_isalnum(c) || c == '_'))
+		{
+			if (i >= BUFFER_TOKEN - 1)
+				return (EXP_LEN_VAR);
+			buffer[i++] = exp->str[exp->index++];
+			c = exp->str[exp->index];
+		}
+		buffer[i] = '\0';
+		env = get_env(exp->mms->env, buffer);
+		if (env)
+			append_sb(exp->sb, env->value);
+	}
+	else
+		append_ch_sb(exp->sb, '$');
+	return (EXP_SUCCESS);
 }
 
-int	exp_dquote(t_exp *exp)
+t_val_exp	exp_dquote(t_exp *exp)
 {
 	exp->index++;
 	while (exp->str[exp->index]
 		&& exp->str[exp->index] != '"')
 	{
 		if (exp->str[exp->index] == '$')
-			exp_append_expansion(exp);
+		{
+			if (exp_append_expansion(exp) != EXP_SUCCESS)
+				return (EXP_ERROR);
+		}
 		else
 		{
 			append_ch_sb(exp->sb, exp->str[exp->index]);
@@ -95,16 +102,15 @@ int	exp_dquote(t_exp *exp)
 	if (exp->str[exp->index] == '"')
 		exp->index++;
 	exp->state = ST_EXP_NORMAL;
-	return (1);
+	return (EXP_SUCCESS);
 }
 
-int	exp_normal(t_exp *exp)
+t_val_exp	exp_normal(t_exp *exp)
 {
 	char	c;
 
 	c = exp->str[exp->index];
-	if (c == '\'' || (c == '$'
-			&& exp->str[exp->index + 1] == '\''))
+	if (c == '\'')
 		exp->state = ST_EXP_SQUOTE;
 	else if (c == '"')
 		exp->state = ST_EXP_DQUOTE;
@@ -115,23 +121,31 @@ int	exp_normal(t_exp *exp)
 		append_ch_sb(exp->sb, c);
 		exp->index++;
 	}
-	return (1);
+	return (EXP_SUCCESS);
 }
 
-static int	expand_word(t_exp *exp, t_exp_variant_fn *lut)
+static t_val_exp	expand_word(t_exp *exp, t_exp_variant_fn *lut)
 {
 	while (exp->str[exp->index])
 	{
 		if (!lut[exp->state](exp))
-			return (0);
+			return (EXP_ERROR);
 	}
-	return (1);
+	return (EXP_SUCCESS);
 }
 
-int	expand(t_mms *mms, t_tk ***tks)
+static void	init_lut(t_exp_variant_fn *lut)
+{
+	lut[ST_EXP_NORMAL] = exp_normal;
+	lut[ST_EXP_SQUOTE] = exp_squote;
+	lut[ST_EXP_DQUOTE] = exp_dquote;
+}
+
+t_val_exp	expand(t_mms *mms, t_tk ***tks)
 {
 	t_exp				*exp;
-	t_exp_variant_fn	lut[ST_EXP_MAX];
+	t_tk				*tk;
+	t_exp_variant_fn	lut[3];
 	size_t				i;
 
 	if (!mms || !tks || !*tks)
@@ -143,15 +157,16 @@ int	expand(t_mms *mms, t_tk ***tks)
 	i = 0;
 	while ((*tks)[i])
 	{
-		reset_expander(exp, (*tks)[i]->value);
-		if (is_valid_type((tks)[i]->type))
+		tk = (*tks)[i];
+		reset_expander(exp, tk->value);
+		if (tk->type_tk == TOK_WORD || tk->type_tk == TOK_DELIMITER)
 		{
 			if (!expand_word(exp, lut))
 				return (0);
 			free((*tks)[i]->value);
 			(*tks)[i]->value = ft_strdup(exp->sb->str);
-			i++;
 		}
+		i++;
 	}
 	free_sb(exp->sb);
 	free(exp);
