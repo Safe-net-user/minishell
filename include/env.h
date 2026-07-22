@@ -37,6 +37,7 @@ typedef struct s_env_entry
     char    *key;
     char    *value;
     int     flags;
+    int     place;
 }   t_env_entry;
 
 struct s_env
@@ -44,7 +45,9 @@ struct s_env
     t_env_entry *indexes;
     size_t      capacity;
     size_t      entries;
+    int         next_place;
 };
+
 /* Hashtable functions */
 t_env_val   add_env(t_env *env, char *key, char *str, t_env_flags flags);
 t_env       *init_env(size_t n);

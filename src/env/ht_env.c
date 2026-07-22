@@ -36,6 +36,7 @@ t_env    *init_env(size_t n)
     }
     env->entries = 0;
     env->capacity = n;
+    env->next_place = 0;
     return (env);
 }
 
@@ -64,6 +65,8 @@ t_env_val   add_env(t_env *env, char *key, char *str, t_env_flags flags)
     env->indexes[index].value = ft_strdup(str);
     env->indexes[index].key = ft_strdup(key);
     env->indexes[index].flags = flags;
+    if (flags & EXPORTED)
+        env->indexes[index].place = env->next_place++;
     env->entries++;
     return (ENV_SUCCESS);
 }
