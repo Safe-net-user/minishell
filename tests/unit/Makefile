@@ -75,8 +75,8 @@ expander: root_project
 	@$(CC) $(CFLAGS) $(CPPFLAGS) $(EXPANDER_UNIT_SRC) $(EXPANDER_OBJ) $(LDFLAGS) $(LDLIBS) -o $(EXPANDER_EXEC)
 	./$(EXPANDER_EXEC)
 clean:
-	$(RMF) $(LEXER)/$(LEXER_EXEC)
-	$(RMF) $(EXPANDER)/$(LEXER_EXEC)
+	$(RMF) $(LEXER_EXEC)
+	$(RMF) $(EXPANDER_EXEC)
 
 re: clean all
 
