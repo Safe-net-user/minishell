@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/09 17:20:34 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/21 17:11:50 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/22 13:05:58 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,16 +16,65 @@
 #include <sys/wait.h>
 #include <stdlib.h>
 
+int	execute_here_doc(int *fd_here_doc, char *lim_nl)
+{
+	char	*line;
+
+	ft_printf("> ");
+	line = get_next_line(0);
+	if (!line || ft_strcmp(line, lim_nl) == 0)
+	{
+		free(line);
+		return (1);
+	}
+	write(fd_here_doc[1], line, ft_strlen(line));
+	free(line);
+	return (0);
+}
+
+int	here_doc(t_mms *mms, t_redir *redir)
+{
+	int		fd_here_doc[2];
+	char	*lim_nl;
+
+	if (pipe(fd_here_doc))
+		return (-1);
+	lim_nl = ft_strjoin(redir->file, "\n");
+	if (!lim_nl)
+	{
+		close(fd_here_doc[0]);
+		close(fd_here_doc[1]);
+		return (-1);
+	}
+	while (1)
+	{
+		if (execute_here_doc(fd_here_doc, lim_nl) == 1)
+			break ;
+	}
+	get_next_line(-1);
+	free(lim_nl);
+	close(fd_here_doc[1]);
+	return (fd_here_doc[0]);
+}
+
 char **tks_to_cmd_tab(t_mms *mms, t_tk **tokens)
 {
 	char **cmd_tab;
 	int i = 0;
+	int j = 0;
 
 	while (tokens[i])
 	{
 		i++;
 	}
-	cmd_tab = stack_alloc(mms->sa, sizeof(char *) * i);
+	cmd_tab = stack_alloc(mms->sa, sizeof(char *) * (i + 1));
+	while (j < i)
+	{
+		cmd_tab[j] = tokens[j]->value;
+		j++;
+	}
+	cmd_tab[j] = NULL;
+	return (cmd_tab);
 }
 
 /*juste pour <*/
@@ -96,7 +145,7 @@ int redirection(t_mms *mms, t_ast *node)
 	while (redir != NULL)
 	{
 		if (redir->type_tk == TOK_DLESS)
-			status = heredoc(mms, node);
+			status = heredoc(mms, redir);
 		else if (redir->type_tk == TOK_LESS)
 			status = redirection_in(mms, redir);
 		else
@@ -278,7 +327,7 @@ int execute(t_mms *mms, t_ast *node, t_executor *exec)
 	(void)mms;
 	char **cmd_tab;
 
-	cmd_tab = tks_to_cmd_tab(node->tokens);
+	cmd_tab = tks_to_cmd_tab(mms, node->tokens);
 	if (execve(exec->cmd_path, cmd_tab, NULL) == -1)
 	{
 		perror("minishell");
