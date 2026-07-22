@@ -18,19 +18,9 @@ static void	lx_begin_dquote(t_lx *lx)
 
 static void	lx_dollar(t_lx *lx)
 {
-    if (lx->cmdl[lx->index + 1] == '\'')
-    {
-        lx->state = LX_SQUOTE;
-        lx->tk->flags |= TOKF_SQUOTE;
-        append_sb(lx->sb, "$'");
-        lx->index += 2;
-    }
-    else
-    {
-        lx->tk->flags |= TOKF_EXPANSION;
-        append_ch_sb(lx->sb, '$');
-        lx->index++;
-    }
+    lx->tk->flags |= TOKF_EXPANSION;
+    append_ch_sb(lx->sb, '$');
+    lx->index++;
 }
 
 static t_val_lx	lx_space(t_lx *lx)

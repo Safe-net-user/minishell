@@ -5,5 +5,3 @@
 '   '
 ''$HOME''
 echo 'bonjour'
-echo $'bonjour'
-echo $'"test"ab$HOME'
