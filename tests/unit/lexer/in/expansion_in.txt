@@ -1,6 +1,12 @@
 $HOME
-$?
-$$
+0
 $A
 $ABC
 $_
+"$HOME"
+'$HOME'
+abc$HOME
+$HOME/42
+"$HOME/test"
+''"$HOME"
+"$A"
