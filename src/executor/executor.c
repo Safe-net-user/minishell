@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/09 17:20:34 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/21 00:54:55 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/21 17:11:50 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,18 @@
 #include <fcntl.h>
 #include <sys/wait.h>
 #include <stdlib.h>
+
+char **tks_to_cmd_tab(t_mms *mms, t_tk **tokens)
+{
+	char **cmd_tab;
+	int i = 0;
+
+	while (tokens[i])
+	{
+		i++;
+	}
+	cmd_tab = stack_alloc(mms->sa, sizeof(char *) * i);
+}
 
 /*juste pour <*/
 
@@ -264,7 +276,10 @@ int path_relative(t_ast *node)
 int execute(t_mms *mms, t_ast *node, t_executor *exec)
 {
 	(void)mms;
-	if (execve(exec->cmd_path, /*char ** a construire*/, NULL) == -1)
+	char **cmd_tab;
+
+	cmd_tab = tks_to_cmd_tab(node->tokens);
+	if (execve(exec->cmd_path, cmd_tab, NULL) == -1)
 	{
 		perror("minishell");
 		return (127);
