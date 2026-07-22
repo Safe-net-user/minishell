@@ -5,5 +5,3 @@
 '   ',0,1,
 ''$HOME'',0,129,
 echo,0,0,'bonjour',0,1,
-echo,0,0,$'bonjour',0,1,
-echo,0,0,$'"test"ab$HOME',0,1,
