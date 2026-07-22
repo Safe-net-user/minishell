@@ -76,6 +76,7 @@ expander: root_project
 	./$(EXPANDER_EXEC)
 clean:
 	$(RMF) $(LEXER)/$(LEXER_EXEC)
+	$(RMF) $(EXPANDER)/$(LEXER_EXEC)
 
 re: clean all
 
