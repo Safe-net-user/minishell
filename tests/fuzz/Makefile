@@ -5,38 +5,41 @@
 #                                                     +:+ +:+         +:+      #
 #    By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2026/06/30 18:45:53 by gd-hallu          #+#    #+#              #
-#    Updated: 2026/07/21 01:12:30 by fiaudfiz         ###   ########.fr        #
+#    Created: 2026/07/21 01:11:37 by fiaudfiz          #+#    #+#              #
+#    Updated: 2026/07/21 01:11:38 by fiaudfiz         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-MAKEFLAGS   += --no-print-directory
+NAME    := exec_fuzz
 
-UNIT        := unit
-FUZZ        := fuzz
+CC      := cc
+CFLAGS  := -Wall -Wextra -g
 
-all: test
+ROOT    := ../../..
+LIBFT   := $(ROOT)/lib/libft
+INC     := -I$(ROOT)/include -I$(LIBFT)/include
 
-test: unit fuzz
+SRCS    := main.c \
+           $(ROOT)/src/executor/executor.c \
+           $(ROOT)/src/core/parser.c
 
-unit:
-	@echo "Running EXEC UNIT tests..."
-	@make -C $(UNIT)
-	@./$(UNIT)/exec_unit
+OBJS    := $(SRCS:.c=.o)
+LIB     := -L$(LIBFT) -lft -lreadline
 
-fuzz:
-	@echo "Running EXEC FUZZ tests..."
-	@make -C $(FUZZ)
-	@./$(FUZZ)/exec_fuzz
+all: $(NAME)
+
+$(NAME): $(OBJS)
+	$(CC) $(CFLAGS) $(OBJS) $(LIB) -o $(NAME)
+
+%.o: %.c
+	$(CC) $(CFLAGS) $(INC) -c $< -o $@
 
 clean:
-	@make clean -C $(UNIT)
-	@make clean -C $(FUZZ)
+	rm -f $(OBJS)
 
-fclean:
-	@make fclean -C $(UNIT)
-	@make fclean -C $(FUZZ)
+fclean: clean
+	rm -f $(NAME)
 
 re: fclean all
 
-.PHONY: all test unit fuzz clean fclean re
+.PHONY: all clean fclean re
