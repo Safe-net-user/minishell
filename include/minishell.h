@@ -23,6 +23,7 @@
 
 # define INIT_SIZE_HT 1024
 # define INIT_SIZE_SA 32768
+# define DEFAULT_SB_SIZE 64
 
 /**
  * @struct s_mms

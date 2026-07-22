@@ -18,7 +18,6 @@
 #include <stdbool.h>
 
 # define BUFFER_TOKEN 2048
-# define DEFAULT_SB_SIZE 64
 
 typedef enum e_type_tk
 {
@@ -92,7 +91,7 @@ typedef struct s_lx
 {
     t_mms   *mms;
     char    *cmdl;
-    t_tk *tk;
+    t_tk    *tk;
     t_sb    *sb;
     size_t  index;
     int     state;
