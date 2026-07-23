@@ -6,21 +6,15 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/11 11:23:14 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/22 14:24:23 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/23 17:21:08 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef EXECUTOR_H
 # define EXECUTOR_H
 
-# include <unistd.h>
 # include "minishell.h"
 # include "parser.h"
-# include "lexer.h"
-
-/* No struct changes were needed for the fixes applied in executor.c: */
-/* the leak, the write()/waitpid() checks, the 126/127 distinction,   */
-/* and moving builtins out of the fork are all internal to the .c.    */
 
 typedef struct s_executor
 {
@@ -41,5 +35,25 @@ typedef struct s_pipeline
 }	t_pipeline;
 
 int	executor(t_mms *mms, t_ast *head);
+
+int	builtin(t_ast *node);
+int	exec_builtin(t_mms *mms, t_ast *node);
+
+
+int	execute_cmd(t_mms *mms, t_ast *node);
+int	execute_cmd_pipe(t_mms *mms, t_ast *cmd, int fd_in, int fd_out);
+char	**tks_to_cmd_tab(t_mms *mms, t_tk **tokens); //pour les builtins aussi passer par la
+
+void	print_error(char *msg);
+void	print_cmd_not_found(char *cmd);
+
+int	here_doc(t_mms *mms, t_redir *redir);
+
+char	*find_path(t_mms *mms, t_ast *node, t_executor *exec);
+int	path_relative(t_ast *node);
+
+int	pipeline(t_mms *mms, t_ast *node);
+
+int	redirection(t_mms *mms, t_ast *node);
 
 #endif
