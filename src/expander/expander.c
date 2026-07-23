@@ -126,10 +126,13 @@ t_val_exp	exp_normal(t_exp *exp)
 
 static t_val_exp	expand_word(t_exp *exp, t_exp_variant_fn *lut)
 {
+	t_val_exp	ret;
+
 	while (exp->str[exp->index])
 	{
-		if (!lut[exp->state](exp))
-			return (EXP_ERROR);
+		ret = lut[exp->state](exp);
+		if (ret != EXP_SUCCESS)
+			return (ret);
 	}
 	return (EXP_SUCCESS);
 }
@@ -161,7 +164,7 @@ t_val_exp	expand(t_mms *mms, t_tk ***tks)
 		reset_expander(exp, tk->value);
 		if (tk->type_tk == TOK_WORD || tk->type_tk == TOK_DELIMITER)
 		{
-			if (!expand_word(exp, lut))
+			if (expand_word(exp, lut))
 				return (0);
 			free((*tks)[i]->value);
 			(*tks)[i]->value = ft_strdup(exp->sb->str);
