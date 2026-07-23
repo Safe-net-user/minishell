@@ -1,8 +1,8 @@
 #ifndef FUZZ_H
 # define FUZZ_H
 
-# include "../../include/minishell.h"
-# include "../../include/parser.h"
+# include "../../../include/minishell.h"
+# include "../../../include/parser.h"
 
 # include <stdlib.h>
 # include <stdio.h>
