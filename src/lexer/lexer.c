@@ -37,6 +37,19 @@ int emit_tk(t_lx *lx)
     return (1);
 }
 
+int emit_eof(t_lx *lx)
+{
+    t_tk *tk;
+
+    tk = stack_alloc(lx->mms->sa, sizeof(t_tk));
+    if (!tk)
+        return (0);
+    tk->value = "";
+    tk->flags = 0;
+    tk->type_tk = TOK_EOF;
+    return (1);
+}
+
 t_lx *init_s_lx( char *cmdl, t_mms *mms)
 {
     t_lx *lx;
@@ -100,8 +113,11 @@ t_val_lx    lexer(char *cmdl, t_mms *mms)
         return (LX_SQUOTE_NF);
     if (lx->state == LX_DQUOTE)
         return (LX_DQUOTE_NF);
-    if (lx->sb->str[0] != '\0')
+    if (lx->sb->str[0] != '\0') {
         if (!emit_tk(lx))
             return (LX_ERROR);
+        if (!emit_eof(lx))
+            return (LX_ERROR);
+    }
     return (LX_SUCCESS);
 }
