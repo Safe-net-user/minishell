@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 16:53:07 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/23 23:41:06 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/24 00:06:02 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ int	execute(t_mms *mms, t_ast *node, t_executor *exec)
 		print_error("memory allocation failed");
 		return (1);
 	}
-	execve(exec->cmd_path, cmd_tab, NULL);
+	execve(exec->cmd_path, cmd_tab, hash_table_to_envp(mms->env));
 	perror("minishell");
 	if (errno == EACCES)
 		return (126);

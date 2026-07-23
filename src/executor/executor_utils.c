@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 17:47:54 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/23 17:48:18 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/24 00:05:10 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,4 +45,37 @@ char	**tks_to_cmd_tab(t_mms *mms, t_tk **tokens)
 	}
 	cmd_tab[j] = NULL;
 	return (cmd_tab);
+}
+
+char	**hash_table_to_envp(t_ht *ht)
+{
+	char	**envp;
+	size_t	i;
+	size_t	j;
+	size_t	len;
+
+	envp = malloc(sizeof(char *) * (ht->entries + 1));
+	if (!envp)
+		return (NULL);
+	i = 0;
+	j = 0;
+	while (i < ht->capacity)
+	{
+		if (ht->indexes[i].key
+			&& ht->indexes[i].key != (char *)DELETED)
+		{
+			len = strlen(ht->indexes[i].key)
+				+ 1 + strlen(ht->indexes[i].value) + 1;
+			envp[j] = malloc(len);
+			if (!envp[j])
+				return (NULL);
+			strcpy(envp[j], ht->indexes[i].key);
+			strcat(envp[j], "=");
+			strcat(envp[j], ht->indexes[i].value);
+			j++;
+		}
+		i++;
+	}
+	envp[j] = NULL;
+	return (envp);
 }
