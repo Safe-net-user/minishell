@@ -6,11 +6,12 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 17:47:54 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/24 00:05:10 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/24 00:13:12 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "executor.h"
+#include "ft_strings.h"
 
 /**
  * @brief Converts an array of token structures into an array of command strings.
@@ -64,14 +65,14 @@ char	**hash_table_to_envp(t_ht *ht)
 		if (ht->indexes[i].key
 			&& ht->indexes[i].key != (char *)DELETED)
 		{
-			len = strlen(ht->indexes[i].key)
-				+ 1 + strlen(ht->indexes[i].value) + 1;
+			len = ft_strlen(ht->indexes[i].key)
+				+ 1 + ft_strlen(ht->indexes[i].value) + 1;
 			envp[j] = malloc(len);
 			if (!envp[j])
 				return (NULL);
-			strcpy(envp[j], ht->indexes[i].key);
-			strcat(envp[j], "=");
-			strcat(envp[j], ht->indexes[i].value);
+			ft_strlcpy(envp[j], ht->indexes[i].key, len);
+			ft_strlcat(envp[j], "=", len);
+			ft_strlcat(envp[j], ht->indexes[i].value, len);
 			j++;
 		}
 		i++;
