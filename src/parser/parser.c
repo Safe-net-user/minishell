@@ -6,12 +6,23 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/16 10:27:18 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/21 00:19:34 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/23 14:46:35 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
 #include "minishell.h"
+
+/**
+ * @brief Returns the token located immediately after the current token.
+ *
+ * Retrieves the allocation header preceding the current token, then uses
+ * the stored block size to compute the address of the next token.
+ *
+ * @param cur Current token.
+ * @return Pointer to the next token in memory.
+ 
+ */
 
 t_tk *next_token(t_tk *cur)
 {
@@ -20,6 +31,16 @@ t_tk *next_token(t_tk *cur)
     h = (t_header *)cur - 1;
     return ((t_tk *)((uint8_t *)cur + h->size + sizeof(t_header)));
 }
+
+/**
+ * @brief Counts the consecutive command-related tokens.
+ *
+ * Traverses the token sequence starting at the given token and counts
+ * word and redirection tokens until another token type is encountered.
+ *
+ * @param token First token to examine.
+ * @return Number of consecutive command-related tokens.
+ */
 
 int count_tokens(t_tk *token)
 {
@@ -39,6 +60,15 @@ int count_tokens(t_tk *token)
 	}
 	return(count);
 }
+
+/**
+ * @brief Converts a token type into its textual representation.
+ *
+ * Returns the shell syntax associated with the given token type.
+ *
+ * @param type Token type to convert.
+ * @return String representation of the token type.
+ */
 
 char *token_to_string(t_type_tk type)
 {
