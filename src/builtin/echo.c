@@ -13,70 +13,49 @@
 #include <curses.h>
 #include <stdio.h>
 #include <string.h>
+#include <unistd.h>
+#include "ft_strings.h"
+#include "builtin.h"
 
-static int check_flag(char **str)
+int n_option_isvalid(char *str)
 {
-    int i;
-    int j;
-    int count_flag = 0;
-    
-    i = 2;
-    j = 0;
-    while (str[i])
-    {
-        while (str[i][j])
-        {
-            if (str[i][j] == '-')
-            {
-                j++;
-                if (str[i][j] == 'n')
-                {    
-                    while (str[i][j])
-                    {
-                        if (str[i][j] != 'n')
-                            return (count_flag);
-                        j++;
-                    }
-                    count_flag++;
-                }
-                else
-                    return (count_flag);
-            }
-            else
-                return (count_flag);
-        }
-        i++;
-    }
-    return (count_flag);
-}
+    size_t  i;
 
-int     builtin_echo(char **tab)
-{
-    int i;
-    int flags;
-
-    flags = check_flag(tab);
-    i = 2 + flags;
-    while (tab[i])
-    {
-        printf("%s", tab[i]);
+    i = 0;
+    if (!str || str[i] != '-')
+        return (0);
+    i++;
+    if (str[i] != 'n')
+        return (0);
+    while (str[i] == 'n')
         i++;
-    }
-    if (flags == 0)
-        printf ("\n");
+    if (str[i] == '\0')
+        return (1);
     return (0);
 }
 
-int main (int ac, char **av)
+t_builts_val	builtin_echo(char **tab)
 {
-    if (ac < 2)
+    bool	new_line_active;
+    int		i;
+
+    if (!tab)
+        return (BUI_ERROR);
+    new_line_active = 1;
+    i = 1;
+    while (tab[i] && n_option_isvalid(tab[i]))
     {
-        return (1);
+        new_line_active = 0;
+        i++;
     }
-    if (strncmp(av[1], "echo", 5) == 0)
+    while (tab[i])
     {
-        builtin_echo(av);
+        write(STDOUT_FILENO, tab[i], ft_strlen(tab[i]));
+        if (tab[i + 1])
+            write(STDOUT_FILENO, " ", 1);
+        i++;
     }
-    else
-        printf ("caca");
+    if (new_line_active)
+        write(STDOUT_FILENO, "\n", 1);
+    return (BUI_SUCCESS);
 }

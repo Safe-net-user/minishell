@@ -13,6 +13,7 @@
 #include "env.h"
 #include "ft_strings.h"
 #include <stdio.h>
+#include <stdlib.h>
 
 int env_arr_to_ht(char **envp, t_env *ht)
 {
