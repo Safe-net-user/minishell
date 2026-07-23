@@ -6,7 +6,7 @@
 #    By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/05/18 23:16:53 by gd-hallu          #+#    #+#              #
-#    Updated: 2026/07/23 15:16:20 by fiaudfiz         ###   ########.fr        #
+#    Updated: 2026/07/23 16:36:37 by fiaudfiz         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -39,6 +39,7 @@ REPL			:= repl
 UTILS			:= utils
 ENV				:= env
 EXPANDER		:= expander
+EXECUTOR		:= executor
 
 # ---------------------- LIB --------------------- #
 LIBFT			:= libft.a
@@ -97,7 +98,12 @@ $(SRC)/$(LEXER)/lx_normal.c \
 $(SRC)/$(LEXER)/lx_squote.c \
 $(SRC)/$(LEXER)/lx_dquote.c \
 $(SRC)/$(LEXER)/lx_operator.c \
-$(SRC)/$(EXPANDER)/expander.c
+$(SRC)/$(EXPANDER)/expander.c \
+$(SRC)/$(PARSER)/parser.c \
+$(SRC)/$(PARSER)/parser_command.c \
+$(SRC)/$(PARSER)/parser_operator.c \
+$(SRC)/$(PARSER)/parser_utils.c
+
 # -------------------- OBJECTS -------------------- #
 OBJECTS 			:= $(patsubst $(SRC)/%.c, $(OBJ)/%.o, $(SOURCES))
 
