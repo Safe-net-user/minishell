@@ -11,7 +11,7 @@ CFLAGS      = -Wall -Wextra -Werror
 #                                    PATHS                                     #
 # **************************************************************************** #
 
-ROOT        = ../..
+ROOT        = ../../..
 LIBFT_DIR   = $(ROOT)/lib/libft
 LIBFT       = $(LIBFT_DIR)/libft.a
 
@@ -26,7 +26,10 @@ INC = \
 
 SRC = \
 	main.c \
-	$(ROOT)/src/parser/parser.c
+	$(ROOT)/src/parser/parser.c \
+	$(ROOT)/src/parser/parser_command.c \
+	$(ROOT)/src/parser/parser_operator.c \
+	$(ROOT)/src/parser/parser_utils.c
 
 # **************************************************************************** #
 
