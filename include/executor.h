@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/11 11:23:14 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/23 17:21:08 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/23 23:10:30 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ int	exec_builtin(t_mms *mms, t_ast *node);
 
 int	execute_cmd(t_mms *mms, t_ast *node);
 int	execute_cmd_pipe(t_mms *mms, t_ast *cmd, int fd_in, int fd_out);
-char	**tks_to_cmd_tab(t_mms *mms, t_tk **tokens); //pour les builtins aussi passer par la
+char	**tks_to_cmd_tab(t_mms *mms, t_tk **tokens);
 
 void	print_error(char *msg);
 void	print_cmd_not_found(char *cmd);
