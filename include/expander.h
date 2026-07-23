@@ -15,8 +15,8 @@ typedef enum e_state_exp
 
 typedef enum e_val_exp
 {
-    EXP_ERROR,
     EXP_SUCCESS,
+    EXP_ERROR,
     EXP_LEN_VAR,
 }   t_val_exp;
 typedef struct s_exp

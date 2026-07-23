@@ -6,8 +6,8 @@
 
 typedef enum e_builtins_val
 {
-    BUI_ERROR,
     BUI_SUCCESS,
+    BUI_ERROR,
     BUI_TOO_MANY_ARGS,
     BUI_HOME_NOT_SET,
     BUI_OLDPWD_NOT_SET,

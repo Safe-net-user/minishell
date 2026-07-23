@@ -75,8 +75,8 @@ typedef enum e_state_lx
 
 typedef enum e_val_lx
 {
-    LX_ERROR,
     LX_SUCCESS,
+    LX_ERROR,
     LX_DQUOTE_NF,
     LX_SQUOTE_NF,
     LX_BQUOTE_NF,
