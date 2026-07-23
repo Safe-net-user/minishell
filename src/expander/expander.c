@@ -50,7 +50,7 @@ t_val_exp	exp_squote(t_exp *exp)
 
 static t_val_exp	exp_append_expansion(t_exp *exp)
 {
-	char		buffer[BUFFER_TOKEN];
+	char		buffer[ENV_KEY_MAX];
 	char		c;
 	int			i;
 	t_env_entry	*env;
@@ -67,7 +67,7 @@ static t_val_exp	exp_append_expansion(t_exp *exp)
 	{
 		while (c && c != ' ' && c != '\n' && (ft_isalnum(c) || c == '_'))
 		{
-			if (i >= BUFFER_TOKEN - 1)
+			if (i >= ENV_KEY_MAX - 1)
 				return (EXP_LEN_VAR);
 			buffer[i++] = exp->str[exp->index++];
 			c = exp->str[exp->index];

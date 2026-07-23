@@ -20,7 +20,7 @@ int g_signal = 0;
 void    handle_sigint(int sig)
 {
     g_signal = sig;
-    write(1, "\nminiMishell$:", 14);
+    write(STDOUT_FILENO, "\nminiMishell$:", 14);
 }
 
 void    set_signaux_interactif(void)
