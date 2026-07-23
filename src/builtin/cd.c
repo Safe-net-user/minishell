@@ -49,7 +49,7 @@ static t_builts_val	update_pwd(t_env *env, char *old_pwd)
     return (BUI_SUCCESS);
 }
 
-t_builts_val	builtins_cd(t_env *env, char **argv)
+t_builts_val	builtin_cd(t_env *env, char **argv)
 {
     t_env_entry	*entry;
     char		*old_pwd;
