@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+         #
+#    By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/06/30 23:54:37 by gd-hallu          #+#    #+#              #
-#    Updated: 2026/07/01 01:25:05 by gd-hallu         ###   ########.fr        #
+#    Updated: 2026/07/23 16:31:21 by fiaudfiz         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,6 +20,7 @@ OBJ				:= obj
 LEXER			:= lexer
 EXPANDER		:= expander
 ENV				:= env
+PARSER			:= parser
 ROOT_PROJECT	:= ../..
 HDRS			:= $(ROOT_PROJECT)/include
 LIBFT			:= $(ROOT_PROJECT)/lib/libft
@@ -36,7 +37,11 @@ $(ROOT_PROJECT)/$(OBJ)/$(ENV)/ht_env.o \
 $(ROOT_PROJECT)/$(OBJ)/$(ENV)/set_env.o \
 $(ROOT_PROJECT)/$(OBJ)/$(ENV)/converter.o \
 
-
+PARSER_OBJ := \
+$(ROOT_PROJECT)/$(OBJ)/$(PARSER)/parser_command.o
+$(ROOT_PROJECT)/$(OBJ)/$(PARSER)/parser_operator.o
+$(ROOT_PROJECT)/$(OBJ)/$(PARSER)/parser_utils.o
+$(ROOT_PROJECT)/$(OBJ)/$(PARSER)/parser.o
 
 # ---------------------- LIB --------------------- #
 LIBFT_LIB			:= libft.a
@@ -44,10 +49,12 @@ LIBFT_LIB			:= libft.a
 # --------------------- FILES --------------------- #
 LEXER_UNIT_SRC		:= $(LEXER)/unit_lexer.c
 EXPANDER_UNIT_SRC	:= $(EXPANDER)/unit_expander.c
+PARSER_UNIT_SRC		:= $(PARSER)/main.c
 
 # ------------------- EXEC NAME ------------------- #
 LEXER_EXEC		:= lexer_unit
 EXPANDER_EXEC	:= expander_unit
+PARSER_EXEC		:= parser_unit
 
 # -------------------- CFLAGS --------------------- #
 CFLAGS			:= -Wall -Wextra -Werror -std=c99
@@ -74,9 +81,15 @@ lexer: root_project
 expander: root_project
 	@$(CC) $(CFLAGS) $(CPPFLAGS) $(EXPANDER_UNIT_SRC) $(EXPANDER_OBJ) $(LDFLAGS) $(LDLIBS) -o $(EXPANDER_EXEC)
 	./$(EXPANDER_EXEC)
+
+parser: root_project
+	@$(CC) $(CFLAGS) $(CPPFLAGS) $(PARSER_UNIT_SRC) $(PARSER_OBJ) $(LDFLAGS) $(LDLIBS) -o $(PARSER_EXEC)
+	./$(PARSER_EXEC)
+
 clean:
 	$(RMF) $(LEXER_EXEC)
 	$(RMF) $(EXPANDER_EXEC)
+	$(RMF) $(PARSER_EXEC)
 
 re: clean all
 

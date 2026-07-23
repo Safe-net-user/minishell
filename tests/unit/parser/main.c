@@ -6,11 +6,13 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/03 14:33:39 by miouali           #+#    #+#             */
-/*   Updated: 2026/07/21 00:11:12 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/23 16:32:36 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "unit.h"
+#include "parser.h"
+#include "minishell.h"
+#include <stdio.h>
 
 #define GREEN  "\033[32m"
 #define RED    "\033[31m"
