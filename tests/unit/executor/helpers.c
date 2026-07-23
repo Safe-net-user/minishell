@@ -7,6 +7,7 @@ void init_test_mms(t_mms *mms)
 
     mms->sa = init_stack_allocator(INIT_SIZE_SA);
     mms->cmd_path = init_hash_table(INIT_SIZE_HT);
+    mms->alias = init_hash_table(INIT_SIZE_HT); /* était NULL, segfault en attente */
 
     set_new_value(mms->cmd_path, "PATH", "/usr/bin:/bin");
 
@@ -24,6 +25,8 @@ void free_test_mms(t_mms *mms)
         free(mms->cwd);
     if (mms->cmd_path)
         free_hash_table(mms->cmd_path);
+    if (mms->alias)
+        free_hash_table(mms->alias);
     if (mms->env)
         free_env(mms->env);
     if (mms->sa)

@@ -235,6 +235,38 @@ static int	compare_output(char *name,
 	return (0);
 }
 
+static int	compare_files_content(char *label, char *path_a, char *path_b)
+{
+	int		fd_a;
+	int		fd_b;
+	char	*data_a;
+	char	*data_b;
+	size_t	len_a;
+	size_t	len_b;
+	int		result;
+
+	fd_a = open(path_a, O_RDONLY);
+	fd_b = open(path_b, O_RDONLY);
+	if (fd_a < 0 || fd_b < 0)
+	{
+		printf("\n%s: impossible d'ouvrir %s et/ou %s pour comparaison\n",
+			label, path_a, path_b);
+		if (fd_a >= 0)
+			close(fd_a);
+		if (fd_b >= 0)
+			close(fd_b);
+		return (1);
+	}
+	data_a = read_fd(fd_a, &len_a);
+	data_b = read_fd(fd_b, &len_b);
+	close(fd_a);
+	close(fd_b);
+	result = compare_output(label, data_a, len_a, data_b, len_b);
+	free(data_a);
+	free(data_b);
+	return (result);
+}
+
 int	compare_captures(t_capture *expected,
 	t_capture *actual)
 {
@@ -269,17 +301,29 @@ int	compare_captures(t_capture *expected,
  * ============================================================================
  */
 
-static int	run_test(t_mms *mms, char *name,
-	t_ast *ast, char *bash_command)
+
+
+static int	run_test_with_files(t_mms *mms, char *name, t_ast *ast,
+	char *bash_command, char **expected_paths, char **actual_paths,
+	char **labels, int n_pairs)
 {
 	t_capture	expected;
 	t_capture	actual;
 	int			result;
+	int			i;
 
 	capture_bash(bash_command, &expected);
 	capture_executor(mms, ast, &actual);
 
 	result = compare_captures(&expected, &actual);
+
+	i = 0;
+	while (i < n_pairs)
+	{
+		if (compare_files_content(labels[i], expected_paths[i], actual_paths[i]))
+			result = 1;
+		i++;
+	}
 
 	print_result(name, result);
 
@@ -287,6 +331,13 @@ static int	run_test(t_mms *mms, char *name,
 	free_capture(&actual);
 
 	return (result);
+}
+
+static int	run_test(t_mms *mms, char *name,
+	t_ast *ast, char *bash_command)
+{
+	return (run_test_with_files(mms, name, ast,
+			bash_command, NULL, NULL, NULL, 0));
 }
 
 /*
@@ -479,54 +530,63 @@ static void	test_output_redirections(t_mms *mms)
 {
 	t_ast	*ast;
 	char	*a[] = {"echo", "hello", NULL};
+	char	*bash_file = TEST_DIR "/out_bash.txt";
+	char	*exec_file = TEST_DIR "/out_exec.txt";
+	char	*expected_paths[1];
+	char	*actual_paths[1];
+	char	*labels[1];
+	char	bash_cmd[256];
 
-	unlink(TEST_DIR "/out.txt");
+	unlink(bash_file);
+	unlink(exec_file);
 
 	ast = make_cmd(mms->sa, a);
-	add_redir(ast, make_redir(mms->sa,
-			TOK_GREAT, TEST_DIR "/out.txt"));
+	add_redir(ast, make_redir(mms->sa, TOK_GREAT, exec_file));
 
-	run_test(mms,
-		"echo > file",
-		ast,
-		"echo hello > " TEST_DIR "/out.txt");
+	snprintf(bash_cmd, sizeof(bash_cmd), "echo hello > %s", bash_file);
 
-	{
-		int		fd;
-		char	buffer[128];
-		ssize_t	n;
+	expected_paths[0] = bash_file;
+	actual_paths[0] = exec_file;
+	labels[0] = "redirected file content";
 
-		fd = open(TEST_DIR "/out.txt", O_RDONLY);
-		n = read(fd, buffer, sizeof(buffer) - 1);
-		close(fd);
-
-		if (n >= 0)
-			buffer[n] = '\0';
-
-		print_result("redirected file content",
-			n >= 0 && strcmp(buffer, "hello\n") == 0
-			? 0 : 1);
-	}
+	run_test_with_files(mms, "echo > file", ast, bash_cmd,
+		expected_paths, actual_paths, labels, 1);
 }
 
 static void	test_append(t_mms *mms)
 {
 	t_ast	*ast;
 	char	*a[] = {"printf", "second", NULL};
+	char	*bash_file = TEST_DIR "/append_bash.txt";
+	char	*exec_file = TEST_DIR "/append_exec.txt";
+	char	*expected_paths[1];
+	char	*actual_paths[1];
+	char	*labels[1];
+	char	bash_cmd[256];
+	int		fd;
 
-	int	fd = open(TEST_DIR "/append.txt",
-			O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	unlink(bash_file);
+	unlink(exec_file);
+
+	fd = open(bash_file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	write(fd, "first", 5);
+	close(fd);
+
+	fd = open(exec_file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	write(fd, "first", 5);
 	close(fd);
 
 	ast = make_cmd(mms->sa, a);
-	add_redir(ast, make_redir(mms->sa,
-			TOK_DGREAT, TEST_DIR "/append.txt"));
+	add_redir(ast, make_redir(mms->sa, TOK_DGREAT, exec_file));
 
-	run_test(mms,
-		"append redirection",
-		ast,
-		"printf second >> " TEST_DIR "/append.txt");
+	snprintf(bash_cmd, sizeof(bash_cmd), "printf second >> %s", bash_file);
+
+	expected_paths[0] = bash_file;
+	actual_paths[0] = exec_file;
+	labels[0] = "append file content";
+
+	run_test_with_files(mms, "append redirection", ast, bash_cmd,
+		expected_paths, actual_paths, labels, 1);
 }
 
 /*
@@ -566,23 +626,37 @@ static void	test_multiple_redirections(t_mms *mms)
 {
 	t_ast	*ast;
 	char	*a[] = {"echo", "hello", NULL};
+	char	*bash_first = TEST_DIR "/first_bash.txt";
+	char	*bash_second = TEST_DIR "/second_bash.txt";
+	char	*exec_first = TEST_DIR "/first_exec.txt";
+	char	*exec_second = TEST_DIR "/second_exec.txt";
+	char	*expected_paths[2];
+	char	*actual_paths[2];
+	char	*labels[2];
+	char	bash_cmd[256];
 
-	unlink(TEST_DIR "/first.txt");
-	unlink(TEST_DIR "/second.txt");
+	unlink(bash_first);
+	unlink(bash_second);
+	unlink(exec_first);
+	unlink(exec_second);
 
 	ast = make_cmd(mms->sa, a);
+	add_redir(ast, make_redir(mms->sa, TOK_GREAT, exec_first));
+	add_redir(ast, make_redir(mms->sa, TOK_GREAT, exec_second));
 
-	add_redir(ast, make_redir(mms->sa,
-			TOK_GREAT, TEST_DIR "/first.txt"));
+	snprintf(bash_cmd, sizeof(bash_cmd),
+		"echo hello > %s > %s", bash_first, bash_second);
 
-	add_redir(ast, make_redir(mms->sa,
-			TOK_GREAT, TEST_DIR "/second.txt"));
+	expected_paths[0] = bash_first;
+	actual_paths[0] = exec_first;
+	labels[0] = "first.txt content";
 
-	run_test(mms,
-		"multiple output redirections",
-		ast,
-		"echo hello > " TEST_DIR "/first.txt > "
-		TEST_DIR "/second.txt");
+	expected_paths[1] = bash_second;
+	actual_paths[1] = exec_second;
+	labels[1] = "second.txt content";
+
+	run_test_with_files(mms, "multiple output redirections", ast, bash_cmd,
+		expected_paths, actual_paths, labels, 2);
 }
 
 /*
