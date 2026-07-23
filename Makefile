@@ -61,7 +61,7 @@ endif
 
 # --------------------- FLAGS --------------------- #
 ifeq ($(MODE),release)
-	W_FLAGS			:= -Wall -Wextra
+	W_FLAGS			:= -Wall -Wextra -Werror
 else
 	ifeq ($(COMPILER), clang)
 		W_FLAGS			:= 	-Wall -Werror -Wextra -Wvla -Wpedantic -pedantic-errors -Wmisleading-indentation -Wsign-conversion -Wshadow -Wnull-dereference -fshort-enums
@@ -97,7 +97,16 @@ $(SRC)/$(LEXER)/lx_normal.c \
 $(SRC)/$(LEXER)/lx_squote.c \
 $(SRC)/$(LEXER)/lx_dquote.c \
 $(SRC)/$(LEXER)/lx_operator.c \
-$(SRC)/$(EXPANDER)/expander.c
+$(SRC)/$(EXPANDER)/expander.c \
+$(SRC)/$(BUILTIN)/cd.c \
+$(SRC)/$(BUILTIN)/echo.c \
+$(SRC)/$(BUILTIN)/env.c \
+$(SRC)/$(BUILTIN)/exit.c \
+$(SRC)/$(BUILTIN)/export.c \
+$(SRC)/$(BUILTIN)/export_utils.c \
+$(SRC)/$(BUILTIN)/pwd.c \
+$(SRC)/$(BUILTIN)/unset.c \
+
 
 # -------------------- OBJECTS -------------------- #
 OBJECTS 			:= $(patsubst $(SRC)/%.c, $(OBJ)/%.o, $(SOURCES))
