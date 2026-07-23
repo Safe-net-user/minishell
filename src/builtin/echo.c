@@ -13,23 +13,49 @@
 #include <curses.h>
 #include <stdio.h>
 #include <string.h>
+#include <unistd.h>
+#include "ft_strings.h"
+#include "builtin.h"
 
-t_builts_val builtin_echo(char **tab)
+int n_option_isvalid(char *str)
 {
-    bool new_line_active;
-    int i;
+    size_t  i;
+
+    i = 0;
+    if (!str || str[i] != '-')
+        return (0);
+    i++;
+    if (str[i] != 'n')
+        return (0);
+    while (str[i] == 'n')
+        i++;
+    if (str[i] == '\0')
+        return (1);
+    return (0);
+}
+
+t_builts_val	builtin_echo(char **tab)
+{
+    bool	new_line_active;
+    int		i;
 
     if (!tab)
-        return (ERROR);
+        return (BUI_ERROR);
     new_line_active = 1;
     i = 1;
-    if (!tab[1])
-        write(1, "\n", 1);
-    if (ft_strcmp(tab[1], "-n") == 0)
-        new_line_active = 0; i++;
+    while (tab[i] && n_option_isvalid(tab[i]))
+    {
+        new_line_active = 0;
+        i++;
+    }
     while (tab[i])
-        write(1, tab[i], ft_strlen(tab[i++]));
+    {
+        write(STDOUT_FILENO, tab[i], ft_strlen(tab[i]));
+        if (tab[i + 1])
+            write(STDOUT_FILENO, " ", 1);
+        i++;
+    }
     if (new_line_active)
-        write(1, "\n", 1);
-    return (SUCCESS);
+        write(STDOUT_FILENO, "\n", 1);
+    return (BUI_SUCCESS);
 }

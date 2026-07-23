@@ -10,20 +10,20 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "builtins.h"
+#include "builtin.h"
 #include "env.h"
 #include "ft_strings.h"
 #include <unistd.h>
 #include <stdlib.h>
 
-static t_cd_val	update_pwd(t_env *env, char *old_pwd)
+static t_builts_val	update_pwd(t_env *env, char *old_pwd)
 {
     t_env_entry	*entry;
     char		*new_pwd;
 
     new_pwd = getcwd(NULL, 0);
     if (!new_pwd)
-        return (CD_ERROR);
+        return (BUI_ERROR);
     entry = get_env(env, "OLDPWD");
     if (entry)
     {
@@ -46,33 +46,33 @@ static t_cd_val	update_pwd(t_env *env, char *old_pwd)
         add_env(env, "PWD", new_pwd, EXPORTED);
         free(new_pwd);
     }
-    return (CD_SUCCESS);
+    return (BUI_SUCCESS);
 }
 
-t_cd_val	builtins_cd(t_env *env, char **argv)
+t_builts_val	builtins_cd(t_env *env, char **argv)
 {
     t_env_entry	*entry;
     char		*old_pwd;
 
     if (!argv)
-        return (CD_ERROR);
+        return (BUI_ERROR);
     if (argv[1] && argv[2])
-        return (CD_TOO_MANY_ARGS);
+        return (BUI_TOO_MANY_ARGS);
     old_pwd = getcwd(NULL, 0);
     if (!old_pwd)
-        return (CD_ERROR);
+        return (BUI_ERROR);
     if (!argv[1] || argv[1][0] == '\0')
     {
         entry = get_env(env, "HOME");
         if (!entry || !entry->value)
         {
             free(old_pwd);
-            return (CD_HOME_NOT_SET);
+            return (BUI_HOME_NOT_SET);
         }
         if (chdir(entry->value) != 0)
         {
             free(old_pwd);
-            return (CD_ERROR);
+            return (BUI_ERROR);
         }
     }
     else if (ft_strcmp(argv[1], "-") == 0)
@@ -81,12 +81,12 @@ t_cd_val	builtins_cd(t_env *env, char **argv)
         if (!entry || !entry->value)
         {
             free(old_pwd);
-            return (CD_OLDPWD_NOT_SET);
+            return (BUI_OLDPWD_NOT_SET);
         }
         if (chdir(entry->value) != 0)
         {
             free(old_pwd);
-            return (CD_ERROR);
+            return (BUI_ERROR);
         }
     }
     else
@@ -94,7 +94,7 @@ t_cd_val	builtins_cd(t_env *env, char **argv)
         if (chdir(argv[1]) != 0)
         {
             free(old_pwd);
-            return (CD_ERROR);
+            return (BUI_ERROR);
         }
     }
     return (update_pwd(env, old_pwd));

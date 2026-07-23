@@ -10,11 +10,17 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
-#include "env.h"
+#include "builtin.h"
+#include <unistd.h>
+#include <stdio.h>
+#include <stdlib.h>
 
-int     builtin_pwd(t_env *env)
+t_builts_val     builtin_pwd(void)
 {
-    ft_printf("%s\n", get_env(env, "PWD"));
-    return (0);
+    char *pwd;
+
+    pwd = getcwd(NULL, 0);
+    printf("%s\n", pwd);
+    free(pwd);
+    return (BUI_SUCCESS);
 }
