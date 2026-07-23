@@ -1,121 +1,128 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   helpers.c                                          :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/07/21 01:09:06 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/21 01:09:12 by fiaudfiz         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "unit.h"
-#include "ft_stack_alloc.h"
+#include <stdarg.h>
 
-t_mms   *make_mms(char **envp)
+void init_test_mms(t_mms *mms)
 {
-    t_mms *mms;
+    memset(mms, 0, sizeof(*mms));
 
-    mms = calloc(1, sizeof(t_mms));
-    mms->env = init_env(INIT_SIZE_HT);
+    mms->sa = init_stack_allocator(INIT_SIZE_SA);
     mms->cmd_path = init_hash_table(INIT_SIZE_HT);
-    mms->alias = init_hash_table(INIT_SIZE_HT);
-    mms->sa = init_stack_allocator(INIT_SIZE_SA);
+
+    set_new_value(mms->cmd_path, "PATH", "/usr/bin:/bin");
+
+    mms->env = init_env(INIT_SIZE_HT);
+    add_env(mms->env, "PATH", "/usr/bin:/bin", EXPORTED);
+
+    mms->name = "minishell";
+    mms->cwd = getcwd(NULL, 0);
     mms->last_status = 0;
-    set_exported_env_ht(mms, envp);
-    set_var_env_ht(mms);
-    return (mms);
 }
 
-void    reset_mms(t_mms *mms)
+void free_test_mms(t_mms *mms)
 {
-    stack_dealloc(mms->sa);
-    mms->sa = init_stack_allocator(INIT_SIZE_SA);
+    if (mms->cwd)
+        free(mms->cwd);
+    if (mms->cmd_path)
+        free_hash_table(mms->cmd_path);
+    if (mms->env)
+        free_env(mms->env);
+    if (mms->sa)
+        stack_dealloc(mms->sa);
 }
 
-t_tk    *make_tok(t_mms *mms, t_type_tk type, char *value)
+t_tk *make_token(t_stack_alloc *sa, char *value, t_type_tk type)
 {
-    t_tk *tok;
+    t_tk *token;
 
-    tok = stack_alloc(mms->sa, sizeof(t_tk));
-    tok->type_tk = type;
-    tok->value = value;
-    tok->flags = 0;
-    return (tok);
+    token = stack_alloc(sa, sizeof(t_tk));
+    if (!token)
+        return (NULL);
+    token->value = value;
+    token->flags = 0;
+    token->type_tk = type;
+    return (token);
 }
 
-t_ast   *make_cmd(t_mms *mms, char **argv)
+t_ast *make_cmd(t_stack_alloc *sa, char **argv)
 {
-    t_ast   *node;
-    int     i;
-    int     argc;
+    t_ast   *ast;
+    size_t  i;
 
-    argc = 0;
-    while (argv[argc])
-        argc++;
-    node = stack_alloc(mms->sa, sizeof(t_ast));
-    node->type = NODE_CMD;
-    node->left = NULL;
-    node->right = NULL;
-    node->redirect = NULL;
-    node->tokens = stack_alloc(mms->sa, sizeof(t_tk *) * (argc + 1));
+    ast = stack_alloc(sa, sizeof(t_ast));
+    if (!ast)
+        return (NULL);
+
+    ast->type = NODE_CMD;
+    ast->left = NULL;
+    ast->right = NULL;
+    ast->redirect = NULL;
+
+    i = 0;
+    while (argv[i])
+        i++;
+
+    ast->tokens = stack_alloc(sa, sizeof(t_tk *) * (i + 1));
+    if (!ast->tokens)
+        return (NULL);
+
     i = 0;
     while (argv[i])
     {
-        node->tokens[i] = make_tok(mms, TOK_WORD, argv[i]);
+        ast->tokens[i] = make_token(sa, argv[i], TOK_WORD);
+        if (!ast->tokens[i])
+            return (NULL);
         i++;
     }
-    node->tokens[i] = NULL;
-    return (node);
+    ast->tokens[i] = NULL;
+
+    return (ast);
 }
 
-t_ast   *make_pipe(t_mms *mms, t_ast *left, t_ast *right)
+t_ast *make_pipe(t_stack_alloc *sa, t_ast *left, t_ast *right)
 {
-    t_ast *node;
+    t_ast *ast;
 
-    node = stack_alloc(mms->sa, sizeof(t_ast));
-    node->type = NODE_PIPE;
-    node->left = left;
-    node->right = right;
-    node->redirect = NULL;
-    node->tokens = NULL;
-    return (node);
+    ast = stack_alloc(sa, sizeof(t_ast));
+    if (!ast)
+        return (NULL);
+
+    ast->type = NODE_PIPE;
+    ast->left = left;
+    ast->right = right;
+    ast->redirect = NULL;
+    ast->tokens = NULL;
+
+    return (ast);
 }
 
-t_ast   *make_and(t_mms *mms, t_ast *left, t_ast *right)
+t_redir *make_redir(t_stack_alloc *sa,
+    t_type_tk type, char *file)
 {
-    t_ast *node;
+    t_redir *redir;
 
-    node = stack_alloc(mms->sa, sizeof(t_ast));
-    node->type = NODE_AND;
-    node->left = left;
-    node->right = right;
-    node->redirect = NULL;
-    node->tokens = NULL;
-    return (node);
+    redir = stack_alloc(sa, sizeof(t_redir));
+    if (!redir)
+        return (NULL);
+
+    redir->type_tk = type;
+    redir->file = file;
+    redir->next = NULL;
+
+    return (redir);
 }
 
-t_ast   *make_or(t_mms *mms, t_ast *left, t_ast *right)
+void add_redir(t_ast *ast, t_redir *redir)
 {
-    t_ast *node;
+    t_redir *current;
 
-    node = stack_alloc(mms->sa, sizeof(t_ast));
-    node->type = NODE_OR;
-    node->left = left;
-    node->right = right;
-    node->redirect = NULL;
-    node->tokens = NULL;
-    return (node);
-}
+    if (!ast->redirect)
+    {
+        ast->redirect = redir;
+        return;
+    }
 
-t_redir *make_redir(t_mms *mms, t_type_tk type, char *file)
-{
-    t_redir *r;
-
-    r = stack_alloc(mms->sa, sizeof(t_redir));
-    r->type_tk = type;
-    r->file = file;
-    r->next = NULL;
-    return (r);
+    current = ast->redirect;
+    while (current->next)
+        current = current->next;
+    current->next = redir;
 }

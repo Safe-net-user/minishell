@@ -1,259 +1,637 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/07/21 01:09:24 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/21 01:09:34 by fiaudfiz         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "unit.h"
 
-int main(int ac, char **av, char **envp)
+static int	g_test_number;
+static int	g_failed;
+
+/*
+ * ============================================================================
+ * UTILS
+ * ============================================================================
+ */
+
+static void	print_result(char *name, int result)
 {
-    t_mms   *mms;
-    t_ast   *ast;
-    int     status;
+	g_test_number++;
+	if (result == 0)
+		printf("[PASS] %03d - %s\n", g_test_number, name);
+	else
+	{
+		printf("[FAIL] %03d - %s\n", g_test_number, name);
+		g_failed++;
+	}
+}
 
-    (void)ac;
-    (void)av;
-    mms = make_mms(envp);
+static void	free_capture(t_capture *capture)
+{
+	if (capture->stdout_data)
+		free(capture->stdout_data);
+	if (capture->stderr_data)
+		free(capture->stderr_data);
+	memset(capture, 0, sizeof(*capture));
+}
 
-    /* ============================================================ */
-    SECTION("Commandes simples");
-    /* ============================================================ */
+static char	*read_fd(int fd, size_t *len)
+{
+	char	*buffer;
+	char	tmp[4096];
+	ssize_t	n;
+	size_t	capacity;
+	size_t	total;
 
-    /* true retourne 0 */
-    ast = make_cmd(mms, (char *[]){"true", NULL});
-    status = executor(mms, ast);
-    CHECK("true", status, 0);
-    reset_mms(mms);
+	capacity = 4096;
+	total = 0;
+	buffer = malloc(capacity);
+	if (!buffer)
+		return (NULL);
+	while (1)
+	{
+		n = read(fd, tmp, sizeof(tmp));
+		if (n <= 0)
+			break ;
+		if (total + n + 1 > capacity)
+		{
+			while (total + n + 1 > capacity)
+				capacity *= 2;
+			buffer = realloc(buffer, capacity);
+			if (!buffer)
+				return (NULL);
+		}
+		memcpy(buffer + total, tmp, n);
+		total += n;
+	}
+	buffer[total] = '\0';
+	*len = total;
+	return (buffer);
+}
 
-    /* false retourne 1 */
-    ast = make_cmd(mms, (char *[]){"false", NULL});
-    status = executor(mms, ast);
-    CHECK("false", status, 1);
-    reset_mms(mms);
+static void	close_pipe(int pipefd[2])
+{
+	close(pipefd[0]);
+	close(pipefd[1]);
+}
 
-    /* commande inexistante -> 127 */
-    ast = make_cmd(mms, (char *[]){"cmd_inexistante_42", NULL});
-    status = executor(mms, ast);
-    CHECK("cmd inexistante (127)", status, 127);
-    reset_mms(mms);
+/*
+ * ============================================================================
+ * CAPTURE EXECUTOR
+ * ============================================================================
+ */
 
-    /* echo sans newline */
-    ast = make_cmd(mms, (char *[]){"echo", "hello", "world", NULL});
-    status = executor(mms, ast);
-    CHECK("echo hello world (0)", status, 0);
-    reset_mms(mms);
+int	capture_executor(t_mms *mms, t_ast *ast, t_capture *capture)
+{
+	int		out_pipe[2];
+	int		err_pipe[2];
+	pid_t	pid;
+	int		status;
 
-    /* ============================================================ */
-    SECTION("Builtins");
-    /* ============================================================ */
+	memset(capture, 0, sizeof(*capture));
 
-    /* pwd retourne 0 */
-    ast = make_cmd(mms, (char *[]){"pwd", NULL});
-    status = executor(mms, ast);
-    CHECK("pwd (0)", status, 0);
-    reset_mms(mms);
+	if (pipe(out_pipe) == -1)
+		return (1);
+	if (pipe(err_pipe) == -1)
+	{
+		close_pipe(out_pipe);
+		return (1);
+	}
 
-    /* echo -n */
-    ast = make_cmd(mms, (char *[]){"echo", "-n", "test", NULL});
-    status = executor(mms, ast);
-    CHECK("echo -n (0)", status, 0);
-    reset_mms(mms);
+	pid = fork();
+	if (pid == -1)
+	{
+		close_pipe(out_pipe);
+		close_pipe(err_pipe);
+		return (1);
+	}
 
-    /* env retourne 0 */
-    ast = make_cmd(mms, (char *[]){"env", NULL});
-    status = executor(mms, ast);
-    CHECK("env (0)", status, 0);
-    reset_mms(mms);
+	if (pid == 0)
+	{
+		close(out_pipe[0]);
+		close(err_pipe[0]);
 
-    /* cd vers / */
-    ast = make_cmd(mms, (char *[]){"cd", "/", NULL});
-    status = executor(mms, ast);
-    CHECK("cd / (0)", status, 0);
-    reset_mms(mms);
+		if (dup2(out_pipe[1], STDOUT_FILENO) == -1)
+			_exit(255);
+		if (dup2(err_pipe[1], STDERR_FILENO) == -1)
+			_exit(255);
 
-    /* cd vers un dossier inexistant -> 1 */
-    ast = make_cmd(mms, (char *[]){"cd", "/dossier_qui_nexiste_pas_42", NULL});
-    status = executor(mms, ast);
-    CHECK("cd inexistant (1)", status, 1);
-    reset_mms(mms);
+		close(out_pipe[1]);
+		close(err_pipe[1]);
 
-    /* ============================================================ */
-    SECTION("Pipes");
-    /* ============================================================ */
+		_exit(executor(mms, ast));
+	}
 
-    /* echo hello | cat */
-    ast = make_pipe(mms,
-        make_cmd(mms, (char *[]){"echo", "hello", NULL}),
-        make_cmd(mms, (char *[]){"cat", NULL}));
-    status = executor(mms, ast);
-    CHECK("echo hello | cat (0)", status, 0);
-    reset_mms(mms);
+	close(out_pipe[1]);
+	close(err_pipe[1]);
 
-    /* ls | wc -l */
-    ast = make_pipe(mms,
-        make_cmd(mms, (char *[]){"ls", NULL}),
-        make_cmd(mms, (char *[]){"wc", "-l", NULL}));
-    status = executor(mms, ast);
-    CHECK("ls | wc -l (0)", status, 0);
-    reset_mms(mms);
+	capture->stdout_data = read_fd(out_pipe[0],
+			&capture->stdout_len);
+	capture->stderr_data = read_fd(err_pipe[0],
+			&capture->stderr_len);
 
-    /* echo a | cat | wc -c  (pipeline 3 etages) */
-    ast = make_pipe(mms,
-        make_pipe(mms,
-            make_cmd(mms, (char *[]){"echo", "a", NULL}),
-            make_cmd(mms, (char *[]){"cat", NULL})),
-        make_cmd(mms, (char *[]){"wc", "-c", NULL}));
-    status = executor(mms, ast);
-    CHECK("echo a | cat | wc -c (0)", status, 0);
-    reset_mms(mms);
+	close(out_pipe[0]);
+	close(err_pipe[0]);
 
-    /* ============================================================ */
-    SECTION("Operateurs logiques");
-    /* ============================================================ */
+	waitpid(pid, &status, 0);
 
-    /* true && echo ok -> 0 */
-    ast = make_and(mms,
-        make_cmd(mms, (char *[]){"true", NULL}),
-        make_cmd(mms, (char *[]){"echo", "ok", NULL}));
-    status = executor(mms, ast);
-    CHECK("true && echo ok (0)", status, 0);
-    reset_mms(mms);
+	if (WIFEXITED(status))
+		capture->status = WEXITSTATUS(status);
+	else if (WIFSIGNALED(status))
+		capture->status = 128 + WTERMSIG(status);
 
-    /* false && echo ok -> 1 (echo ne s'execute pas) */
-    ast = make_and(mms,
-        make_cmd(mms, (char *[]){"false", NULL}),
-        make_cmd(mms, (char *[]){"echo", "ok", NULL}));
-    status = executor(mms, ast);
-    CHECK("false && echo ok (1)", status, 1);
-    reset_mms(mms);
+	return (0);
+}
 
-    /* false || echo fallback -> 0 */
-    ast = make_or(mms,
-        make_cmd(mms, (char *[]){"false", NULL}),
-        make_cmd(mms, (char *[]){"echo", "fallback", NULL}));
-    status = executor(mms, ast);
-    CHECK("false || echo fallback (0)", status, 0);
-    reset_mms(mms);
+/*
+ * ============================================================================
+ * CAPTURE BASH --POSIX
+ * ============================================================================
+ */
 
-    /* true || echo pas execute -> 0 */
-    ast = make_or(mms,
-        make_cmd(mms, (char *[]){"true", NULL}),
-        make_cmd(mms, (char *[]){"echo", "pas execute", NULL}));
-    status = executor(mms, ast);
-    CHECK("true || echo (0)", status, 0);
-    reset_mms(mms);
+int	capture_bash(char *command, t_capture *capture)
+{
+	int		out_pipe[2];
+	int		err_pipe[2];
+	pid_t	pid;
+	int		status;
 
-    /* false && echo a || echo b -> 0 */
-    ast = make_or(mms,
-        make_and(mms,
-            make_cmd(mms, (char *[]){"false", NULL}),
-            make_cmd(mms, (char *[]){"echo", "a", NULL})),
-        make_cmd(mms, (char *[]){"echo", "b", NULL}));
-    status = executor(mms, ast);
-    CHECK("false && echo a || echo b (0)", status, 0);
-    reset_mms(mms);
+	memset(capture, 0, sizeof(*capture));
 
-    /* ============================================================ */
-    SECTION("Redirections");
-    /* ============================================================ */
+	if (pipe(out_pipe) == -1)
+		return (1);
+	if (pipe(err_pipe) == -1)
+	{
+		close_pipe(out_pipe);
+		return (1);
+	}
 
-    /* echo hello > /tmp/test_exec_out */
-    {
-        t_ast *cmd;
-        cmd = make_cmd(mms, (char *[]){"echo", "hello", NULL});
-        cmd->redirect = make_redir(mms, TOK_GREAT, "/tmp/test_exec_out");
-        status = executor(mms, cmd);
-        CHECK("echo hello > /tmp/test_exec_out (0)", status, 0);
-        reset_mms(mms);
-    }
+	pid = fork();
+	if (pid == -1)
+	{
+		close_pipe(out_pipe);
+		close_pipe(err_pipe);
+		return (1);
+	}
 
-    /* cat < /etc/hostname */
-    {
-        t_ast *cmd;
-        cmd = make_cmd(mms, (char *[]){"cat", NULL});
-        cmd->redirect = make_redir(mms, TOK_LESS, "/etc/hostname");
-        status = executor(mms, cmd);
-        CHECK("cat < /etc/hostname (0)", status, 0);
-        reset_mms(mms);
-    }
+	if (pid == 0)
+	{
+		close(out_pipe[0]);
+		close(err_pipe[0]);
 
-    /* cat < /etc/hostname > /tmp/test_exec_copy */
-    {
-        t_ast   *cmd;
-        t_redir *r1;
-        t_redir *r2;
+		dup2(out_pipe[1], STDOUT_FILENO);
+		dup2(err_pipe[1], STDERR_FILENO);
 
-        cmd = make_cmd(mms, (char *[]){"cat", NULL});
-        r1 = make_redir(mms, TOK_LESS, "/etc/hostname");
-        r2 = make_redir(mms, TOK_GREAT, "/tmp/test_exec_copy");
-        r1->next = r2;
-        cmd->redirect = r1;
-        status = executor(mms, cmd);
-        CHECK("cat < /etc/hostname > /tmp/test_exec_copy (0)", status, 0);
-        reset_mms(mms);
-    }
+		close(out_pipe[1]);
+		close(err_pipe[1]);
 
-    /* echo append >> /tmp/test_exec_out */
-    {
-        t_ast *cmd;
-        cmd = make_cmd(mms, (char *[]){"echo", "append", NULL});
-        cmd->redirect = make_redir(mms, TOK_DGREAT, "/tmp/test_exec_out");
-        status = executor(mms, cmd);
-        CHECK("echo append >> /tmp/test_exec_out (0)", status, 0);
-        reset_mms(mms);
-    }
+		execl("/bin/bash", "bash", "--posix",
+			"-c", command, NULL);
+		_exit(255);
+	}
 
-    /* redir vers fichier sans permission -> 1 */
-    {
-        t_ast *cmd;
-        cmd = make_cmd(mms, (char *[]){"echo", "test", NULL});
-        cmd->redirect = make_redir(mms, TOK_GREAT, "/proc/no_permission");
-        status = executor(mms, cmd);
-        CHECK("echo > /proc/no_permission (1)", status, 1);
-        reset_mms(mms);
-    }
+	close(out_pipe[1]);
+	close(err_pipe[1]);
 
-    /* ============================================================ */
-    SECTION("Pipes + redirections");
-    /* ============================================================ */
+	capture->stdout_data = read_fd(out_pipe[0],
+			&capture->stdout_len);
+	capture->stderr_data = read_fd(err_pipe[0],
+			&capture->stderr_len);
 
-    /* cat < /etc/hostname | wc -c */
-    {
-        t_ast   *left;
-        t_ast   *ast2;
+	close(out_pipe[0]);
+	close(err_pipe[0]);
 
-        left = make_cmd(mms, (char *[]){"cat", NULL});
-        left->redirect = make_redir(mms, TOK_LESS, "/etc/hostname");
-        ast2 = make_pipe(mms, left,
-            make_cmd(mms, (char *[]){"wc", "-c", NULL}));
-        status = executor(mms, ast2);
-        CHECK("cat < /etc/hostname | wc -c (0)", status, 0);
-        reset_mms(mms);
-    }
+	waitpid(pid, &status, 0);
 
-    /* ============================================================ */
-    SECTION("Chemin relatif / absolu");
-    /* ============================================================ */
+	if (WIFEXITED(status))
+		capture->status = WEXITSTATUS(status);
+	else if (WIFSIGNALED(status))
+		capture->status = 128 + WTERMSIG(status);
 
-    /* /bin/echo hello */
-    ast = make_cmd(mms, (char *[]){"/bin/echo", "hello", NULL});
-    status = executor(mms, ast);
-    CHECK("/bin/echo hello (0)", status, 0);
-    reset_mms(mms);
+	return (0);
+}
 
-    /* ./non_existant -> 127 */
-    ast = make_cmd(mms, (char *[]){"./non_existant_42", NULL});
-    status = executor(mms, ast);
-    CHECK("./non_existant (127)", status, 127);
-    reset_mms(mms);
+/*
+ * ============================================================================
+ * COMPARISON
+ * ============================================================================
+ */
 
-    free(mms);
-    return (0);
+static int	compare_output(char *name,
+	char *expected, size_t expected_len,
+	char *actual, size_t actual_len)
+{
+	if (expected_len != actual_len)
+	{
+		printf("\n%s length mismatch:\n", name);
+		printf("  expected: %zu bytes\n", expected_len);
+		printf("  actual:   %zu bytes\n", actual_len);
+		return (1);
+	}
+
+	if (memcmp(expected, actual, expected_len) != 0)
+	{
+		printf("\n%s content mismatch:\n", name);
+		printf("EXPECTED:\n[%s]\n", expected);
+		printf("ACTUAL:\n[%s]\n", actual);
+		return (1);
+	}
+
+	return (0);
+}
+
+int	compare_captures(t_capture *expected,
+	t_capture *actual)
+{
+	if (expected->status != actual->status)
+	{
+		printf("\nSTATUS MISMATCH:\n");
+		printf("  expected: %d\n", expected->status);
+		printf("  actual:   %d\n", actual->status);
+		return (1);
+	}
+
+	if (compare_output("STDOUT",
+			expected->stdout_data,
+			expected->stdout_len,
+			actual->stdout_data,
+			actual->stdout_len))
+		return (1);
+
+	if (compare_output("STDERR",
+			expected->stderr_data,
+			expected->stderr_len,
+			actual->stderr_data,
+			actual->stderr_len))
+		return (1);
+
+	return (0);
+}
+
+/*
+ * ============================================================================
+ * TEST RUNNER
+ * ============================================================================
+ */
+
+static int	run_test(t_mms *mms, char *name,
+	t_ast *ast, char *bash_command)
+{
+	t_capture	expected;
+	t_capture	actual;
+	int			result;
+
+	capture_bash(bash_command, &expected);
+	capture_executor(mms, ast, &actual);
+
+	result = compare_captures(&expected, &actual);
+
+	print_result(name, result);
+
+	free_capture(&expected);
+	free_capture(&actual);
+
+	return (result);
+}
+
+/*
+ * ============================================================================
+ * SIMPLE COMMANDS
+ * ============================================================================
+ */
+
+static void	test_simple_commands(t_mms *mms)
+{
+	t_ast	*ast;
+
+	{
+		char *a[] = {"true", NULL};
+
+		ast = make_cmd(mms->sa, a);
+		run_test(mms, "true", ast, "true");
+	}
+
+	{
+		char *a[] = {"echo", "hello", NULL};
+
+		ast = make_cmd(mms->sa, a);
+		run_test(mms, "echo hello", ast, "echo hello");
+	}
+
+	{
+		char *a[] = {"echo", "hello", "world", NULL};
+
+		ast = make_cmd(mms->sa, a);
+		run_test(mms, "echo multiple arguments",
+			ast, "echo hello world");
+	}
+
+	{
+		char *a[] = {"printf", "hello", NULL};
+
+		ast = make_cmd(mms->sa, a);
+		run_test(mms, "printf without newline",
+			ast, "printf hello");
+	}
+
+	{
+		char *a[] = {"printf", "%s", "hello", NULL};
+
+		ast = make_cmd(mms->sa, a);
+		run_test(mms, "printf format",
+			ast, "printf '%s' hello");
+	}
+
+	{
+		char *a[] = {"printf", "%d", "42", NULL};
+
+		ast = make_cmd(mms->sa, a);
+		run_test(mms, "printf integer",
+			ast, "printf '%d' 42");
+	}
+
+	{
+		char *a[] = {"/bin/echo", "absolute", NULL};
+
+		ast = make_cmd(mms->sa, a);
+		run_test(mms, "absolute path",
+			ast, "/bin/echo absolute");
+	}
+
+	{
+		char *a[] = {"pwd", NULL};
+
+		ast = make_cmd(mms->sa, a);
+		run_test(mms, "pwd",
+			ast, "pwd");
+	}
+
+	{
+		char *a[] = {"echo", "", NULL};
+
+		ast = make_cmd(mms->sa, a);
+		run_test(mms, "empty argument",
+			ast, "echo ''");
+	}
+
+	{
+		char *a[] = {"echo", "hello world", NULL};
+
+		ast = make_cmd(mms->sa, a);
+		run_test(mms, "argument containing spaces",
+			ast, "echo 'hello world'");
+	}
+}
+
+/*
+ * ============================================================================
+ * PIPELINES
+ * ============================================================================
+ */
+
+static t_ast	*make_pipeline(t_stack_alloc *sa,
+	char ***commands, size_t count)
+{
+	t_ast	*ast;
+	t_ast	*next;
+	size_t	i;
+
+	ast = make_cmd(sa, commands[0]);
+	if (!ast)
+		return (NULL);
+
+	i = 1;
+	while (i < count)
+	{
+		next = make_cmd(sa, commands[i]);
+		if (!next)
+			return (NULL);
+		ast = make_pipe(sa, ast, next);
+		if (!ast)
+			return (NULL);
+		i++;
+	}
+	return (ast);
+}
+
+static void	test_pipelines(t_mms *mms)
+{
+	t_ast	*ast;
+
+	{
+		char *a[] = {"echo", "hello", NULL};
+		char *b[] = {"cat", NULL};
+		char **p[] = {a, b};
+
+		ast = make_pipeline(mms->sa, p, 2);
+		run_test(mms, "echo | cat",
+			ast, "echo hello | cat");
+	}
+
+	{
+		char *a[] = {"echo", "hello", NULL};
+		char *b[] = {"grep", "hello", NULL};
+		char **p[] = {a, b};
+
+		ast = make_pipeline(mms->sa, p, 2);
+		run_test(mms, "echo | grep",
+			ast, "echo hello | grep hello");
+	}
+
+	{
+		char *a[] = {"echo", "hello", NULL};
+		char *b[] = {"wc", "-l", NULL};
+		char **p[] = {a, b};
+
+		ast = make_pipeline(mms->sa, p, 2);
+		run_test(mms, "echo | wc",
+			ast, "echo hello | wc -l");
+	}
+
+	{
+		char *a[] = {"printf", "hello\\nworld\\n", NULL};
+		char *b[] = {"grep", "hello", NULL};
+		char *c[] = {"wc", "-l", NULL};
+		char **p[] = {a, b, c};
+
+		ast = make_pipeline(mms->sa, p, 3);
+		run_test(mms, "printf | grep | wc",
+			ast,
+			"printf 'hello\\nworld\\n' | grep hello | wc -l");
+	}
+
+	{
+		char *a[] = {"echo", "hello", NULL};
+		char *b[] = {"cat", NULL};
+		char *c[] = {"cat", NULL};
+		char *d[] = {"cat", NULL};
+		char **p[] = {a, b, c, d};
+
+		ast = make_pipeline(mms->sa, p, 4);
+		run_test(mms, "four-command pipeline",
+			ast,
+			"echo hello | cat | cat | cat");
+	}
+}
+
+/*
+ * ============================================================================
+ * OUTPUT REDIRECTIONS
+ * ============================================================================
+ */
+
+static void	test_output_redirections(t_mms *mms)
+{
+	t_ast	*ast;
+	char	*a[] = {"echo", "hello", NULL};
+
+	unlink(TEST_DIR "/out.txt");
+
+	ast = make_cmd(mms->sa, a);
+	add_redir(ast, make_redir(mms->sa,
+			TOK_GREAT, TEST_DIR "/out.txt"));
+
+	run_test(mms,
+		"echo > file",
+		ast,
+		"echo hello > " TEST_DIR "/out.txt");
+
+	{
+		int		fd;
+		char	buffer[128];
+		ssize_t	n;
+
+		fd = open(TEST_DIR "/out.txt", O_RDONLY);
+		n = read(fd, buffer, sizeof(buffer) - 1);
+		close(fd);
+
+		if (n >= 0)
+			buffer[n] = '\0';
+
+		print_result("redirected file content",
+			n >= 0 && strcmp(buffer, "hello\n") == 0
+			? 0 : 1);
+	}
+}
+
+static void	test_append(t_mms *mms)
+{
+	t_ast	*ast;
+	char	*a[] = {"printf", "second", NULL};
+
+	int	fd = open(TEST_DIR "/append.txt",
+			O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	write(fd, "first", 5);
+	close(fd);
+
+	ast = make_cmd(mms->sa, a);
+	add_redir(ast, make_redir(mms->sa,
+			TOK_DGREAT, TEST_DIR "/append.txt"));
+
+	run_test(mms,
+		"append redirection",
+		ast,
+		"printf second >> " TEST_DIR "/append.txt");
+}
+
+/*
+ * ============================================================================
+ * INPUT REDIRECTIONS
+ * ============================================================================
+ */
+
+static void	test_input_redirections(t_mms *mms)
+{
+	t_ast	*ast;
+	char	*a[] = {"cat", NULL};
+	int		fd;
+
+	fd = open(TEST_DIR "/input.txt",
+			O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	write(fd, "hello\n", 6);
+	close(fd);
+
+	ast = make_cmd(mms->sa, a);
+	add_redir(ast, make_redir(mms->sa,
+			TOK_LESS, TEST_DIR "/input.txt"));
+
+	run_test(mms,
+		"cat < file",
+		ast,
+		"cat < " TEST_DIR "/input.txt");
+}
+
+/*
+ * ============================================================================
+ * MULTIPLE REDIRECTIONS
+ * ============================================================================
+ */
+
+static void	test_multiple_redirections(t_mms *mms)
+{
+	t_ast	*ast;
+	char	*a[] = {"echo", "hello", NULL};
+
+	unlink(TEST_DIR "/first.txt");
+	unlink(TEST_DIR "/second.txt");
+
+	ast = make_cmd(mms->sa, a);
+
+	add_redir(ast, make_redir(mms->sa,
+			TOK_GREAT, TEST_DIR "/first.txt"));
+
+	add_redir(ast, make_redir(mms->sa,
+			TOK_GREAT, TEST_DIR "/second.txt"));
+
+	run_test(mms,
+		"multiple output redirections",
+		ast,
+		"echo hello > " TEST_DIR "/first.txt > "
+		TEST_DIR "/second.txt");
+}
+
+/*
+ * ============================================================================
+ * MAIN
+ * ============================================================================
+ */
+
+int	main(void)
+{
+	t_mms	mms;
+
+	g_test_number = 0;
+	g_failed = 0;
+
+	init_test_mms(&mms);
+
+	mkdir(TEST_DIR, 0755);
+
+	printf("\n");
+	printf("============================================================\n");
+	printf("          EXECUTOR VS BASH --POSIX TEST SUITE\n");
+	printf("============================================================\n\n");
+
+	printf("---- SIMPLE COMMANDS ----\n");
+	test_simple_commands(&mms);
+
+	printf("\n---- PIPELINES ----\n");
+	test_pipelines(&mms);
+
+	printf("\n---- OUTPUT REDIRECTIONS ----\n");
+	test_output_redirections(&mms);
+
+	printf("\n---- APPEND ----\n");
+	test_append(&mms);
+
+	printf("\n---- INPUT REDIRECTIONS ----\n");
+	test_input_redirections(&mms);
+
+	printf("\n---- MULTIPLE REDIRECTIONS ----\n");
+	test_multiple_redirections(&mms);
+
+	printf("\n");
+	printf("============================================================\n");
+	printf("TOTAL TESTS : %d\n", g_test_number);
+	printf("FAILED       : %d\n", g_failed);
+	printf("PASSED       : %d\n", g_test_number - g_failed);
+	printf("============================================================\n");
+
+	free_test_mms(&mms);
+	return (g_failed != 0);
 }

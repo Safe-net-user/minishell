@@ -1,54 +1,60 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   unit.h                                             :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/07/21 01:08:45 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/21 01:08:53 by fiaudfiz         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #ifndef UNIT_H
 # define UNIT_H
 
+# define TEST_DIR "/tmp/minishell_executor_tests"
+
+# include "../../include/executor.h"
+# include "../../include/minishell.h"
+# include "../../include/parser.h"
+# include "../../lib/libft/include/ft_stack_alloc.h"
+# include "../../lib/libft/include/ft_hashtable.h"
+
 # include <stdio.h>
 # include <stdlib.h>
-# include <unistd.h>
 # include <string.h>
-# include "executor.h"
-# include "minishell.h"
-# include "parser.h"
-# include "lexer.h"
-# include "env.h"
+# include <unistd.h>
+# include <fcntl.h>
+# include <sys/wait.h>
+# include <sys/stat.h>
+# include <errno.h>
 
-# define GREEN  "\033[32m"
-# define RED    "\033[31m"
-# define CYAN   "\033[36m"
-# define YELLOW "\033[33m"
-# define RESET  "\033[0m"
+typedef struct s_capture
+{
+	char	*stdout_data;
+	char	*stderr_data;
+	size_t	stdout_len;
+	size_t	stderr_len;
+	int		status;
+}	t_capture;
 
-# define INIT_SIZE_HT 1024
-# define INIT_SIZE_SA 32768
+/*
+ * INITIALISATION
+ */
 
-# define CHECK(label, got, expected) do { \
-    if ((got) == (expected)) \
-        printf(GREEN "  PASS" RESET " %s (status=%d)\n", label, got); \
-    else \
-        printf(RED   "  FAIL" RESET " %s (got=%d expected=%d)\n", label, got, expected); \
-} while (0)
+void		init_test_mms(t_mms *mms);
+void		free_test_mms(t_mms *mms);
 
-# define SECTION(name) \
-    printf("\n" YELLOW "########## %s ##########" RESET "\n", name)
+/*
+ * AST BUILDERS
+ */
 
-t_mms   *make_mms(char **envp);
-void    reset_mms(t_mms *mms);
-t_tk    *make_tok(t_mms *mms, t_type_tk type, char *value);
-t_ast   *make_cmd(t_mms *mms, char **argv);
-t_ast   *make_pipe(t_mms *mms, t_ast *left, t_ast *right);
-t_ast   *make_and(t_mms *mms, t_ast *left, t_ast *right);
-t_ast   *make_or(t_mms *mms, t_ast *left, t_ast *right);
-t_redir *make_redir(t_mms *mms, t_type_tk type, char *file);
+t_tk		*make_token(t_stack_alloc *sa, char *value, t_type_tk type);
+t_ast		*make_cmd(t_stack_alloc *sa, char **argv);
+t_ast		*make_pipe(t_stack_alloc *sa, t_ast *left, t_ast *right);
+
+t_redir		*make_redir(t_stack_alloc *sa,
+				t_type_tk type, char *file);
+void		add_redir(t_ast *ast, t_redir *redir);
+
+/*
+ * TEST UTILITIES
+ */
+
+int			capture_executor(t_mms *mms, t_ast *ast,
+				t_capture *capture);
+int			capture_bash(char *command, t_capture *capture);
+
+int			compare_captures(t_capture *expected,
+				t_capture *actual);
 
 #endif
