@@ -6,13 +6,31 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 16:55:06 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/23 17:24:44 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/23 23:35:13 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "executor.h"
 #include <fcntl.h>
 #include <unistd.h>
+
+static int	expand_redir_file(t_mms *mms, t_redir *redir)
+{
+	t_tk	tk;
+	t_tk	*arr[2];
+	t_tk	**arr_ptr;
+
+	tk.value = redir->file;
+	tk.flags = 0;
+	tk.type_tk = TOK_WORD;
+	arr[0] = &tk;
+	arr[1] = NULL;
+	arr_ptr = arr;
+	if (!expand(mms, &arr_ptr))
+		return (1);
+	redir->file = arr[0]->value;
+	return (0);
+}
 
 /**
  * @brief Redirects standard input from a file.
@@ -127,6 +145,11 @@ int	redirection(t_mms *mms, t_ast *node)
 	redir = node->redirect;
 	while (redir != NULL)
 	{
+		if (redir->type_tk != TOK_DLESS)
+		{
+			if (expand_redir_file(mms, redir))
+				return (1);
+		}
 		if (redir->type_tk == TOK_DLESS)
 			status = redirection_heredoc(mms, redir);
 		else if (redir->type_tk == TOK_LESS)
