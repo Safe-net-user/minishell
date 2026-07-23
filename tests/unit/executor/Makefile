@@ -6,7 +6,7 @@
 #    By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/07/22 17:29:04 by fiaudfiz          #+#    #+#              #
-#    Updated: 2026/07/23 13:32:08 by fiaudfiz         ###   ########.fr        #
+#    Updated: 2026/07/23 17:57:18 by fiaudfiz         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,6 +25,16 @@ INC     := -I$(ROOT)/include -I$(LIBFT)/include
 SRCS    := main.c \
            helpers.c \
            $(ROOT)/src/executor/executor.c \
+		   $(ROOT)/src/executor/executor_builtins.c \
+		   $(ROOT)/src/executor/executor_command.c \
+		   $(ROOT)/src/executor/executor_errors.c \
+		   $(ROOT)/src/executor/executor_heredoc.c \
+		   $(ROOT)/src/executor/executor_path.c \
+		   $(ROOT)/src/executor/executor_pipeline_0.c \
+		   $(ROOT)/src/executor/executor_pipeline_1.c \
+		   $(ROOT)/src/executor/executor_redir.c \
+		   $(ROOT)/src/executor/executor_utils.c \
+		   $(ROOT)/src/executor/executor_command_pipe.c \
            $(ROOT)/src/env/ht_env.c \
            $(ROOT)/src/env/converter.c \
            $(ROOT)/src/env/set_env.c
