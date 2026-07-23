@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/09 10:30:51 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/06/30 19:26:32 by gd-hallu         ###   ########.fr       */
+/*   Updated: 2026/07/23 22:29:50 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@
 #include "env.h"
 #include "lexer.h"
 #include <signal.h>
+#include "parser.h"
+#include "executor.h"
 
 /**
  * A noter que si HOME est change, alors la ht des commandes doit etre videe.
@@ -66,6 +68,7 @@ int main(UNUSED int ac, UNUSED char **av, char **envp)
 {
 	char 	*result;
 	t_mms	*mms;
+	t_ast 	*head;
 	
 	mms = init_og_struct();
 	if (!mms || set_og_struct(mms, envp) == 0)
@@ -74,24 +77,32 @@ int main(UNUSED int ac, UNUSED char **av, char **envp)
 		return (EXIT_FAILURE);
 	}
 	set_signaux_interactif();
-	while (1) //de ici
+	while (1)
 	{
 		result = readline("miniMishell$: ");
-		printf ("arg : %s\n", result);
 		if (!result)
 		{
-    		if (g_signal == SIGINT)  // Ctrl+C
-    		{
-        		g_signal = 0;
-        		continue;
-    		}
-    		break;  // vrai Ctrl+D
+			if (g_signal == SIGINT)
+			{
+				g_signal = 0;
+				continue;
+			}
+			break;
 		}
 		if (*result)
 			add_history(result);
-		lexer(result, mms);
+		if (lexer(result, mms) != LX_SUCCESS)
+		{
+			g_signal = LX_ERROR;
+			free(result);
+			continue;
+		}
 		free(result);
-	} // a ici soit une fonction dite "REPL" soit on laisse dans le main
+		head = parser(mms);
+		if (head)
+			mms->last_status = executor(mms, head);
+	// mettre a jour g_signal pour echo $? avec last status
+	}
 	return (0);
 }
 

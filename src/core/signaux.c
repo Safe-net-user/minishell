@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/11 21:18:50 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/06/11 21:18:51 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/23 22:47:04 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,16 @@
 
 int g_signal = 0;
 
-void    handle_sigint(int sig)
+void	handle_sigint(int sig)
 {
-    g_signal = sig;
-    write(STDOUT_FILENO, "\nminiMishell$:", 14);
+	(void)sig;
+	g_signal = SIGINT;
+	write(STDOUT_FILENO, "\n", 1);
+	rl_on_new_line();
+	rl_replace_line("", 0);
+	rl_redisplay();
 }
+
 
 void    set_signaux_interactif(void)
 {
