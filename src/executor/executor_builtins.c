@@ -6,12 +6,14 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/09 17:20:34 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/23 17:58:04 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/23 22:38:46 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "executor.h"
 #include "ft_strings.h"
+
+//pas oublier de convertir en char **
 
 /**
  * @brief Executes the builtin corresponding to a command.

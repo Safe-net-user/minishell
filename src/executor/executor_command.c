@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   executor_command_0.c                               :+:      :+:    :+:   */
+/*   executor_command.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 16:53:07 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/23 17:54:39 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/23 22:40:30 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,6 @@ int	execute(t_mms *mms, t_ast *node, t_executor *exec)
 }
 
 
-
 static int	execute_builtin(t_mms *mms, t_ast *node)
 {
 	int	saved_in;
@@ -59,10 +58,7 @@ static int	execute_builtin(t_mms *mms, t_ast *node)
 	saved_out = dup(STDOUT_FILENO);
 	status = redirection(mms, node);
 	if (status == 0)
-	{
-		expand(mms, node->tokens);
 		status = exec_builtin(mms, node);
-	}
 	dup2(saved_in, STDIN_FILENO);
 	dup2(saved_out, STDOUT_FILENO);
 	close(saved_in);
@@ -81,7 +77,6 @@ static void	execute_child(t_mms *mms, t_ast *node)
 	status = redirection(mms, node);
 	if (status != 0)
 		exit(status);
-	expand(mms, node->tokens);
 	if (path_relative(node))
 		exec.cmd_path = node->tokens[0]->value;
 	else
@@ -131,6 +126,7 @@ int	execute_cmd(t_mms *mms, t_ast *node)
 {
 	t_executor	exec;
 
+	expand(mms, node->tokens);
 	if (builtin(node))
 		return (execute_builtin(mms, node));
 	exec.pid = fork();
