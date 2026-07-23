@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/09 17:20:34 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/22 16:30:36 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/23 14:40:39 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,21 @@
 #include <stdlib.h>
 #include <errno.h> // CHANGE: needed to distinguish EACCES (126) / ENOENT (127) after execve
 #include "gnl.h"
+#include <signal.h>
+
+static void	print_error(char *msg)
+{
+	write(2, "minishell: ", 11);
+	write(2, msg, ft_strlen(msg));
+	write(2, "\n", 1);
+}
+
+static void	print_cmd_not_found(char *cmd)
+{
+	write(2, "minishell: ", 11);
+	write(2, cmd, ft_strlen(cmd));
+	write(2, ": command not found\n", 20);
+}
 
 /**
  * @brief Reads a line from standard input and writes it to the here-document pipe.
@@ -46,6 +61,7 @@ int	execute_here_doc(int *fd_here_doc, char *lim_nl)
 	// CHANGE: write() return value was never checked, failure was silently ignored
 	if (write(fd_here_doc[1], line, ft_strlen(line)) == -1)
 	{
+		perror("minishell"); // CHANGE
 		free(line);
 		return (-1);
 	}
@@ -74,10 +90,14 @@ int	here_doc(t_mms *mms, t_redir *redir)
 
 	(void)mms;
 	if (pipe(fd_here_doc))
+	{
+		perror("minishell"); // CHANGE
 		return (-1);
+	}
 	lim_nl = ft_strjoin(redir->file, "\n");
 	if (!lim_nl)
 	{
+		print_error("memory allocation failed"); // CHANGE
 		close(fd_here_doc[0]);
 		close(fd_here_doc[1]);
 		return (-1);
@@ -331,6 +351,8 @@ int	builtin(t_ast *node)
 
 int	count_cmd_pipeline(t_ast *node)
 {
+	if (!node)
+		return (0);
 	if (node->type != NODE_PIPE)
 		return (1);
 	return (count_cmd_pipeline(node->left) + 1);
@@ -349,6 +371,8 @@ int	count_cmd_pipeline(t_ast *node)
 
 static void	fill_pipeline_cmds(t_ast *node, t_ast **cmd_list, int *i)
 {
+	if (!node)
+		return ;
 	if (node->type == NODE_PIPE)
 	{
 		fill_pipeline_cmds(node->left, cmd_list, i);
@@ -500,8 +524,12 @@ int	execute(t_mms *mms, t_ast *node, t_executor *exec)
 	char	**cmd_tab;
 
 	cmd_tab = tks_to_cmd_tab(mms, node->tokens);
-	if (!cmd_tab) // CHANGE: cmd_tab allocation failure is now checked
+	cmd_tab = tks_to_cmd_tab(mms, node->tokens);
+	if (!cmd_tab)
+	{
+		print_error("memory allocation failed"); // CHANGE
 		return (1);
+	}
 	execve(exec->cmd_path, cmd_tab, NULL);
 	perror("minishell");
 	// CHANGE: 126 vs 127 were never distinguished (always returned 127).
@@ -536,10 +564,19 @@ int	execute_cmd_pipe(t_mms *mms, t_ast *cmd, int fd_in, int fd_out)
 	t_executor	exec;
 	int			status;
 
+	signal(SIGPIPE, SIG_DFL);
+	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, SIG_DFL);
 	if (dup2(fd_in, STDIN_FILENO) == -1)
+	{
+		perror("minishell"); // CHANGE
 		return (1);
+	}
 	if (dup2(fd_out, STDOUT_FILENO) == -1)
+	{
+		perror("minishell"); // CHANGE
 		return (1);
+	}
 	if (fd_in != STDIN_FILENO)
 		close(fd_in);
 	if (fd_out != STDOUT_FILENO)
@@ -556,7 +593,10 @@ int	execute_cmd_pipe(t_mms *mms, t_ast *cmd, int fd_in, int fd_out)
 	{
 		exec.cmd_path = find_path(mms, cmd, &exec);
 		if (exec.cmd_path == NULL)
+		{
+			print_cmd_not_found(cmd->tokens[0]->value);
 			return (127);
+		}
 	}
 	return (execute(mms, cmd, &exec));
 }
@@ -594,23 +634,24 @@ int	execute_pipeline(t_mms *mms, t_ast *node, t_pipeline *pipeline)
 		pipeline->pids[i] = fork();
 		if (pipeline->pids[i] == -1)
 		{
-			// CHANGE: pipe fds were leaked when fork() failed, now closed
+			perror("minishell"); // CHANGE
 			close(pipeline->fd[0]);
 			close(pipeline->fd[1]);
 			return (1);
 		}
 		if (pipeline->pids[i] == 0)
 		{
+			close(pipeline->fd[0]); // CHANGE: l'enfant n'écrit que sur ce pipe, il n'a pas besoin du bout lecture
 			if (i == 0)
 				exit(execute_cmd_pipe(mms,
-						pipeline->cmd_list[i],
-						STDIN_FILENO,
-						pipeline->fd[1]));
+				pipeline->cmd_list[i],
+				STDIN_FILENO,
+				pipeline->fd[1]));
 			else
 				exit(execute_cmd_pipe(mms,
-						pipeline->cmd_list[i],
-						pipeline->fd_prev,
-						pipeline->fd[1]));
+				pipeline->cmd_list[i],
+				pipeline->fd_prev,
+				pipeline->fd[1]));
 		}
 		close(pipeline->fd[1]);
 		if (pipeline->fd_prev != -1)
@@ -620,7 +661,10 @@ int	execute_pipeline(t_mms *mms, t_ast *node, t_pipeline *pipeline)
 	}
 	pipeline->pids[i] = fork();
 	if (pipeline->pids[i] == -1)
+	{
+		perror("minishell"); // CHANGE
 		return (1);
+	}
 	if (pipeline->pids[i] == 0)
 		exit(execute_cmd_pipe(mms,
 				pipeline->cmd_list[i],
@@ -633,7 +677,10 @@ int	execute_pipeline(t_mms *mms, t_ast *node, t_pipeline *pipeline)
 	{
 		// CHANGE: waitpid() return value is now checked
 		if (waitpid(pipeline->pids[i], &status, 0) == -1)
+		{
+			perror("minishell"); // CHANGE
 			return (1);
+		}
 		if (i == pipeline->nb_cmd - 1)
 			last_status = status;
 		i++;
@@ -664,16 +711,25 @@ int	pipeline(t_mms *mms, t_ast *node)
 
 	pipeline = stack_alloc(mms->sa, sizeof(t_pipeline));
 	if (!pipeline)
+	{
+		print_error("memory allocation failed"); // CHANGE
 		return (1);
+	}
 	pipeline->nb_cmd = count_cmd_pipeline(node);
 	pipeline->cmd_list = add_cmd_pipeline(mms, node,
 			pipeline->nb_cmd);
 	if (!pipeline->cmd_list)
+	{
+		print_error("memory allocation failed"); // CHANGE
 		return (1);
+	}
 	pipeline->pids = stack_alloc(mms->sa,
 			sizeof(pid_t) * pipeline->nb_cmd);
 	if (!pipeline->pids)
+	{
+		print_error("memory allocation failed"); // CHANGE
 		return (1);
+	}
 	pipeline->fd_prev = -1;
 	return (execute_pipeline(mms, node, pipeline));
 }
@@ -720,9 +776,15 @@ int	execute_cmd(t_mms *mms, t_ast *node)
 	}*/
 	exec.pid = fork();
 	if (exec.pid == -1)
+	{
+		perror("minishell"); // CHANGE
 		return (1);
+	}
 	if (exec.pid == 0)
 	{
+		signal(SIGPIPE, SIG_DFL);
+		signal(SIGINT, SIG_DFL);
+		signal(SIGQUIT, SIG_DFL);
 		status = redirection(mms, node);
 		if (status != 0)
 			exit(status);
@@ -733,11 +795,18 @@ int	execute_cmd(t_mms *mms, t_ast *node)
 		{
 			exec.cmd_path = find_path(mms, node, &exec);
 			if (exec.cmd_path == NULL)
+			{
+				print_cmd_not_found(node->tokens[0]->value);
 				exit(127);
+			}
 		}
 		exit(execute(mms, node, &exec));
 	}
-	waitpid(exec.pid, &status, 0);
+	if (waitpid(exec.pid, &status, 0) == -1) // CHANGE: retour vérifié + message
+	{
+		perror("minishell");
+		return (1);
+	}
 	if (WIFEXITED(status))
 		return (WEXITSTATUS(status));
 	if (WIFSIGNALED(status))
@@ -761,26 +830,28 @@ int	execute_cmd(t_mms *mms, t_ast *node)
 int	executor(t_mms *mms, t_ast *head)
 {
 	t_ast	*tmp;
-	int		signal;
+	int		exit_status;
 
+	if (!head)
+		return (0);
 	tmp = head;
-	signal = 0;
+	exit_status = 0;
 	if (tmp->type == NODE_CMD)
-		signal = execute_cmd(mms, tmp);
+		exit_status = execute_cmd(mms, tmp);
 	else if (tmp->type == NODE_AND)
 	{
-		signal = executor(mms, tmp->left);
-		if (signal == 0)
-			signal = executor(mms, tmp->right);
+		exit_status = executor(mms, tmp->left);
+		if (exit_status == 0)
+			exit_status = executor(mms, tmp->right);
 	}
 	else if (tmp->type == NODE_OR)
 	{
-		signal = executor(mms, tmp->left);
-		if (signal != 0)
-			signal = executor(mms, tmp->right);
+		exit_status = executor(mms, tmp->left);
+		if (exit_status != 0)
+			exit_status = executor(mms, tmp->right);
 	}
 	else if (tmp->type == NODE_PIPE)
-		signal = pipeline(mms, tmp);
-	mms->last_status = signal;
-	return (signal);
+		exit_status = pipeline(mms, tmp);
+	mms->last_status = exit_status;
+	return (exit_status);
 }
