@@ -18,6 +18,9 @@
 
 # define DELETED ((void *)-1)
 
+# define ENV_KEY_MAX 256
+# define ENV_NAME_MAX 8192
+
 typedef enum e_env_flags
 {
     EXPORTED = 1 << 0,
@@ -45,7 +48,6 @@ struct s_env
     t_env_entry *indexes;
     size_t      capacity;
     size_t      entries;
-    int         next_place;
 };
 
 /* Hashtable functions */
