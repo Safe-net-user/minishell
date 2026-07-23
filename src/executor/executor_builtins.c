@@ -6,12 +6,13 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/09 17:20:34 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/23 22:38:46 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/23 23:07:49 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "executor.h"
 #include "ft_strings.h"
+#include "builtin.h"
 
 //pas oublier de convertir en char **
 
@@ -30,19 +31,19 @@
 int	exec_builtin(t_mms *mms, t_ast *node)
 {
 	if (ft_strcmp(node->tokens[0]->value, "echo") == 0)
-		return (builtin_echo(mms, node));
+		return (builtin_echo(tks_to_cmd_tab(mms, node->tokens)));
 	else if (ft_strcmp(node->tokens[0]->value, "cd") == 0)
-		return (builtin_cd(mms, node));
+		return (builtin_cd(mms->env, tks_to_cmd_tab(mms, node->tokens)));
 	else if (ft_strcmp(node->tokens[0]->value, "pwd") == 0)
-		return (builtin_pwd(mms, node));
+		return (builtin_pwd());
 	else if (ft_strcmp(node->tokens[0]->value, "export") == 0)
-		return (builtin_export(mms, node));
+		return (builtin_export(mms, tks_to_cmd_tab(mms, node->tokens)));
 	else if (ft_strcmp(node->tokens[0]->value, "unset") == 0)
-		return (builtin_unset(mms, node));
+		return (builtin_unset(mms, tks_to_cmd_tab(mms, node->tokens)));
 	else if (ft_strcmp(node->tokens[0]->value, "env") == 0)
-		return (builtin_env(mms, node));
+		return (builtin_env(mms->env, tks_to_cmd_tab(mms, node->tokens)));
 	else
-		return (builtin_exit(mms, node));
+		return (builtin_exit(mms, tks_to_cmd_tab(mms, node->tokens)));
 }
 
 /**
