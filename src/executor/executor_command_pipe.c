@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 17:45:31 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/23 22:36:05 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/23 23:18:53 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ int	execute_cmd_pipe(t_mms *mms, t_ast *cmd, int fd_in, int fd_out)
 	signal(SIGQUIT, SIG_DFL);
 	if (setup_pipe_fds(fd_in, fd_out) != 0)
 		return (1);
-	expand(mms, cmd->tokens);
+	expand(mms, &cmd->tokens);
 	status = redirection(mms, cmd);
 	if (status != 0)
 		return (status);
