@@ -6,13 +6,14 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 16:55:06 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/23 23:35:13 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/23 23:39:11 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "executor.h"
 #include <fcntl.h>
 #include <unistd.h>
+#include "expander.h"
 
 static int	expand_redir_file(t_mms *mms, t_redir *redir)
 {

@@ -6,11 +6,13 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 17:01:15 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/23 17:01:53 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/23 23:42:32 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "executor.h"
+#include <unistd.h>
+#include "ft_strings.h"
 
 void	print_error(char *msg)
 {

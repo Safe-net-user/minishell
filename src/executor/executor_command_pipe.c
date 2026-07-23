@@ -6,13 +6,14 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 17:45:31 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/23 23:18:53 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/23 23:38:45 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "executor.h"
 #include <unistd.h>
 #include <signal.h>
+#include "expander.h"
 
 static int	setup_pipe_fds(int fd_in, int fd_out)
 {

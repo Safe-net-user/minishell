@@ -6,12 +6,13 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 17:49:46 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/23 17:50:03 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/23 23:46:22 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "executor.h"
 #include <unistd.h>
+#include <sys/wait.h>
 
 static void	pipeline_child(t_mms *mms, t_pipeline *pipeline, int i)
 {

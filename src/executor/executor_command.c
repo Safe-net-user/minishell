@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 16:53:07 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/23 23:19:03 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/23 23:41:06 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 #include <errno.h>
 #include <signal.h>
 #include <unistd.h>
+#include "expander.h"
+#include <sys/wait.h>
 
 /**
  * @brief Executes an external command using execve().

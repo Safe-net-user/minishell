@@ -6,12 +6,13 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 16:56:45 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/23 17:28:11 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/23 23:45:04 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "executor.h"
 #include <unistd.h>
+#include "ft_strings.h"
 
 /**
  * @brief Frees a NULL-terminated array of strings produced by ft_split.

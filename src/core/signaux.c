@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/11 21:18:50 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/23 22:47:04 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/23 23:37:22 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include "minishell.h"
+#include "readline/readline.h"
 
 int g_signal = 0;
 

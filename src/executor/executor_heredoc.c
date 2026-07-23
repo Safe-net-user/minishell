@@ -6,11 +6,14 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 16:55:56 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/23 17:35:38 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/23 23:43:40 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "executor.h"
+#include "gnl.h"
+#include <unistd.h>
+#include "ft_strings.h"
 
 /**
  * @brief Reads a line from standard input and writes it to the here-document pipe.
