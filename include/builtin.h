@@ -29,7 +29,7 @@ static inline void swap_addr(t_env_entry *a, t_env_entry *b)
 }
 
 /* ------------- builtin functions -------------*/
-t_builts_val	builtins_cd(t_env *env, char **argv);
+t_builts_val	builtin_cd(t_env *env, char **argv);
 t_builts_val	builtin_echo(char **tab);
 t_builts_val    builtin_env(t_env *env, char **args);
 t_builts_val    builtin_exit(t_mms *mms, char **args);
