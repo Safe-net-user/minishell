@@ -1,0 +1,2090 @@
+➜  minishell git:(main) ✗ valgrind --track-fds=yes --suppressions=file.supp ./minishell
+==232308== Memcheck, a memory error detector
+==232308== Copyright (C) 2002-2026, and GNU GPL'd, by Julian Seward et al.
+==232308== Using Valgrind-3.27.1 and LibVEX; rerun with -h for copyright info
+==232308== Command: ./minishell
+==232308==
+miniMishell$:
+miniMishell$:
+miniMishell$:
+miniMishell$: export arg=123
+miniMishell$: << $arg
+'> '123
+'> '^C==232383==
+==232383== Process terminating with default action of signal 2 (SIGINT)
+==232383==    at 0x494154E: __internal_syscall_cancel (cancellation.c:64)
+==232383==    by 0x4941573: __syscall_cancel (cancellation.c:75)
+==232383==    by 0x49BB45D: read (read.c:26)
+==232383==    by 0x406A6E: len_str (in /home/fiaudfiz/Documents/minishell/minishell)
+==232383==    by 0x406BB9: get_next_line (in /home/fiaudfiz/Documents/minishell/minishell)
+==232383==    by 0x4036DF: execute_here_doc (in /home/fiaudfiz/Documents/minishell/minishell)
+==232383==    by 0x403804: here_doc (in /home/fiaudfiz/Documents/minishell/minishell)
+==232383==    by 0x40421A: redirection (in /home/fiaudfiz/Documents/minishell/minishell)
+==232383==    by 0x404481: execute_redir_only (in /home/fiaudfiz/Documents/minishell/minishell)
+==232383==    by 0x402E48: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==232383==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==232383==
+==232383== FILE DESCRIPTORS: 6 open (1 inherited) at exit.
+==232383== Open file descriptor 6:
+==232383==    at 0x49BAD7D: pipe (pipe.c:29)
+==232383==    by 0x403757: here_doc (in /home/fiaudfiz/Documents/minishell/minishell)
+==232383==    by 0x40421A: redirection (in /home/fiaudfiz/Documents/minishell/minishell)
+==232383==    by 0x404481: execute_redir_only (in /home/fiaudfiz/Documents/minishell/minishell)
+==232383==    by 0x402E48: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==232383==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==232383==
+==232383== Open file descriptor 4: /dev/pts/0
+==232383==    at 0x49B65DB: dup (syscall-template.S:120)
+==232383==    by 0x404472: execute_redir_only (in /home/fiaudfiz/Documents/minishell/minishell)
+==232383==    by 0x402E48: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==232383==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==232383==
+==232383== Open file descriptor 3: /dev/pts/0
+==232383==    at 0x49B65DB: dup (syscall-template.S:120)
+==232383==    by 0x404466: execute_redir_only (in /home/fiaudfiz/Documents/minishell/minishell)
+==232383==    by 0x402E48: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==232383==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==232383==
+==232383== Open file descriptor 1: /dev/pts/0
+==232383==    at 0x49B660B: dup2 (dup2.c:29)
+==232383==    by 0x40343C: execute_cmd (in /home/fiaudfiz/Documents/minishell/minishell)
+==232383==    by 0x402E48: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==232383==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==232383==
+==232383== Open file descriptor 0: /dev/pts/0
+==232383==    at 0x49B660B: dup2 (dup2.c:29)
+==232383==    by 0x40342F: execute_cmd (in /home/fiaudfiz/Documents/minishell/minishell)
+==232383==    by 0x402E48: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==232383==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==232383==
+==232383==
+==232383== HEAP SUMMARY:
+==232383==     in use at exit: 331,352 bytes in 413 blocks
+==232383==   total heap usage: 739 allocs, 326 frees, 359,633 bytes allocated
+==232383==
+miniMishell$: ==232383== LEAK SUMMARY:
+==232383==    definitely lost: 2,049 bytes in 1 blocks
+==232383==    indirectly lost: 0 bytes in 0 blocks
+==232383==      possibly lost: 0 bytes in 0 blocks
+==232383==    still reachable: 329,303 bytes in 412 blocks
+==232383==         suppressed: 0 bytes in 0 blocks
+==232383== Rerun with --leak-check=full to see details of leaked memory
+==232383==
+==232383== For lists of detected and suppressed errors, rerun with: -s
+==232383== ERROR SUMMARY: 5 errors from 5 contexts (suppressed: 0 from 0)
+miniMishell$: ls | cd | exit 33
+exit
+==232606== Invalid read of size 8
+==232606==    at 0x404BDF: builtin_exit (in /home/fiaudfiz/Documents/minishell/minishell)
+==232606==    by 0x404128: execute_pipeline (in /home/fiaudfiz/Documents/minishell/minishell)
+==232606==    by 0x402EC8: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==232606==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==232606==  Address 0x4b085fc is 764 bytes inside a block of size 32,768 free'd
+==232606==    at 0x4843D73: free (vg_replace_malloc.c:950)
+==232606==    by 0x400F7C: free_og_struct (in /home/fiaudfiz/Documents/minishell/minishell)
+==232606==    by 0x404BDE: builtin_exit (in /home/fiaudfiz/Documents/minishell/minishell)
+==232606==    by 0x404128: execute_pipeline (in /home/fiaudfiz/Documents/minishell/minishell)
+==232606==    by 0x402EC8: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==232606==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==232606==  Block was alloc'd at
+==232606==    at 0x4840AE6: malloc (vg_replace_malloc.c:447)
+==232606==    by 0x407251: init_stack_allocator (in /home/fiaudfiz/Documents/minishell/minishell)
+==232606==    by 0x400751: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==232606==
+==232605==
+==232605== FILE DESCRIPTORS: 3 open (1 inherited) at exit.
+==232605== Open file descriptor 1:
+==232605==    at 0x49B660B: dup2 (dup2.c:29)
+==232605==    by 0x403195: execute_cmd_pipe (in /home/fiaudfiz/Documents/minishell/minishell)
+==232605==    by 0x404105: execute_pipeline (in /home/fiaudfiz/Documents/minishell/minishell)
+==232605==    by 0x402EC8: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==232605==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==232605==
+==232605== Open file descriptor 0:
+==232605==    at 0x49B660B: dup2 (dup2.c:29)
+==232605==    by 0x403180: execute_cmd_pipe (in /home/fiaudfiz/Documents/minishell/minishell)
+==232605==    by 0x404105: execute_pipeline (in /home/fiaudfiz/Documents/minishell/minishell)
+==232605==    by 0x402EC8: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==232605==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==232605==
+==232605==
+==232605== HEAP SUMMARY:
+==232605==     in use at exit: 323,169 bytes in 391 blocks
+==232605==   total heap usage: 760 allocs, 369 frees, 364,197 bytes allocated
+==232605==
+==232605== LEAK SUMMARY:
+==232605==    definitely lost: 3 bytes in 1 blocks
+==232605==    indirectly lost: 0 bytes in 0 blocks
+==232605==      possibly lost: 0 bytes in 0 blocks
+==232605==    still reachable: 323,166 bytes in 390 blocks
+==232605==         suppressed: 0 bytes in 0 blocks
+==232605== Rerun with --leak-check=full to see details of leaked memory
+==232605==
+==232605== For lists of detected and suppressed errors, rerun with: -s
+==232605== ERROR SUMMARY: 2 errors from 2 contexts (suppressed: 0 from 0)
+==232606==
+==232606== FILE DESCRIPTORS: 3 open (1 inherited) at exit.
+==232606== Open file descriptor 1: /dev/pts/0
+==232606==    at 0x49B660B: dup2 (dup2.c:29)
+==232606==    by 0x403195: execute_cmd_pipe (in /home/fiaudfiz/Documents/minishell/minishell)
+==232606==    by 0x404128: execute_pipeline (in /home/fiaudfiz/Documents/minishell/minishell)
+==232606==    by 0x402EC8: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==232606==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==232606==
+==232606== Open file descriptor 0:
+==232606==    at 0x49B660B: dup2 (dup2.c:29)
+==232606==    by 0x403180: execute_cmd_pipe (in /home/fiaudfiz/Documents/minishell/minishell)
+==232606==    by 0x404128: execute_pipeline (in /home/fiaudfiz/Documents/minishell/minishell)
+==232606==    by 0x402EC8: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==232606==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==232606==
+==232606==
+==232606== HEAP SUMMARY:
+==232606==     in use at exit: 228,916 bytes in 252 blocks
+==232606==   total heap usage: 757 allocs, 505 frees, 355,960 bytes allocated
+==232606==
+==232606== LEAK SUMMARY:
+==232606==    definitely lost: 18 bytes in 6 blocks
+==232606==    indirectly lost: 0 bytes in 0 blocks
+==232606==      possibly lost: 3 bytes in 1 blocks
+==232606==    still reachable: 228,895 bytes in 245 blocks
+==232606==         suppressed: 0 bytes in 0 blocks
+==232606== Rerun with --leak-check=full to see details of leaked memory
+==232606==
+==232606== For lists of detected and suppressed errors, rerun with: -s
+==232606== ERROR SUMMARY: 3 errors from 3 contexts (suppressed: 0 from 0)
+miniMishell$: echo $?
+33
+miniMishell$: exit ewoe
+exit
+==232308==
+==232308== FILE DESCRIPTORS: 5 open (1 inherited) at exit.
+==232308== Open file descriptor 4: /dev/pts/0
+==232308==    at 0x49B65DB: dup (syscall-template.S:120)
+==232308==    by 0x40340D: execute_cmd (in /home/fiaudfiz/Documents/minishell/minishell)
+==232308==    by 0x402E48: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==232308==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==232308==
+==232308== Open file descriptor 3: /dev/pts/0
+==232308==    at 0x49B65DB: dup (syscall-template.S:120)
+==232308==    by 0x403400: execute_cmd (in /home/fiaudfiz/Documents/minishell/minishell)
+==232308==    by 0x402E48: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==232308==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==232308==
+==232308== Open file descriptor 1: /dev/pts/0
+==232308==    at 0x49B660B: dup2 (dup2.c:29)
+==232308==    by 0x40343C: execute_cmd (in /home/fiaudfiz/Documents/minishell/minishell)
+==232308==    by 0x402E48: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==232308==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==232308==
+==232308== Open file descriptor 0: /dev/pts/0
+==232308==    at 0x49B660B: dup2 (dup2.c:29)
+==232308==    by 0x40342F: execute_cmd (in /home/fiaudfiz/Documents/minishell/minishell)
+==232308==    by 0x402E48: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==232308==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==232308==
+==232308==
+==232308== HEAP SUMMARY:
+==232308==     in use at exit: 229,002 bytes in 256 blocks
+==232308==   total heap usage: 795 allocs, 539 frees, 356,711 bytes allocated
+==232308==
+==232308== LEAK SUMMARY:
+==232308==    definitely lost: 12 bytes in 4 blocks
+==232308==    indirectly lost: 0 bytes in 0 blocks
+==232308==      possibly lost: 5 bytes in 1 blocks
+==232308==    still reachable: 228,985 bytes in 251 blocks
+==232308==         suppressed: 0 bytes in 0 blocks
+==232308== Rerun with --leak-check=full to see details of leaked memory
+==232308==
+==232308== For lists of detected and suppressed errors, rerun with: -s
+==232308== ERROR SUMMARY: 4 errors from 4 contexts (suppressed: 0 from 0)
+➜  minishell git:(main) ✗ valgrind --track-fds=yes --suppressions=file.supp ./minishell
+==232706== Memcheck, a memory error detector
+==232706== Copyright (C) 2002-2026, and GNU GPL'd, by Julian Seward et al.
+==232706== Using Valgrind-3.27.1 and LibVEX; rerun with -h for copyright info
+==232706== Command: ./minishell
+==232706==
+miniMishell$: ls ls
+ls: cannot access 'ls': No such file or directory
+miniMishell$: cat Makefile < out < out1 < out2
+minishell: No such file or directory
+==232892==
+==232892== FILE DESCRIPTORS: 3 open (3 inherited) at exit.
+==232892==
+==232892== HEAP SUMMARY:
+==232892==     in use at exit: 323,402 bytes in 390 blocks
+==232892==   total heap usage: 725 allocs, 335 frees, 355,710 bytes allocated
+==232892==
+==232892== LEAK SUMMARY:
+==232892==    definitely lost: 0 bytes in 0 blocks
+==232892==    indirectly lost: 0 bytes in 0 blocks
+==232892==      possibly lost: 0 bytes in 0 blocks
+==232892==    still reachable: 323,402 bytes in 390 blocks
+==232892==         suppressed: 0 bytes in 0 blocks
+==232892== Rerun with --leak-check=full to see details of leaked memory
+==232892==
+==232892== For lists of detected and suppressed errors, rerun with: -s
+==232892== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+miniMishell$: ls
+file.supp  include  LICENSE   minishell        obj	  src	 Usage_norme_format.txt
+images	   lib	    Makefile  norme_format.sh  README.md  tests
+miniMishell$: cat Makefile > out > out1 > out2
+miniMishell$: ls
+file.supp  include  LICENSE   minishell        obj  out1  README.md  tests
+images	   lib	    Makefile  norme_format.sh  out  out2  src	     Usage_norme_format.txt
+miniMishell$: cat out
+miniMishell$: cat out1
+miniMishell$: cat out2
+MAKEFLAGS		+= --no-print-directory
+NAME			:= minishell
+CC				:= cc
+MKDIRP			:= mkdir -p
+RMRF			:= rm -rf
+RMF				:= rm -f
+HDR				:= include
+LIB				:= lib
+LIBFT_D			:= $(LIB)/libft
+OBJ				:= obj
+DEP				:= dep
+SRC				:= src
+ASM				:= asm
+CORE			:= core
+BUILTIN			:= builtin
+LEXER			:= lexer
+PARSER			:= parser
+REPL			:= repl
+UTILS			:= utils
+ENV				:= env
+EXPANDER		:= expander
+EXECUTOR		:= executor
+LIBFT			:= libft.a
+MODE			?= releas
+COMPILER_SH		:= $(shell $(CC) --version)
+ifeq ($(findstring clang, $(COMPILER_SH)), clang)
+	COMPILER		:= clang
+else ifeq ($(findstring GCC, $(COMPILER_SH)), GCC)
+	COMPILER		:= gcc
+else
+	@echo "Your device require clang or gcc to run the program"
+	@exit 1
+endif
+ifeq ($(MODE),release)
+	W_FLAGS			:= -Wall -Wextra -Werror
+else
+	ifeq ($(COMPILER), clang)
+		W_FLAGS			:= 	-Wall -Werror -Wextra -Wvla -Wpedantic -pedantic-errors -Wmisleading-indentation -Wsign-conversion -Wshadow -Wnull-dereference -fshort-enums
+	else ifeq ($(COMPILER), gcc)
+		W_FLAGS			:= 	-Wall -Werror -Wextra -Wvla -Wpedantic -pedantic-errors -Wmisleading-indentation -Wsign-conversion -Wstrict-aliasing=3 -Wduplicated-cond -Wstringop-overflow -Wshadow -Wnull-dereference -Warray-bounds -Wrestrict -Wconversion
+	else
+		@echo "Your device require clang or gcc to run the program"
+		@exit 1
+	endif
+endif
+ifeq ($(MODE),debug)
+	CFLAGS := -g -O1 -std=c99
+else ifeq ($(MODE),debug_memory)
+	CFLAGS := -g -O1 -std=c99 -fsanitize=address -fsanitize=undefined -fno-omit-frame-pointer
+else ifeq ($(MODE),debug_thread)
+	CFLAGS := -g -O1 -std=c99 -fsanitize=thread -fno-omit-frame-pointer
+else ifeq ($(MODE),release)
+	CFLAGS := -O3 -std=c99
+endif
+SOURCES 			:= \
+$(SRC)/$(CORE)/main.c \
+$(SRC)/$(CORE)/free.c \
+$(SRC)/$(CORE)/utils.c \
+$(SRC)/$(CORE)/signaux.c \
+$(SRC)/$(ENV)/ht_env.c \
+$(SRC)/$(ENV)/converter.c \
+$(SRC)/$(ENV)/set_env.c \
+$(SRC)/$(LEXER)/lexer.c \
+$(SRC)/$(LEXER)/lx_normal.c \
+$(SRC)/$(LEXER)/lx_squote.c \
+$(SRC)/$(LEXER)/lx_dquote.c \
+$(SRC)/$(LEXER)/lx_operator.c \
+$(SRC)/$(EXPANDER)/expander.c \
+$(SRC)/$(PARSER)/parser.c \
+$(SRC)/$(PARSER)/parser_command.c \
+$(SRC)/$(PARSER)/parser_operator.c \
+$(SRC)/$(PARSER)/parser_utils.c \
+$(SRC)/$(EXECUTOR)/executor.c \
+$(SRC)/$(EXECUTOR)/executor_builtins.c \
+$(SRC)/$(EXECUTOR)/executor_command_pipe.c \
+$(SRC)/$(EXECUTOR)/executor_command.c \
+$(SRC)/$(EXECUTOR)/executor_errors.c \
+$(SRC)/$(EXECUTOR)/executor_heredoc.c \
+$(SRC)/$(EXECUTOR)/executor_path.c \
+$(SRC)/$(EXECUTOR)/executor_pipeline_0.c \
+$(SRC)/$(EXECUTOR)/executor_pipeline_1.c \
+$(SRC)/$(EXECUTOR)/executor_redir.c \
+$(SRC)/$(EXECUTOR)/executor_utils_0.c \
+$(SRC)/$(EXECUTOR)/executor_utils_1.c \
+$(SRC)/$(BUILTIN)/cd.c \
+$(SRC)/$(BUILTIN)/echo.c \
+$(SRC)/$(BUILTIN)/env.c \
+$(SRC)/$(BUILTIN)/exit.c \
+$(SRC)/$(BUILTIN)/export.c \
+$(SRC)/$(BUILTIN)/export_utils.c \
+$(SRC)/$(BUILTIN)/pwd.c \
+$(SRC)/$(BUILTIN)/unset.c \
+OBJECTS 			:= $(patsubst $(SRC)/%.c, $(OBJ)/%.o, $(SOURCES))
+DEPENDENCE			:= $(patsubst $(SRC)/%.c, $(DEP)/%.d, $(SOURCES))
+ASM_FILES			:= $(patsubst $(SRC)/%.c, $(ASM)/%.s, $(SOURCES))
+all: $(NAME)
+-include $(DEPENDENCE)
+$(LIBFT):
+	make -C $(LIBFT_D)
+$(NAME): $(LIBFT) $(OBJECTS)
+	@$(CC) $(W_FLAGS) $(CFLAGS) $(OBJECTS) -L$(LIBFT_D) -lft -lreadline -I$(HDR) -I$(LIBFT_D)/include -o $(NAME)
+$(OBJ)/%.o: $(SRC)/%.c
+	@mkdir -p $(dir $@)
+	@$(CC) $(W_FLAGS) $(CFLAGS) -MMD -MP -I$(HDR) -I$(LIBFT_D)/include -c $< -o $@
+f_asm: $(ASM_FILES)
+$(ASM)/%.s: $(SRC)/%.c
+	@mkdir -p $(dir $@)
+	@$(CC) $(W_FLAGS) $(CFLAGS) -I$(HDR) -S $< -o $@
+clean:
+	$(RMRF) $(OBJ)
+	$(RMRF) $(ASM)
+	make clean -C $(LIBFT_D)
+
+fclean: clean
+	$(RMF) $(NAME)
+	make fclean -C $(LIBFT_D)
+re: fclean all
+	make re -C $(LIBFT_D)
+.PHONY: all f_asm re fclean cleanminiMishell$:
+miniMishell$:
+miniMishell$: 402EC8: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==232605==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==232605==
+==232605== Open file descriptor 0:
+==232605==    at 0x49B660B: dup2 (dup2.c:29)
+==232605==    by 0x403180: execute_cmd_pipe (in /home/fiaudfiz/Documents/minishell/minishell)
+==232605==    by 0x404105: execute_pipeline (in /home/fiaudfiz/Documents/minishell/minishell)
+==232605==    by 0x402EC8: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==232605==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==232605==
+==232605==
+==232605== HEAP SUMMARY:
+==232605==     in use at exit: 323,169 bytes in 391 blocks
+==232605==   total heap usage: 760 allocs, 369 frees, 364,197 bytes allocated
+==232605==
+==232605== LEAK SUMMARY:
+==232605==    definitely lost: 3 bytes in 1 blocks
+==232605==    indirectly lost: 0 bytes in 0 blocks
+==232605==      possibly lost: 0 bytes in 0 blocks
+==232605==    still reachable: 323,166 bytes in 390 blocks
+==232605==         suppressed: 0 bytes in 0 blocks
+==232605== Rerun with --leak-check=full to see details of leaked memory
+==232605==
+==232605== For lists of detected and suppressed errors, rerun with: -s
+==232605== ERROR SUMMARY: 2 errors from 2 contexts (suppressed: 0 from 0)
+==232606==
+==232606== FILE DESCRIPTORS: 3 open (1 inherited) at exit.
+==232606== Open file descriptor 1: /dev/pts/0
+==232606==    at 0x49B660B: dup2 (dup2.c:29)
+==232606==    by 0x403195: execute_cmd_pipe (in /home/fiaudfiz/Documents/minishell/minishell)
+==232606==    by 0x404128: execute_pipeline (in /home/fiaudfiz/Documents/minishell/minishell)
+==232606==    by 0x402EC8: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==232606==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==232606==
+==232606== Open file descriptor 0:
+==232606==    at 0x49B660B: dup2 (dup2.c:29)
+==232606==    by 0x403180: execute_cmd_pipe (in /home/fiaudfiz/Documents/minishell/minishell)
+==232606==    by 0x404128: execute_pipeline (in /home/fiaudfiz/Documents/minishell/minishell)
+==232606==    by 0x402EC8: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==232606==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==232606==
+==232606==
+==232606== HEAP SUMMARY:
+==232606==     in use at exit: 228,916 bytes in 252 blocks
+==232606==   total heap usage: 757 allocs, 505 frees, 355,960 bytes allocated
+==232606==
+==232606== LEAK SUMMARY:
+==232606==    definitely lost: 18 bytes in 6 blocks
+==232606==    indirectly lost: 0 bytes in 0 blocks
+==232606==      possibly lost: 3 bytes in 1 blocks
+==232606==    still reachable: 228,895 bytes in 245 blocks
+==232606==         suppressed: 0 bytes in 0 blocks
+==232606== Rerun with --leak-check=full to see details of leaked memory
+==232606==
+==232606== For lists of detected and suppressed errors, rerun with: -s
+==232606== ERROR SUMMARY: 3 errors from 3 contexts (suppressed: 0 from 0)
+miniMishell$: echo $?
+33
+miniMishell$: exit ewoe
+exit
+==232308==
+==232308== FILE DESCRIPTORS: 5 open (1 inherited) at exit.
+==232308== Open file descriptor 4: /dev/pts/0
+==232308==    at 0x49B65DB: dup (syscall-template.S:120)
+==232308==    by 0x40340D: execute_cmd (in /home/fiaudfiz/Documents/minishell/minishell)
+==232308==    by 0x402E48: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==232308==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==232308==
+==232308== Open file descriptor 3: /dev/pts/0
+==232308==    at 0x49B65DB: dup (syscall-template.S:120)
+==232308==    by 0x403400: execute_cmd (in /home/fiaudfiz/Documents/minishell/minishell)
+==232308==    by 0x402E48: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==232308==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==232308==
+==232308== Open file descriptor 1: /dev/pts/0
+==232308==    at 0x49B660B: dup2 (dup2.c:29)
+==232308==    by 0x40343C: execute_cmd (in /home/fiaudfiz/Documents/minishell/minishell)
+==232308==    by 0x402E48: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==232308==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==232308==
+==232308== Open file descriptor 0: /dev/pts/0
+==232308==    at 0x49B660B: dup2 (dup2.c:29)
+==232308==    by 0x40342F: execute_cmd (in /home/fiaudfiz/Documents/minishell/minishell)
+==232308==    by 0x402E48: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==232308==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==232308==
+==232308==
+==232308== HEAP SUMMARY:
+==232308==     in use at exit: 229,002 bytes in 256 blocks
+==232308==   total heap usage: 795 allocs, 539 frees, 356,711 bytes allocated
+==232308==
+==232308== LEAK SUMMARY:
+==232308==    definitely lost: 12 bytes in 4 blocks
+==232308==    indirectly lost: 0 bytes in 0 blocks
+==232308==      possibly lost: 5 bytes in 1 blocks
+==232308==    still reachable: 228,985 bytes in 251 blocks
+==232308==         suppressed: 0 bytes in 0 blocks
+==232308== Rerun with --leak-check=full to see details of leaked memory
+==232308==
+==232308== For lists of detected and suppressed errors, rerun with: -s
+==232308== ERROR SUMMARY: 4 errors from 4 contexts (suppressed: 0 from 0)
+➜  minishell git:(main) ✗ valgrind --track-fds=yes --suppressions=file.supp ./minishell
+==232706== Memcheck, a memory error detector
+==232706== Copyright (C) 2002-2026, and GNU GPL'd, by Julian Seward et al.
+==232706== Using Valgrind-3.27.1 and LibVEX; rerun with -h for copyright info
+==232706== Command: ./minishell
+==232706==
+miniMishell$: ls ls
+ls: cannot access 'ls': No such file or directory
+miniMishell$: cat Makefile < out < out1 < out2
+minishell: No such file or directory
+==232892==
+==232892== FILE DESCRIPTORS: 3 open (3 inherited) at exit.
+==232892==
+==232892== HEAP SUMMARY:
+==232892==     in use at exit: 323,402 bytes in 390 blocks
+==232892==   total heap usage: 725 allocs, 335 frees, 355,710 bytes allocated
+==232892==
+==232892== LEAK SUMMARY:
+==232892==    definitely lost: 0 bytes in 0 blocks
+==232892==    indirectly lost: 0 bytes in 0 blocks
+==232892==      possibly lost: 0 bytes in 0 blocks
+==232892==    still reachable: 323,402 bytes in 390 blocks
+==232892==         suppressed: 0 bytes in 0 blocks
+==232892== Rerun with --leak-check=full to see details of leaked memory
+==232892==
+==232892== For lists of detected and suppressed errors, rerun with: -s
+==232892== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+miniMishell$: ls
+file.supp  include  LICENSE   minishell        obj        src    Usage_norme_format.txt
+images     lib      Makefile  norme_format.sh  README.md  tests
+miniMishell$: cat Makefile > out > out1 > out2
+miniMishell$: ls
+file.supp  include  LICENSE   minishell        obj  out1  README.md  tests
+images     lib      Makefile  norme_format.sh  out  out2  src        Usage_norme_format.txt
+miniMishell$: cat out
+miniMishell$: cat out1
+miniMishell$: cat out2
+MAKEFLAGS               += --no-print-directory
+NAME                    := minishell
+CC                              := cc
+MKDIRP                  := mkdir -p
+RMRF                    := rm -rf
+RMF                             := rm -f
+HDR                             := include
+LIB                             := lib
+LIBFT_D                 := $(LIB)/libft
+OBJ                             := obj
+DEP                             := dep
+SRC                             := src
+ASM                             := asm
+CORE                    := core
+BUILTIN                 := builtin
+LEXER                   := lexer
+PARSER                  := parser
+REPL                    := repl
+UTILS                   := utils
+ENV                             := env
+EXPANDER                := expander
+EXECUTOR                := executor
+LIBFT                   := libft.a
+MODE                    ?= release
+COMPILER_SH             := $(shell $(CC) --version)
+ifeq ($(findstring clang, $(COMPILER_SH)), clang)
+        COMPILER                := clang
+else ifeq ($(findstring GCC, $(COMPILER_SH)), GCC)
+        COMPILER                := gcc
+else
+        @echo "Your device require clang or gcc to run the program"
+        @exit 1
+endif
+ifeq ($(MODE),release)
+        W_FLAGS                 := -Wall -Wextra -Werror
+else
+        ifeq ($(COMPILER), clang)
+                W_FLAGS                 :=      -Wall -Werror -Wextra -Wvla -Wpedantic -pedantic-errors -Wmisleading-indentation -Wsign-conversion -Wshadow -Wnull-dereference -fshort-enums
+        else ifeq ($(COMPILER), gcc)
+                W_FLAGS                 :=      -Wall -Werror -Wextra -Wvla -Wpedantic -pedantic-errors -Wmisleading-indentation -Wsign-conversion -Wstrict-aliasing=3 -Wduplicated-cond -Wstringop-overflow -Wshadow -Wnull-dereference -Warray-bounds -Wrestrict -Wconversion
+        else
+                @echo "Your device require clang or gcc to run the program"
+                @exit 1
+        endif
+endif
+ifeq ($(MODE),debug)
+        CFLAGS := -g -O1 -std=c99
+else ifeq ($(MODE),debug_memory)
+        CFLAGS := -g -O1 -std=c99 -fsanitize=address -fsanitize=undefined -fno-omit-frame-pointer
+else ifeq ($(MODE),debug_thread
+        CFLAGS := -g -O1 -std=c99 -fsanitize=thread -fno-omit-frame-pointer
+else ifeq ($(MODE),release)
+        CFLAGS := -O3 -std=c99
+endif
+# --------------------- FILES --------------------- #
+SOURCES                         := \
+$(SRC)/$(CORE)/main.c \
+$(SRC)/$(CORE)/free.c \
+$(SRC)/$(CORE)/utils.c \
+$(SRC)/$(CORE)/signaux.c \
+$(SRC)/$(ENV)/ht_env.c \
+$(SRC)/$(ENV)/converter.c \
+$(SRC)/$(ENV)/set_env.c \
+$(SRC)/$(LEXER)/lexer.c \
+$(SRC)/$(LEXER)/lx_normal.c \
+$(SRC)/$(LEXER)/lx_squote.c \
+$(SRC)/$(LEXER)/lx_dquote.c \
+$(SRC)/$(LEXER)/lx_operator.c \
+$(SRC)/$(EXPANDER)/expander.c \
+$(SRC)/$(PARSER)/parser.c \
+$(SRC)/$(PARSER)/parser_command.c \
+$(SRC)/$(PARSER)/parser_operator.c \
+$(SRC)/$(PARSER)/parser_utils.c \
+$(SRC)/$(EXECUTOR)/executor.c \
+$(SRC)/$(EXECUTOR)/executor_builtins.c \
+$(SRC)/$(EXECUTOR)/executor_command_pipe.c \
+$(SRC)/$(EXECUTOR)/executor_command.c \
+$(SRC)/$(EXECUTOR)/executor_errors.c \
+$(SRC)/$(EXECUTOR)/executor_heredoc.c \
+$(SRC)/$(EXECUTOR)/executor_path.c \
+$(SRC)/$(EXECUTOR)/executor_pipeline_0.c \
+$(SRC)/$(EXECUTOR)/executor_pipeline_1.c \
+$(SRC)/$(EXECUTOR)/executor_redir.c \
+$(SRC)/$(EXECUTOR)/executor_utils_0.c \
+$(SRC)/$(EXECUTOR)/executor_utils_1.c \
+$(SRC)/$(BUILTIN)/cd.c \
+$(SRC)/$(BUILTIN)/echo.c \
+$(SRC)/$(BUILTIN)/env.c \
+$(SRC)/$(BUILTIN)/exit.c \
+$(SRC)/$(BUILTIN)/export.c \
+$(SRC)/$(BUILTIN)/export_utils.c \
+$(SRC)/$(BUILTIN)/pwd.c \
+$(SRC)/$(BUILTIN)/unset.c \
+OBJECTS                         := $(patsubst $(SRC)/%.c, $(OBJ)/%.o, $(SOURCES))
+DEPENDENCE                      := $(patsubst $(SRC)/%.c, $(DEP)/%.d, $(SOURCES))
+ASM_FILES                       := $(patsubst $(SRC)/%.c, $(ASM)/%.s, $(SOURCES))
+all: $(NAME)
+-include $(DEPENDENCE)
+$(LIBFT):
+        make -C $(LIBFT_D)
+$(NAME): $(LIBFT) $(OBJECTS)
+        @$(CC) $(W_FLAGS) $(CFLAGS) $(OBJECTS) -L$(LIBFT_D) -lft -lreadline -I$(HDR) -I$(LIBFT_D)/include -o $(NAME)
+$(OBJ)/%.o: $(SRC)/%.c
+
+        @mkdir -p $(dir $@)
+
+        @$(CC) $(W_FLAGS) $(CFLAGS) -MMD -MP -I$(HDR) -I$(LIBFT_D)/include -c $< -o $@
+# -------------- COMPILATION ASM RULES ------------ #
+f_asm: $(ASM_FILES)
+
+$(ASM)/%.s: $(SRC)/%.c
+
+        @mkdir -p $(dir $@)
+
+        @$(CC) $(W_FLAGS) $(CFLAGS) -I$(HDR) -S $< -o $@
+clean:
+        $(RMRF) $(OBJ)
+        $(RMRF) $(ASM
+        make clean -C $(LIBFT_D)
+fclean: clean
+        $(RMF) $(NAME)
+        make fclean -C $(LIBFT_D)
+re: fclean all
+        make re -C $(LIBFT_D)
+miniMishell$: lslsslsl
+minishell: lslsslsl: command not found
+==233187==
+==233187== FILE DESCRIPTORS: 3 open (3 inherited) at exit.
+==233187==
+==233187== HEAP SUMMARY:
+==233187==     in use at exit: 419,507 bytes in 923 blocks
+==233187==   total heap usage: 8,481 allocs, 7,558 frees, 25,425,112 bytes allocated
+==233187==
+==233187== LEAK SUMMARY:
+==233187==    definitely lost: 93 bytes in 11 blocks
+==233187==    indirectly lost: 0 bytes in 0 blocks
+==233187==      possibly lost: 0 bytes in 0 blocks
+==233187==    still reachable: 419,414 bytes in 912 blocks
+==233187==         suppressed: 0 bytes in 0 blocks
+==233187== Rerun with --leak-check=full to see details of leaked memory
+==233187==
+==233187== For lists of detected and suppressed errors, rerun with: -s
+==233187== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+miniMishell$: cat
+^\miniMishell$: sleep 34
+^\miniMishell$: "'$ok'"
+minishell: '': command not found
+==233478==
+==233478== FILE DESCRIPTORS: 3 open (3 inherited) at exit.
+==233478==
+==233478== HEAP SUMMARY:
+==233478==     in use at exit: 419,630 bytes in 932 blocks
+==233478==   total heap usage: 8,548 allocs, 7,616 frees, 25,426,557 bytes allocated
+==233478==
+==233478== LEAK SUMMARY:
+==233478==    definitely lost: 103 bytes in 12 blocks
+==233478==    indirectly lost: 0 bytes in 0 blocks
+==233478==      possibly lost: 0 bytes in 0 blocks
+==233478==    still reachable: 419,527 bytes in 920 blocks
+==233478==         suppressed: 0 bytes in 0 blocks
+==233478== Rerun with --leak-check=full to see details of leaked memory
+==233478==
+==233478== For lists of detected and suppressed errors, rerun with: -s
+==233478== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+miniMishell$: $'?'
+minishell: $?: command not found
+==233528==
+==233528== FILE DESCRIPTORS: 3 open (3 inherited) at exit.
+==233528==
+==233528== HEAP SUMMARY:
+==233528==     in use at exit: 419,671 bytes in 935 blocks
+==233528==   total heap usage: 8,569 allocs, 7,634 frees, 25,427,006 bytes allocated
+==233528==
+==233528== LEAK SUMMARY:
+==233528==    definitely lost: 103 bytes in 12 blocks
+==233528==    indirectly lost: 0 bytes in 0 blocks
+==233528==      possibly lost: 0 bytes in 0 blocks
+==233528==    still reachable: 419,568 bytes in 923 blocks
+==233528==         suppressed: 0 bytes in 0 blocks
+==233528== Rerun with --leak-check=full to see details of leaked memory
+==233528==
+==233528== For lists of detected and suppressed errors, rerun with: -s
+==233528== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+miniMishell$: $?ok
+minishell: 127ok: command not found
+==233573==
+==233573== FILE DESCRIPTORS: 3 open (3 inherited) at exit.
+==233573==
+==233573== HEAP SUMMARY:
+==233573==     in use at exit: 419,729 bytes in 940 blocks
+==233573==   total heap usage: 8,600 allocs, 7,660 frees, 25,427,577 bytes allocated
+==233573==
+==233573== LEAK SUMMARY:
+==233573==    definitely lost: 103 bytes in 12 blocks
+==233573==    indirectly lost: 0 bytes in 0 blocks
+==233573==      possibly lost: 0 bytes in 0 blocks
+==233573==    still reachable: 419,626 bytes in 928 blocks
+==233573==         suppressed: 0 bytes in 0 blocks
+==233573== Rerun with --leak-check=full to see details of leaked memory
+==233573==
+==233573== For lists of detected and suppressed errors, rerun with: -s
+==233573== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+miniMishell$: $?'ok'
+minishell: 127ok: command not found
+==233598==
+==233598== FILE DESCRIPTORS: 3 open (3 inherited) at exit.
+==233598==
+==233598== HEAP SUMMARY:
+==233598==     in use at exit: 419,761 bytes in 943 blocks
+==233598==   total heap usage: 8,629 allocs, 7,686 frees, 25,428,112 bytes allocated
+==233598==
+==233598== LEAK SUMMARY:
+==233598==    definitely lost: 103 bytes in 12 blocks
+==233598==    indirectly lost: 0 bytes in 0 blocks
+==233598==      possibly lost: 0 bytes in 0 blocks
+==233598==    still reachable: 419,658 bytes in 931 blocks
+==233598==         suppressed: 0 bytes in 0 blocks
+==233598== Rerun with --leak-check=full to see details of leaked memory
+==233598==
+==233598== For lists of detected and suppressed errors, rerun with: -s
+==233598== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+miniMishell$: $?'
+miniMishell$: echo -nnnnnnnn -n -n -nn
+miniMishell$: echo -nnnnnnnn -n -n -nn ok
+okminiMishell$: << ok << oui << non
+'> 'non
+'> 'ok
+==233717==
+==233717== FILE DESCRIPTORS: 5 open (1 inherited) at exit.
+==233717== Open file descriptor 4: /dev/pts/0
+==233717==    at 0x49B65DB: dup (syscall-template.S:120)
+==233717==    by 0x404472: execute_redir_only (in /home/fiaudfiz/Documents/minishell/minishell)
+==233717==    by 0x402E48: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==233717==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==233717==
+==233717== Open file descriptor 3: /dev/pts/0
+==233717==    at 0x49B65DB: dup (syscall-template.S:120)
+==233717==    by 0x404466: execute_redir_only (in /home/fiaudfiz/Documents/minishell/minishell)
+==233717==    by 0x402E48: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==233717==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==233717==
+==233717== Open file descriptor 1: /dev/pts/0
+==233717==    at 0x49B660B: dup2 (dup2.c:29)
+==233717==    by 0x40343C: execute_cmd (in /home/fiaudfiz/Documents/minishell/minishell)
+==233717==    by 0x402E48: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==233717==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==233717==
+==233717== Open file descriptor 0: /dev/pts/0
+==233717==    at 0x49B660B: dup2 (dup2.c:29)
+==233717==    by 0x40342F: execute_cmd (in /home/fiaudfiz/Documents/minishell/minishell)
+==233717==    by 0x402E48: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==233717==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==233717==
+==233717==
+==233717== HEAP SUMMARY:
+==233717==     in use at exit: 419,966 bytes in 960 blocks
+==233717==   total heap usage: 8,751 allocs, 7,791 frees, 25,434,275 bytes allocated
+==233717==
+==233717== LEAK SUMMARY:
+==233717==    definitely lost: 219 bytes in 21 blocks
+==233717==    indirectly lost: 0 bytes in 0 blocks
+==233717==      possibly lost: 0 bytes in 0 blocks
+==233717==    still reachable: 419,747 bytes in 939 blocks
+==233717==         suppressed: 0 bytes in 0 blocks
+==233717== Rerun with --leak-check=full to see details of leaked memory
+==233717==
+==233717== For lists of detected and suppressed errors, rerun with: -s
+==233717== ERROR SUMMARY: 4 errors from 4 contexts (suppressed: 0 from 0)
+'> ''> '==233745==
+==233745== FILE DESCRIPTORS: 5 open (1 inherited) at exit.
+==233745== Open file descriptor 4: /dev/pts/0
+==233745==    at 0x49B65DB: dup (syscall-template.S:120)
+==233745==    by 0x404472: execute_redir_only (in /home/fiaudfiz/Documents/minishell/minishell)
+==233745==    by 0x402E48: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==233745==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==233745==
+==233745== Open file descriptor 3: /dev/pts/0
+==233745==    at 0x49B65DB: dup (syscall-template.S:120)
+==233745==    by 0x404466: execute_redir_only (in /home/fiaudfiz/Documents/minishell/minishell)
+==233745==    by 0x402E48: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==233745==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==233745==
+==233745== Open file descriptor 1: /dev/pts/0
+==233745==    at 0x49B660B: dup2 (dup2.c:29)
+==233745==    by 0x40343C: execute_cmd (in /home/fiaudfiz/Documents/minishell/minishell)
+==233745==    by 0x402E48: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==233745==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==233745==
+==233745== Open file descriptor 0:
+==233745==    at 0x49B660B: dup2 (dup2.c:29)
+==233745==    by 0x40422E: redirection (in /home/fiaudfiz/Documents/minishell/minishell)
+==233745==    by 0x404481: execute_redir_only (in /home/fiaudfiz/Documents/minishell/minishell)
+==233745==    by 0x402E48: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==233745==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==233745==
+==233745==
+==233745== HEAP SUMMARY:
+==233745==     in use at exit: 419,949 bytes in 958 blocks
+==233745==   total heap usage: 8,747 allocs, 7,789 frees, 25,434,239 bytes allocated
+==233745==
+==233745== LEAK SUMMARY:
+==233745==    definitely lost: 219 bytes in 21 blocks
+==233745==    indirectly lost: 0 bytes in 0 blocks
+==233745==      possibly lost: 0 bytes in 0 blocks
+==233745==    still reachable: 419,730 bytes in 937 blocks
+==233745==         suppressed: 0 bytes in 0 blocks
+==233745== Rerun with --leak-check=full to see details of leaked memory
+==233745==
+==233745== For lists of detected and suppressed errors, rerun with: -s
+==233745== ERROR SUMMARY: 4 errors from 4 contexts (suppressed: 0 from 0)
+'> '==233746==
+==233746== FILE DESCRIPTORS: 5 open (1 inherited) at exit.
+==233746== Open file descriptor 4: /dev/pts/0
+==233746==    at 0x49B65DB: dup (syscall-template.S:120)
+==233746==    by 0x404472: execute_redir_only (in /home/fiaudfiz/Documents/minishell/minishell)
+==233746==    by 0x402E48: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==233746==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==233746==
+==233746== Open file descriptor 3: /dev/pts/0
+==233746==    at 0x49B65DB: dup (syscall-template.S:120)
+==233746==    by 0x404466: execute_redir_only (in /home/fiaudfiz/Documents/minishell/minishell)
+==233746==    by 0x402E48: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==233746==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==233746==
+==233746== Open file descriptor 1: /dev/pts/0
+==233746==    at 0x49B660B: dup2 (dup2.c:29)
+==233746==    by 0x40343C: execute_cmd (in /home/fiaudfiz/Documents/minishell/minishell)
+==233746==    by 0x402E48: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==233746==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==233746==
+==233746== Open file descriptor 0:
+==233746==    at 0x49B660B: dup2 (dup2.c:29)
+==233746==    by 0x40422E: redirection (in /home/fiaudfiz/Documents/minishell/minishell)
+==233746==    by 0x404481: execute_redir_only (in /home/fiaudfiz/Documents/minishell/minishell)
+==233746==    by 0x402E48: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==233746==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==233746==
+==233746==
+==233746== HEAP SUMMARY:
+==233746==     in use at exit: 419,966 bytes in 960 blocks
+==233746==   total heap usage: 8,747 allocs, 7,787 frees, 25,432,195 bytes allocated
+==233746==
+==233746== LEAK SUMMARY:
+==233746==    definitely lost: 219 bytes in 21 blocks
+==233746==    indirectly lost: 0 bytes in 0 blocks
+==233746==      possibly lost: 0 bytes in 0 blocks
+==233746==    still reachable: 419,747 bytes in 939 blocks
+==233746==         suppressed: 0 bytes in 0 blocks
+==233746== Rerun with --leak-check=full to see details of leaked memory
+==233746==
+==233746== For lists of detected and suppressed errors, rerun with: -s
+==233746== ERROR SUMMARY: 4 errors from 4 contexts (suppressed: 0 from 0)
+miniMishell$: ^C
+miniMishell$: exit
+exit
+==232706==
+==232706== FILE DESCRIPTORS: 5 open (1 inherited) at exit.
+==232706== Open file descriptor 4: /dev/pts/0
+==232706==    at 0x49B65DB: dup (syscall-template.S:120)
+==232706==    by 0x40340D: execute_cmd (in /home/fiaudfiz/Documents/minishell/minishell)
+==232706==    by 0x402E48: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==232706==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==232706==
+==232706== Open file descriptor 3: /dev/pts/0
+==232706==    at 0x49B65DB: dup (syscall-template.S:120)
+==232706==    by 0x403400: execute_cmd (in /home/fiaudfiz/Documents/minishell/minishell)
+==232706==    by 0x402E48: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==232706==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==232706==
+==232706== Open file descriptor 1: /dev/pts/0
+==232706==    at 0x49B660B: dup2 (dup2.c:29)
+==232706==    by 0x404499: execute_redir_only (in /home/fiaudfiz/Documents/minishell/minishell)
+==232706==    by 0x402E48: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==232706==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==232706==
+==232706== Open file descriptor 0: /dev/pts/0
+==232706==    at 0x49B660B: dup2 (dup2.c:29)
+==232706==    by 0x40448D: execute_redir_only (in /home/fiaudfiz/Documents/minishell/minishell)
+==232706==    by 0x402E48: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==232706==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==232706==
+==232706==
+==232706== HEAP SUMMARY:
+==232706==     in use at exit: 325,729 bytes in 822 blocks
+==232706==   total heap usage: 8,760 allocs, 7,938 frees, 25,430,529 bytes allocated
+==232706==
+==232706== LEAK SUMMARY:
+==232706==    definitely lost: 5,313 bytes in 517 blocks
+==232706==    indirectly lost: 0 bytes in 0 blocks
+==232706==      possibly lost: 0 bytes in 0 blocks
+==232706==    still reachable: 320,416 bytes in 305 blocks
+==232706==         suppressed: 0 bytes in 0 blocks
+==232706== Rerun with --leak-check=full to see details of leaked memory
+==232706==
+==232706== For lists of detected and suppressed errors, rerun with: -s
+==232706== ERROR SUMMARY: 4 errors from 4 contexts (suppressed: 0 from 0)
+➜  minishell git:(main) ✗ bash --posix
+bash-5.3$ << 1 << 2 << 3
+>
+> 1
+> 3
+> 2
+> 2
+> 1
+> 2
+> 3
+bash-5.3$ exit
+exit
+➜  minishell git:(main) ✗ valgrind --track-fds=yes --suppressions=file.supp ./minishell
+==233954== Memcheck, a memory error detector
+==233954== Copyright (C) 2002-2026, and GNU GPL'd, by Julian Seward et al.
+==233954== Using Valgrind-3.27.1 and LibVEX; rerun with -h for copyright info
+==233954== Command: ./minishell
+==233954==
+miniMishell$: << 1 << 2 << 3
+'> '1
+==233986==
+==233986== FILE DESCRIPTORS: 5 open (3 inherited) at exit.
+==233986== Open file descriptor 4: /dev/pts/0
+==233986==    at 0x49B65DB: dup (syscall-template.S:120)
+==233986==    by 0x404472: execute_redir_only (in /home/fiaudfiz/Documents/minishell/minishell)
+==233986==    by 0x402E48: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==233986==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==233986==
+==233986== Open file descriptor 3: /dev/pts/0
+==233986==    at 0x49B65DB: dup (syscall-template.S:120)
+==233986==    by 0x404466: execute_redir_only (in /home/fiaudfiz/Documents/minishell/minishell)
+==233986==    by 0x402E48: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==233986==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==233986==
+==233986==
+==233986== HEAP SUMMARY:
+==233986==     in use at exit: 322,956 bytes in 382 blocks
+==233986==   total heap usage: 695 allocs, 313 frees, 356,832 bytes allocated
+==233986==
+==233986== LEAK SUMMARY:
+==233986==    definitely lost: 0 bytes in 0 blocks
+==233986==    indirectly lost: 0 bytes in 0 blocks
+==233986==      possibly lost: 0 bytes in 0 blocks
+==233986==    still reachable: 322,956 bytes in 382 blocks
+==233986==         suppressed: 0 bytes in 0 blocks
+==233986== Rerun with --leak-check=full to see details of leaked memory
+==233986==
+==233986== For lists of detected and suppressed errors, rerun with: -s
+==233986== ERROR SUMMARY: 2 errors from 2 contexts (suppressed: 0 from 0)
+'> '==233994==
+==233994== FILE DESCRIPTORS: 5 open (2 inherited) at exit.
+==233994== Open file descriptor 4: /dev/pts/0
+==233994==    at 0x49B65DB: dup (syscall-template.S:120)
+==233994==    by 0x404472: execute_redir_only (in /home/fiaudfiz/Documents/minishell/minishell)
+==233994==    by 0x402E48: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==233994==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==233994==
+==233994== Open file descriptor 3: /dev/pts/0
+==233994==    at 0x49B65DB: dup (syscall-template.S:120)
+==233994==    by 0x404466: execute_redir_only (in /home/fiaudfiz/Documents/minishell/minishell)
+==233994==    by 0x402E48: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==233994==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==233994==
+==233994== Open file descriptor 0:
+==233994==    at 0x49B660B: dup2 (dup2.c:29)
+==233994==    by 0x40422E: redirection (in /home/fiaudfiz/Documents/minishell/minishell)
+==233994==    by 0x404481: execute_redir_only (in /home/fiaudfiz/Documents/minishell/minishell)
+==233994==    by 0x402E48: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==233994==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==233994==
+==233994==
+==233994== HEAP SUMMARY:
+==233994==     in use at exit: 322,939 bytes in 380 blocks
+==233994==   total heap usage: 691 allocs, 311 frees, 356,796 bytes allocated
+==233994==
+==233994== LEAK SUMMARY:
+==233994==    definitely lost: 0 bytes in 0 blocks
+==233994==    indirectly lost: 0 bytes in 0 blocks
+==233994==      possibly lost: 0 bytes in 0 blocks
+==233994==    still reachable: 322,939 bytes in 380 blocks
+==233994==         suppressed: 0 bytes in 0 blocks
+==233994== Rerun with --leak-check=full to see details of leaked memory
+==233994==
+==233994== For lists of detected and suppressed errors, rerun with: -s
+==233994== ERROR SUMMARY: 3 errors from 3 contexts (suppressed: 0 from 0)
+'> '==233995==
+==233995== FILE DESCRIPTORS: 5 open (2 inherited) at exit.
+==233995== Open file descriptor 4: /dev/pts/0
+==233995==    at 0x49B65DB: dup (syscall-template.S:120)
+==233995==    by 0x404472: execute_redir_only (in /home/fiaudfiz/Documents/minishell/minishell)
+==233995==    by 0x402E48: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==233995==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==233995==
+==233995== Open file descriptor 3: /dev/pts/0
+==233995==    at 0x49B65DB: dup (syscall-template.S:120)
+==233995==    by 0x404466: execute_redir_only (in /home/fiaudfiz/Documents/minishell/minishell)
+==233995==    by 0x402E48: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==233995==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==233995==
+==233995== Open file descriptor 0:
+==233995==    at 0x49B660B: dup2 (dup2.c:29)
+==233995==    by 0x40422E: redirection (in /home/fiaudfiz/Documents/minishell/minishell)
+==233995==    by 0x404481: execute_redir_only (in /home/fiaudfiz/Documents/minishell/minishell)
+==233995==    by 0x402E48: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==233995==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==233995==
+==233995==
+==233995== HEAP SUMMARY:
+==233995==     in use at exit: 322,939 bytes in 380 blocks
+==233995==   total heap usage: 692 allocs, 312 frees, 356,799 bytes allocated
+==233995==
+==233995== LEAK SUMMARY:
+==233995==    definitely lost: 0 bytes in 0 blocks
+==233995==    indirectly lost: 0 bytes in 0 blocks
+==233995==      possibly lost: 0 bytes in 0 blocks
+==233995==    still reachable: 322,939 bytes in 380 blocks
+==233995==         suppressed: 0 bytes in 0 blocks
+==233995== Rerun with --leak-check=full to see details of leaked memory
+==233995==
+==233995== For lists of detected and suppressed errors, rerun with: -s
+==233995== ERROR SUMMARY: 3 errors from 3 contexts (suppressed: 0 from 0)
+miniMishell$: exit
+exit
+==233954==
+==233954== FILE DESCRIPTORS: 5 open (1 inherited) at exit.
+==233954== Open file descriptor 4: /dev/pts/0
+==233954==    at 0x49B65DB: dup (syscall-template.S:120)
+==233954==    by 0x40340D: execute_cmd (in /home/fiaudfiz/Documents/minishell/minishell)
+==233954==    by 0x402E48: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==233954==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==233954==
+==233954== Open file descriptor 3: /dev/pts/0
+==233954==    at 0x49B65DB: dup (syscall-template.S:120)
+==233954==    by 0x403400: execute_cmd (in /home/fiaudfiz/Documents/minishell/minishell)
+==233954==    by 0x402E48: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==233954==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==233954==
+==233954== Open file descriptor 1: /dev/pts/0
+==233954==    at 0x49B660B: dup2 (dup2.c:29)
+==233954==    by 0x404499: execute_redir_only (in /home/fiaudfiz/Documents/minishell/minishell)
+==233954==    by 0x402E48: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==233954==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==233954==
+==233954== Open file descriptor 0: /dev/pts/0
+==233954==    at 0x49B660B: dup2 (dup2.c:29)
+==233954==    by 0x40448D: execute_redir_only (in /home/fiaudfiz/Documents/minishell/minishell)
+==233954==    by 0x402E48: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==233954==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==233954==
+==233954==
+==233954== HEAP SUMMARY:
+==233954==     in use at exit: 228,724 bytes in 244 blocks
+==233954==   total heap usage: 710 allocs, 466 frees, 355,176 bytes allocated
+==233954==
+==233954== LEAK SUMMARY:
+==233954==    definitely lost: 14 bytes in 4 blocks
+==233954==    indirectly lost: 0 bytes in 0 blocks
+==233954==      possibly lost: 0 bytes in 0 blocks
+==233954==    still reachable: 228,710 bytes in 240 blocks
+==233954==         suppressed: 0 bytes in 0 blocks
+==233954== Rerun with --leak-check=full to see details of leaked memory
+==233954==
+==233954== For lists of detected and suppressed errors, rerun with: -s
+==233954== ERROR SUMMARY: 4 errors from 4 contexts (suppressed: 0 from 0)
+➜  minishell git:(main) ✗ bash --posix
+bash-5.3$ << 1 << 2 << 3
+> 2
+> 3
+> 1
+> 3
+> 1
+> 2
+> 3
+bash-5.3$ exit
+exit
+➜  minishell git:(main) ✗ ./minishell
+miniMishell$: << 1 << 2 << 3
+'> '1
+'> ''> 'miniMishell$: 3
+minishell: 3: command not found
+miniMishell$: exit -1
+exit
+➜  minishell git:(main) ✗ echo $?
+255
+➜  minishell git:(main) ✗ valgrind --track-fds=yes --suppressions=file.supp ./minishell
+==234588== Memcheck, a memory error detector
+==234588== Copyright (C) 2002-2026, and GNU GPL'd, by Julian Seward et al.
+==234588== Using Valgrind-3.27.1 and LibVEX; rerun with -h for copyright info
+==234588== Command: ./minishell
+==234588==
+miniMishell$: exit | exit | exit 43574574357843567456743865743865874375943759435784
+exit
+==234647== Invalid read of size 8
+==234647==    at 0x404BDF: builtin_exit (in /home/fiaudfiz/Documents/minishell/minishell)
+==234647==    by 0x404128: execute_pipeline (in /home/fiaudfiz/Documents/minishell/minishell)
+==234647==    by 0x402EC8: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==234647==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==234647==  Address 0x4b085fc is 764 bytes inside a block of size 32,768 free'd
+==234647==    at 0x4843D73: free (vg_replace_malloc.c:950)
+==234647==    by 0x400F7C: free_og_struct (in /home/fiaudfiz/Documents/minishell/minishell)
+==234647==    by 0x404BDE: builtin_exit (in /home/fiaudfiz/Documents/minishell/minishell)
+==234647==    by 0x404128: execute_pipeline (in /home/fiaudfiz/Documents/minishell/minishell)
+==234647==    by 0x402EC8: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==234647==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==234647==  Block was alloc'd at
+==234647==    at 0x4840AE6: malloc (vg_replace_malloc.c:447)
+==234647==    by 0x407251: init_stack_allocator (in /home/fiaudfiz/Documents/minishell/minishell)
+==234647==    by 0x400751: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==234647==
+==234645==
+==234645== FILE DESCRIPTORS: 3 open (1 inherited) at exit.
+==234645== Open file descriptor 1:
+==234645==    at 0x49B660B: dup2 (dup2.c:29)
+==234645==    by 0x403195: execute_cmd_pipe (in /home/fiaudfiz/Documents/minishell/minishell)
+==234645==    by 0x404105: execute_pipeline (in /home/fiaudfiz/Documents/minishell/minishell)
+==234645==    by 0x402EC8: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==234645==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==234645==
+==234645== Open file descriptor 0: /dev/pts/0
+==234645==    at 0x49B660B: dup2 (dup2.c:29)
+==234645==    by 0x403180: execute_cmd_pipe (in /home/fiaudfiz/Documents/minishell/minishell)
+==234645==    by 0x404105: execute_pipeline (in /home/fiaudfiz/Documents/minishell/minishell)
+==234645==    by 0x402EC8: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==234645==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==234645==
+==234645==
+==234645== HEAP SUMMARY:
+==234645==     in use at exit: 228,922 bytes in 245 blocks
+==234645==   total heap usage: 693 allocs, 448 frees, 355,022 bytes allocated
+==234645==
+==234645== LEAK SUMMARY:
+==234645==    definitely lost: 70 bytes in 6 blocks
+==234645==    indirectly lost: 0 bytes in 0 blocks
+==234645==      possibly lost: 0 bytes in 0 blocks
+==234645==    still reachable: 228,852 bytes in 239 blocks
+==234645==         suppressed: 0 bytes in 0 blocks
+==234645== Rerun with --leak-check=full to see details of leaked memory
+==234645==
+==234645== For lists of detected and suppressed errors, rerun with: -s
+==234645== ERROR SUMMARY: 2 errors from 2 contexts (suppressed: 0 from 0)
+==234646==
+==234646== FILE DESCRIPTORS: 3 open (1 inherited) at exit.
+==234646== Open file descriptor 1:
+==234646==    at 0x49B660B: dup2 (dup2.c:29)
+==234646==    by 0x403195: execute_cmd_pipe (in /home/fiaudfiz/Documents/minishell/minishell)
+==234646==    by 0x404105: execute_pipeline (in /home/fiaudfiz/Documents/minishell/minishell)
+==234646==    by 0x402EC8: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==234646==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==234646==
+==234646== Open file descriptor 0:
+==234646==    at 0x49B660B: dup2 (dup2.c:29)
+==234646==    by 0x403180: execute_cmd_pipe (in /home/fiaudfiz/Documents/minishell/minishell)
+==234646==    by 0x404105: execute_pipeline (in /home/fiaudfiz/Documents/minishell/minishell)
+==234646==    by 0x402EC8: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==234646==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==234646==
+==234646==
+==234646== HEAP SUMMARY:
+==234646==     in use at exit: 228,922 bytes in 245 blocks
+==234646==   total heap usage: 693 allocs, 448 frees, 355,022 bytes allocated
+==234646==
+==234646== LEAK SUMMARY:
+==234646==    definitely lost: 70 bytes in 6 blocks
+==234646==    indirectly lost: 0 bytes in 0 blocks
+==234646==      possibly lost: 0 bytes in 0 blocks
+==234646==    still reachable: 228,852 bytes in 239 blocks
+==234646==         suppressed: 0 bytes in 0 blocks
+==234646== Rerun with --leak-check=full to see details of leaked memory
+==234646==
+==234646== For lists of detected and suppressed errors, rerun with: -s
+==234646== ERROR SUMMARY: 2 errors from 2 contexts (suppressed: 0 from 0)
+==234647==
+==234647== FILE DESCRIPTORS: 3 open (1 inherited) at exit.
+==234647== Open file descriptor 1: /dev/pts/0
+==234647==    at 0x49B660B: dup2 (dup2.c:29)
+==234647==    by 0x403195: execute_cmd_pipe (in /home/fiaudfiz/Documents/minishell/minishell)
+==234647==    by 0x404128: execute_pipeline (in /home/fiaudfiz/Documents/minishell/minishell)
+==234647==    by 0x402EC8: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==234647==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==234647==
+==234647== Open file descriptor 0:
+==234647==    at 0x49B660B: dup2 (dup2.c:29)
+==234647==    by 0x403180: execute_cmd_pipe (in /home/fiaudfiz/Documents/minishell/minishell)
+==234647==    by 0x404128: execute_pipeline (in /home/fiaudfiz/Documents/minishell/minishell)
+==234647==    by 0x402EC8: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==234647==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==234647==
+==234647==
+==234647== HEAP SUMMARY:
+==234647==     in use at exit: 228,922 bytes in 245 blocks
+==234647==   total heap usage: 694 allocs, 449 frees, 355,073 bytes allocated
+==234647==
+==234647== LEAK SUMMARY:
+==234647==    definitely lost: 19 bytes in 5 blocks
+==234647==    indirectly lost: 0 bytes in 0 blocks
+==234647==      possibly lost: 51 bytes in 1 blocks
+==234647==    still reachable: 228,852 bytes in 239 blocks
+==234647==         suppressed: 0 bytes in 0 blocks
+==234647== Rerun with --leak-check=full to see details of leaked memory
+==234647==
+==234647== For lists of detected and suppressed errors, rerun with: -s
+==234647== ERROR SUMMARY: 3 errors from 3 contexts (suppressed: 0 from 0)
+miniMishell$: echo $?
+8
+miniMishell$: $?$
+minishell: 0$: command not found
+==234772==
+==234772== FILE DESCRIPTORS: 3 open (1 inherited) at exit.
+==234772== Open file descriptor 1: /dev/pts/0
+==234772==    at 0x49B660B: dup2 (dup2.c:29)
+==234772==    by 0x40343C: execute_cmd (in /home/fiaudfiz/Documents/minishell/minishell)
+==234772==    by 0x402E48: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==234772==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==234772==
+==234772== Open file descriptor 0: /dev/pts/0
+==234772==    at 0x49B660B: dup2 (dup2.c:29)
+==234772==    by 0x40342F: execute_cmd (in /home/fiaudfiz/Documents/minishell/minishell)
+==234772==    by 0x402E48: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==234772==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==234772==
+==234772==
+==234772== HEAP SUMMARY:
+==234772==     in use at exit: 323,198 bytes in 385 blocks
+==234772==   total heap usage: 741 allocs, 356 frees, 355,945 bytes allocated
+==234772==
+==234772== LEAK SUMMARY:
+==234772==    definitely lost: 4 bytes in 2 blocks
+==234772==    indirectly lost: 0 bytes in 0 blocks
+==234772==      possibly lost: 0 bytes in 0 blocks
+==234772==    still reachable: 323,194 bytes in 383 blocks
+==234772==         suppressed: 0 bytes in 0 blocks
+==234772== Rerun with --leak-check=full to see details of leaked memory
+==234772==
+==234772== For lists of detected and suppressed errors, rerun with: -s
+==234772== ERROR SUMMARY: 2 errors from 2 contexts (suppressed: 0 from 0)
+miniMishell$: $?$?$?
+minishell: 127127127: command not found
+==234794==
+==234794== FILE DESCRIPTORS: 3 open (1 inherited) at exit.
+==234794== Open file descriptor 1: /dev/pts/0
+==234794==    at 0x49B660B: dup2 (dup2.c:29)
+==234794==    by 0x40343C: execute_cmd (in /home/fiaudfiz/Documents/minishell/minishell)
+==234794==    by 0x402E48: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==234794==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==234794==
+==234794== Open file descriptor 0: /dev/pts/0
+==234794==    at 0x49B660B: dup2 (dup2.c:29)
+==234794==    by 0x40342F: execute_cmd (in /home/fiaudfiz/Documents/minishell/minishell)
+==234794==    by 0x402E48: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==234794==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==234794==
+==234794==
+==234794== HEAP SUMMARY:
+==234794==     in use at exit: 323,248 bytes in 388 blocks
+==234794==   total heap usage: 763 allocs, 375 frees, 356,415 bytes allocated
+==234794==
+==234794== LEAK SUMMARY:
+==234794==    definitely lost: 4 bytes in 2 blocks
+==234794==    indirectly lost: 0 bytes in 0 blocks
+==234794==      possibly lost: 0 bytes in 0 blocks
+==234794==    still reachable: 323,244 bytes in 386 blocks
+==234794==         suppressed: 0 bytes in 0 blocks
+==234794== Rerun with --leak-check=full to see details of leaked memory
+==234794==
+==234794== For lists of detected and suppressed errors, rerun with: -s
+==234794== ERROR SUMMARY: 2 errors from 2 contexts (suppressed: 0 from 0)
+miniMishell$: > no_perm
+miniMishell$: ls | no_perm
+minishell: no_perm: command not found
+==234919==
+==234919== FILE DESCRIPTORS: 3 open (1 inherited) at exit.
+==234919== Open file descriptor 1: /dev/pts/0
+==234919==    at 0x49B660B: dup2 (dup2.c:29)
+==234919==    by 0x403195: execute_cmd_pipe (in /home/fiaudfiz/Documents/minishell/minishell)
+==234919==    by 0x404128: execute_pipeline (in /home/fiaudfiz/Documents/minishell/minishell)
+==234919==    by 0x402EC8: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==234919==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==234919==
+==234919== Open file descriptor 0:
+==234919==    at 0x49B660B: dup2 (dup2.c:29)
+==234919==    by 0x403180: execute_cmd_pipe (in /home/fiaudfiz/Documents/minishell/minishell)
+==234919==    by 0x404128: execute_pipeline (in /home/fiaudfiz/Documents/minishell/minishell)
+==234919==    by 0x402EC8: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==234919==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==234919==
+==234919==
+==234919== HEAP SUMMARY:
+==234919==     in use at exit: 323,348 bytes in 397 blocks
+==234919==   total heap usage: 820 allocs, 423 frees, 357,670 bytes allocated
+==234919==
+==234919== LEAK SUMMARY:
+==234919==    definitely lost: 6 bytes in 3 blocks
+==234919==    indirectly lost: 0 bytes in 0 blocks
+==234919==      possibly lost: 0 bytes in 0 blocks
+==234919==    still reachable: 323,342 bytes in 394 blocks
+==234919==         suppressed: 0 bytes in 0 blocks
+==234919== Rerun with --leak-check=full to see details of leaked memory
+==234919==
+==234919== For lists of detected and suppressed errors, rerun with: -s
+==234919== ERROR SUMMARY: 2 errors from 2 contexts (suppressed: 0 from 0)
+miniMishell$: chmod 000 no_perm
+miniMishell$: ls | no_perm
+minishell: no_perm: command not found
+==235028==
+==235028== FILE DESCRIPTORS: 3 open (1 inherited) at exit.
+==235028== Open file descriptor 1: /dev/pts/0
+==235028==    at 0x49B660B: dup2 (dup2.c:29)
+==235028==    by 0x403195: execute_cmd_pipe (in /home/fiaudfiz/Documents/minishell/minishell)
+==235028==    by 0x404128: execute_pipeline (in /home/fiaudfiz/Documents/minishell/minishell)
+==235028==    by 0x402EC8: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==235028==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==235028==
+==235028== Open file descriptor 0:
+==235028==    at 0x49B660B: dup2 (dup2.c:29)
+==235028==    by 0x403180: execute_cmd_pipe (in /home/fiaudfiz/Documents/minishell/minishell)
+==235028==    by 0x404128: execute_pipeline (in /home/fiaudfiz/Documents/minishell/minishell)
+==235028==    by 0x402EC8: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==235028==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==235028==
+==235028==
+==235028== HEAP SUMMARY:
+==235028==     in use at exit: 323,724 bytes in 409 blocks
+==235028==   total heap usage: 904 allocs, 495 frees, 359,374 bytes allocated
+==235028==
+==235028== LEAK SUMMARY:
+==235028==    definitely lost: 8 bytes in 4 blocks
+==235028==    indirectly lost: 0 bytes in 0 blocks
+==235028==      possibly lost: 0 bytes in 0 blocks
+==235028==    still reachable: 323,716 bytes in 405 blocks
+==235028==         suppressed: 0 bytes in 0 blocks
+==235028== Rerun with --leak-check=full to see details of leaked memory
+==235028==
+==235028== For lists of detected and suppressed errors, rerun with: -s
+==235028== ERROR SUMMARY: 2 errors from 2 contexts (suppressed: 0 from 0)
+miniMishell$: < no_perm grep oo
+minishell: Permission denied
+==235072==
+==235072== FILE DESCRIPTORS: 3 open (1 inherited) at exit.
+==235072== Open file descriptor 1: /dev/pts/0
+==235072==    at 0x49B660B: dup2 (dup2.c:29)
+==235072==    by 0x404499: execute_redir_only (in /home/fiaudfiz/Documents/minishell/minishell)
+==235072==    by 0x402E48: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==235072==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==235072==
+==235072== Open file descriptor 0: /dev/pts/0
+==235072==    at 0x49B660B: dup2 (dup2.c:29)
+==235072==    by 0x40448D: execute_redir_only (in /home/fiaudfiz/Documents/minishell/minishell)
+==235072==    by 0x402E48: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==235072==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==235072==
+==235072==
+==235072== HEAP SUMMARY:
+==235072==     in use at exit: 323,760 bytes in 412 blocks
+==235072==   total heap usage: 938 allocs, 526 frees, 392,808 bytes allocated
+==235072==
+==235072== LEAK SUMMARY:
+==235072==    definitely lost: 10 bytes in 5 blocks
+==235072==    indirectly lost: 0 bytes in 0 blocks
+==235072==      possibly lost: 0 bytes in 0 blocks
+==235072==    still reachable: 323,750 bytes in 407 blocks
+==235072==         suppressed: 0 bytes in 0 blocks
+==235072== Rerun with --leak-check=full to see details of leaked memory
+==235072==
+==235072== For lists of detected and suppressed errors, rerun with: -s
+==235072== ERROR SUMMARY: 2 errors from 2 contexts (suppressed: 0 from 0)
+miniMishell$: ?$?
+minishell: ?1: command not found
+==235148==
+==235148== FILE DESCRIPTORS: 3 open (1 inherited) at exit.
+==235148== Open file descriptor 1: /dev/pts/0
+==235148==    at 0x49B660B: dup2 (dup2.c:29)
+==235148==    by 0x404499: execute_redir_only (in /home/fiaudfiz/Documents/minishell/minishell)
+==235148==    by 0x402E48: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==235148==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==235148==
+==235148== Open file descriptor 0: /dev/pts/0
+==235148==    at 0x49B660B: dup2 (dup2.c:29)
+==235148==    by 0x40448D: execute_redir_only (in /home/fiaudfiz/Documents/minishell/minishell)
+==235148==    by 0x402E48: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==235148==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==235148==
+==235148==
+==235148== HEAP SUMMARY:
+==235148==     in use at exit: 323,787 bytes in 413 blocks
+==235148==   total heap usage: 962 allocs, 549 frees, 393,267 bytes allocated
+==235148==
+==235148== LEAK SUMMARY:
+==235148==    definitely lost: 12 bytes in 6 blocks
+==235148==    indirectly lost: 0 bytes in 0 blocks
+==235148==      possibly lost: 0 bytes in 0 blocks
+==235148==    still reachable: 323,775 bytes in 407 blocks
+==235148==         suppressed: 0 bytes in 0 blocks
+==235148== Rerun with --leak-check=full to see details of leaked memory
+==235148==
+==235148== For lists of detected and suppressed errors, rerun with: -s
+==235148== ERROR SUMMARY: 2 errors from 2 contexts (suppressed: 0 from 0)
+miniMishell$: ?"$?"okok
+minishell: ?127okok: command not found
+==235197==
+==235197== FILE DESCRIPTORS: 3 open (1 inherited) at exit.
+==235197== Open file descriptor 1: /dev/pts/0
+==235197==    at 0x49B660B: dup2 (dup2.c:29)
+==235197==    by 0x404499: execute_redir_only (in /home/fiaudfiz/Documents/minishell/minishell)
+==235197==    by 0x402E48: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==235197==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==235197==
+==235197== Open file descriptor 0: /dev/pts/0
+==235197==    at 0x49B660B: dup2 (dup2.c:29)
+==235197==    by 0x40448D: execute_redir_only (in /home/fiaudfiz/Documents/minishell/minishell)
+==235197==    by 0x402E48: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==235197==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==235197==
+==235197==
+==235197== HEAP SUMMARY:
+==235197==     in use at exit: 324,054 bytes in 421 blocks
+==235197==   total heap usage: 994 allocs, 573 frees, 394,039 bytes allocated
+==235197==
+==235197== LEAK SUMMARY:
+==235197==    definitely lost: 12 bytes in 6 blocks
+==235197==    indirectly lost: 0 bytes in 0 blocks
+==235197==      possibly lost: 0 bytes in 0 blocks
+==235197==    still reachable: 324,042 bytes in 415 blocks
+==235197==         suppressed: 0 bytes in 0 blocks
+==235197== Rerun with --leak-check=full to see details of leaked memory
+==235197==
+==235197== For lists of detected and suppressed errors, rerun with: -s
+==235197== ERROR SUMMARY: 2 errors from 2 contexts (suppressed: 0 from 0)
+miniMishell$: ls |
+minishell: syntax error near unexpected token `newline'
+miniMishell$: $rien ls $rien -l $rien
+minishell: /home/fiaudfiz/.local/bin/: Is a directory
+==235430==
+==235430== FILE DESCRIPTORS: 3 open (1 inherited) at exit.
+==235430== Open file descriptor 1: /dev/pts/0
+==235430==    at 0x49B660B: dup2 (dup2.c:29)
+==235430==    by 0x404499: execute_redir_only (in /home/fiaudfiz/Documents/minishell/minishell)
+==235430==    by 0x402E48: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==235430==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==235430==
+==235430== Open file descriptor 0: /dev/pts/0
+==235430==    at 0x49B660B: dup2 (dup2.c:29)
+==235430==    by 0x40448D: execute_redir_only (in /home/fiaudfiz/Documents/minishell/minishell)
+==235430==    by 0x402E48: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==235430==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==235430==
+==235430==
+==235430== HEAP SUMMARY:
+==235430==     in use at exit: 324,162 bytes in 432 blocks
+==235430==   total heap usage: 1,041 allocs, 609 frees, 394,909 bytes allocated
+==235430==
+==235430== LEAK SUMMARY:
+==235430==    definitely lost: 17 bytes in 8 blocks
+==235430==    indirectly lost: 0 bytes in 0 blocks
+==235430==      possibly lost: 0 bytes in 0 blocks
+==235430==    still reachable: 324,145 bytes in 424 blocks
+==235430==         suppressed: 0 bytes in 0 blocks
+==235430== Rerun with --leak-check=full to see details of leaked memory
+==235430==
+==235430== For lists of detected and suppressed errors, rerun with: -s
+==235430== ERROR SUMMARY: 2 errors from 2 contexts (suppressed: 0 from 0)
+miniMishell$: << ok
+'> '^C==235494==
+==235494== Process terminating with default action of signal 2 (SIGINT)
+==235494==    at 0x494154E: __internal_syscall_cancel (cancellation.c:64)
+==235494==    by 0x4941573: __syscall_cancel (cancellation.c:75)
+==235494==    by 0x49BB45D: read (read.c:26)
+==235494==    by 0x406A6E: len_str (in /home/fiaudfiz/Documents/minishell/minishell)
+==235494==    by 0x406BB9: get_next_line (in /home/fiaudfiz/Documents/minishell/minishell)
+==235494==    by 0x4036DF: execute_here_doc (in /home/fiaudfiz/Documents/minishell/minishell)
+==235494==    by 0x403804: here_doc (in /home/fiaudfiz/Documents/minishell/minishell)
+==235494==    by 0x40421A: redirection (in /home/fiaudfiz/Documents/minishell/minishell)
+==235494==    by 0x404481: execute_redir_only (in /home/fiaudfiz/Documents/minishell/minishell)
+==235494==    by 0x402E48: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==235494==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==235494==
+==235494== FILE DESCRIPTORS: 6 open (1 inherited) at exit.
+==235494== Open file descriptor 6:
+==235494==    at 0x49BAD7D: pipe (pipe.c:29)
+==235494==    by 0x403757: here_doc (in /home/fiaudfiz/Documents/minishell/minishell)
+==235494==    by 0x40421A: redirection (in /home/fiaudfiz/Documents/minishell/minishell)
+==235494==    by 0x404481: execute_redir_only (in /home/fiaudfiz/Documents/minishell/minishell)
+==235494==    by 0x402E48: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==235494==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==235494==
+==235494== Open file descriptor 4: /dev/pts/0
+==235494==    at 0x49B65DB: dup (syscall-template.S:120)
+==235494==    by 0x404472: execute_redir_only (in /home/fiaudfiz/Documents/minishell/minishell)
+==235494==    by 0x402E48: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==235494==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==235494==
+==235494== Open file descriptor 3: /dev/pts/0
+==235494==    at 0x49B65DB: dup (syscall-template.S:120)
+==235494==    by 0x404466: execute_redir_only (in /home/fiaudfiz/Documents/minishell/minishell)
+==235494==    by 0x402E48: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==235494==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==235494==
+==235494== Open file descriptor 1: /dev/pts/0
+==235494==    at 0x49B660B: dup2 (dup2.c:29)
+==235494==    by 0x404499: execute_redir_only (in /home/fiaudfiz/Documents/minishell/minishell)
+==235494==    by 0x402E48: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==235494==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==235494==
+==235494== Open file descriptor 0: /dev/pts/0
+==235494==    at 0x49B660B: dup2 (dup2.c:29)
+==235494==    by 0x40448D: execute_redir_only (in /home/fiaudfiz/Documents/minishell/minishell)
+==235494==    by 0x402E48: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==235494==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==235494==
+==235494==
+==235494== HEAP SUMMARY:
+==235494==     in use at exit: 332,395 bytes in 459 blocks
+==235494==   total heap usage: 1,058 allocs, 599 frees, 397,275 bytes allocated
+==235494==
+
+miniMishell$: miniMishell$: ==235494== LEAK SUMMARY:
+==235494==    definitely lost: 2,066 bytes in 9 blocks
+==235494==    indirectly lost: 0 bytes in 0 blocks
+==235494==      possibly lost: 0 bytes in 0 blocks
+==235494==    still reachable: 330,329 bytes in 450 blocks
+==235494==         suppressed: 0 bytes in 0 blocks
+==235494== Rerun with --leak-check=full to see details of leaked memory
+==235494==
+==235494== For lists of detected and suppressed errors, rerun with: -s
+==235494== ERROR SUMMARY: 5 errors from 5 contexts (suppressed: 0 from 0)
+==234588==
+==234588== Process terminating with default action of signal 2 (SIGINT)
+==234588==    at 0x48EC1BB: kill (syscall-template.S:120)
+==234588==    by 0x4899B0B: _rl_handle_signal (signals.c:297)
+==234588==    by 0x4899B0B: _rl_signal_handler (signals.c:152)
+==234588==    by 0x489AF7C: rl_getc (input.c:971)
+==234588==    by 0x489A1A6: rl_read_key (input.c:827)
+==234588==    by 0x487A82E: readline_internal_char (readline.c:632)
+==234588==    by 0x4884E64: readline_internal_charloop (readline.c:740)
+==234588==    by 0x4884E64: readline_internal (readline.c:752)
+==234588==    by 0x4884E64: readline (readline.c:386)
+==234588==    by 0x400802: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==234588==
+==234588== FILE DESCRIPTORS: 3 open (1 inherited) at exit.
+==234588== Open file descriptor 1: /dev/pts/0
+==234588==    at 0x49B660B: dup2 (dup2.c:29)
+==234588==    by 0x404499: execute_redir_only (in /home/fiaudfiz/Documents/minishell/minishell)
+==234588==    by 0x402E48: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==234588==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==234588==
+==234588== Open file descriptor 0: /dev/pts/0
+==234588==    at 0x49B660B: dup2 (dup2.c:29)
+==234588==    by 0x40448D: execute_redir_only (in /home/fiaudfiz/Documents/minishell/minishell)
+==234588==    by 0x402E48: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==234588==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==234588==
+==234588==
+==234588== HEAP SUMMARY:
+==234588==     in use at exit: 330,339 bytes in 456 blocks
+==234588==   total heap usage: 1,062 allocs, 606 frees, 395,284 bytes allocated
+==234588==
+==234588== LEAK SUMMARY:
+==234588==    definitely lost: 17 bytes in 8 blocks
+==234588==    indirectly lost: 0 bytes in 0 blocks
+==234588==      possibly lost: 0 bytes in 0 blocks
+==234588==    still reachable: 330,322 bytes in 448 blocks
+==234588==         suppressed: 0 bytes in 0 blocks
+==234588== Rerun with --leak-check=full to see details of leaked memory
+==234588==
+==234588== For lists of detected and suppressed errors, rerun with: -s
+==234588== ERROR SUMMARY: 2 errors from 2 context (suppressed: 0 from 0)
+➜  minishell git:(main) ✗ ./minishell
+miniMishell$: ^C
+miniMishell$: ^C
+➜  minishell git:(main) ✗
+➜  minishell git:(main) ✗ ./minishell
+miniMishell$: << ok
+'> '^C
+miniMishell$: miniMishell$: ^C
+➜  minishell git:(main) ✗ ./minishell
+miniMishell$: ./minishell ./minishell ./minishell
+miniMishell$: ^C
+miniMishell$: miniMishell$: minishell: Interrupted system call
+^CniMishell$: ^C
+➜  minishell git:(main) ✗ ./minishell
+miniMishell$: $rien ls $rien -l $rien
+minishell: /home/fiaudfiz/.local/bin/: Is a directory
+miniMishell$: $rien ls
+minishell: /home/fiaudfiz/.local/bin/: Is a directory
+miniMishell$: ls $rien
+ls: cannot access '': No such file or directory
+miniMishell$: export arg=123
+miniMishell$: $rien$arg
+minishell: 123: command not found
+miniMishell$: $arg$rien$arg
+minishell: 123123: command not found
+miniMishell$: exit hello
+exit
+➜  minishell git:(main) ✗ echo $?
+255
+➜  minishell git:(main) ✗ bash --posix
+bash-5.3$ exit oirtroie
+exit
+bash: exit: oirtroie: numeric argument required
+bash-5.3$ echo $?
+2
+bash-5.3$ exit
+exit
+➜  minishell git:(main) ✗ ./minishell
+miniMishell$: ^C
+miniMishell$:
+miniMishell$:
+➜  minishell git:(main) ✗ ./minishell
+miniMishell$:
+➜  minishell git:(main) ✗ ./minishell
+miniMishell$: ^C
+miniMishell$:
+miniMishell$:
+➜  minishell git:(main) ✗ bash --posix
+bash-5.3$ $rien ls $rien -l $rien
+total 124
+-rw-r--r--. 1 fiaudfiz fiaudfiz     0 Jul 24 18:26 file.supp
+drwxr-xr-x. 1 fiaudfiz fiaudfiz    40 Jul  7 13:29 images
+drwxr-xr-x. 1 fiaudfiz fiaudfiz   132 Jul 24 17:52 include
+drwxr-xr-x. 1 fiaudfiz fiaudfiz    10 Jul  7 13:29 lib
+-rw-r--r--. 1 fiaudfiz fiaudfiz  1073 Jul 24 00:46 LICENSE
+-rw-r--r--. 1 fiaudfiz fiaudfiz  5505 Jul 24 17:52 Makefile
+-rwxr-xr-x. 1 fiaudfiz fiaudfiz 58056 Jul 24 18:29 minishell
+----------. 1 fiaudfiz fiaudfiz     0 Jul 24 18:40 no_perm
+-rwxr-xr-x. 1 fiaudfiz fiaudfiz  6672 Jul 24 11:57 norme_format.sh
+drwxr-xr-x. 1 fiaudfiz fiaudfiz    82 Jul 24 18:29 obj
+-rw-r--r--. 1 fiaudfiz fiaudfiz     0 Jul 24 18:32 out
+-rw-r--r--. 1 fiaudfiz fiaudfiz     0 Jul 24 18:32 out1
+-rw-r--r--. 1 fiaudfiz fiaudfiz  5505 Jul 24 18:32 out2
+-rw-r--r--. 1 fiaudfiz fiaudfiz 30870 Jul  7 13:29 README.md
+drwxr-xr-x. 1 fiaudfiz fiaudfiz    82 Jul 23 18:13 src
+drwxr-xr-x. 1 fiaudfiz fiaudfiz    38 Jul 23 18:14 tests
+-rw-r--r--. 1 fiaudfiz fiaudfiz  1071 Jul 24 11:57 Usage_norme_format.txt
+bash-5.3$ exit
+exit
+➜  minishell git:(main) ✗ ./minishell
+miniMishell$: ^C
+miniMishell$: ^C
+➜  minishell git:(main) ✗ bash --posix
+bash-5.3$ $rien ls $rien -l $rien
+total 124
+-rw-r--r--. 1 fiaudfiz fiaudfiz     0 Jul 24 18:26 file.supp
+drwxr-xr-x. 1 fiaudfiz fiaudfiz    40 Jul  7 13:29 images
+drwxr-xr-x. 1 fiaudfiz fiaudfiz   132 Jul 24 17:52 include
+drwxr-xr-x. 1 fiaudfiz fiaudfiz    10 Jul  7 13:29 lib
+-rw-r--r--. 1 fiaudfiz fiaudfiz  1073 Jul 24 00:46 LICENSE
+-rw-r--r--. 1 fiaudfiz fiaudfiz  5505 Jul 24 17:52 Makefile
+-rwxr-xr-x. 1 fiaudfiz fiaudfiz 58056 Jul 24 18:29 minishell
+----------. 1 fiaudfiz fiaudfiz     0 Jul 24 18:40 no_perm
+-rwxr-xr-x. 1 fiaudfiz fiaudfiz  6672 Jul 24 11:57 norme_format.sh
+drwxr-xr-x. 1 fiaudfiz fiaudfiz    82 Jul 24 18:29 obj
+-rw-r--r--. 1 fiaudfiz fiaudfiz     0 Jul 24 18:32 out
+-rw-r--r--. 1 fiaudfiz fiaudfiz     0 Jul 24 18:32 out1
+-rw-r--r--. 1 fiaudfiz fiaudfiz  5505 Jul 24 18:32 out2
+-rw-r--r--. 1 fiaudfiz fiaudfiz 30870 Jul  7 13:29 README.md
+drwxr-xr-x. 1 fiaudfiz fiaudfiz    82 Jul 23 18:13 src
+drwxr-xr-x. 1 fiaudfiz fiaudfiz    38 Jul 23 18:14 tests
+-rw-r--r--. 1 fiaudfiz fiaudfiz  1071 Jul 24 11:57 Usage_norme_format.txt
+bash-5.3$ $rien
+bash-5.3$ exit
+exit
+➜  minishell git:(main) ✗ ./minishell
+miniMishell$: $rien ls $rien -ls $rien
+minishell: /home/fiaudfiz/.local/bin/: Is a directory
+miniMishell$: $rien
+minishell: /home/fiaudfiz/.local/bin/: Is a directory
+miniMishell$: ls $rien -ls $rien
+ls: cannot access '': No such file or directory
+ls: cannot access '': No such file or directory
+miniMishell$: ls $rien -l $rien
+ls: cannot access '': No such file or directory
+ls: cannot access '': No such file or directory
+miniMishell$: ./ok
+minishell: ./ok: No such file or directory
+miniMishell$: $PATH
+minishell: /home/fiaudfiz/.local/bin:/usr/local/bin:/usr/bin: No such file or directory
+miniMishell$: $HOME
+minishell: /home/fiaudfiz: Is a directory
+miniMishell$: $USER
+minishell: fiaudfiz: command not found
+miniMishell$: $TERM
+minishell: xterm-256color: command not found
+miniMishell$: ^C
+miniMishell$: ^C
+➜  minishell git:(main) ✗
+➜  minishell git:(main) ✗ valgrind --track-fds=yes --suppressions=file.supp ./minishell
+==237686== Memcheck, a memory error detector
+==237686== Copyright (C) 2002-2026, and GNU GPL'd, by Julian Seward et al.
+==237686== Using Valgrind-3.27.1 and LibVEX; rerun with -h for copyright info
+==237686== Command: ./minishell
+==237686==
+miniMishell$: export | export fjoiw=ij | export ok
+==237935== Invalid read of size 1
+==237935==    at 0x405B20: ft_strlen (in /home/fiaudfiz/Documents/minishell/minishell)
+==237935==    by 0x4056B8: ft_strdup (in /home/fiaudfiz/Documents/minishell/minishell)
+==237935==    by 0x4011DC: add_env (in /home/fiaudfiz/Documents/minishell/minishell)
+==237935==    by 0x404DA9: assign.constprop.0 (in /home/fiaudfiz/Documents/minishell/minishell)
+==237935==    by 0x404F70: builtin_export (in /home/fiaudfiz/Documents/minishell/minishell)
+==237935==    by 0x404128: execute_pipeline (in /home/fiaudfiz/Documents/minishell/minishell)
+==237935==    by 0x402EC8: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==237935==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==237935==  Address 0x0 is not stack'd, malloc'd or (recently) free'd
+==237935==
+==237935==
+==237935== Process terminating with default action of signal 11 (SIGSEGV): dumping core
+==237935==  Access not within mapped region at address 0x0
+==237935==    at 0x405B20: ft_strlen (in /home/fiaudfiz/Documents/minishell/minishell)
+==237935==    by 0x4056B8: ft_strdup (in /home/fiaudfiz/Documents/minishell/minishell)
+==237935==    by 0x4011DC: add_env (in /home/fiaudfiz/Documents/minishell/minishell)
+==237935==    by 0x404DA9: assign.constprop.0 (in /home/fiaudfiz/Documents/minishell/minishell)
+==237935==    by 0x404F70: builtin_export (in /home/fiaudfiz/Documents/minishell/minishell)
+==237935==    by 0x404128: execute_pipeline (in /home/fiaudfiz/Documents/minishell/minishell)
+==237935==    by 0x402EC8: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==237935==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==237935==  If you believe this happened as a result of a stack
+==237935==  overflow in your program's main thread (unlikely but
+==237935==  possible), you can try to increase the size of the
+==237935==  main thread stack using the --main-stacksize= flag.
+==237935==  The main thread stack size used in this run was 8388608.
+==237934==
+==237934== FILE DESCRIPTORS: 3 open (1 inherited) at exit.
+==237934== Open file descriptor 1:
+==237934==    at 0x49B660B: dup2 (dup2.c:29)
+==237934==    by 0x403195: execute_cmd_pipe (in /home/fiaudfiz/Documents/minishell/minishell)
+==237934==    by 0x404105: execute_pipeline (in /home/fiaudfiz/Documents/minishell/minishell)
+==237934==    by 0x402EC8: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==237934==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==237934==
+==237934== Open file descriptor 0:
+==237934==    at 0x49B660B: dup2 (dup2.c:29)
+==237934==    by 0x403180: execute_cmd_pipe (in /home/fiaudfiz/Documents/minishell/minishell)
+==237934==    by 0x404105: execute_pipeline (in /home/fiaudfiz/Documents/minishell/minishell)
+==237934==    by 0x402EC8: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==237934==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==237934==
+==237934==
+==237934== HEAP SUMMARY:
+==237934==     in use at exit: 323,120 bytes in 385 blocks
+==237934==   total heap usage: 722 allocs, 337 frees, 355,413 bytes allocated
+==237934==
+==237934== LEAK SUMMARY:
+==237934==    definitely lost: 0 bytes in 0 blocks
+==237934==    indirectly lost: 0 bytes in 0 blocks
+==237934==      possibly lost: 0 bytes in 0 blocks
+==237934==    still reachable: 323,120 bytes in 385 blocks
+==237934==         suppressed: 0 bytes in 0 blocks
+==237934== Rerun with --leak-check=full to see details of leaked memory
+==237934==
+==237934== For lists of detected and suppressed errors, rerun with: -s
+==237934== ERROR SUMMARY: 2 errors from 2 contexts (suppressed: 0 from 0)
+==237933==
+==237933== FILE DESCRIPTORS: 3 open (1 inherited) at exit.
+==237933== Open file descriptor 1:
+==237933==    at 0x49B660B: dup2 (dup2.c:29)
+==237933==    by 0x403195: execute_cmd_pipe (in /home/fiaudfiz/Documents/minishell/minishell)
+==237933==    by 0x404105: execute_pipeline (in /home/fiaudfiz/Documents/minishell/minishell)
+==237933==    by 0x402EC8: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==237933==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==237933==
+==237933== Open file descriptor 0: /dev/pts/0
+==237933==    at 0x49B660B: dup2 (dup2.c:29)
+==237933==    by 0x403180: execute_cmd_pipe (in /home/fiaudfiz/Documents/minishell/minishell)
+==237933==    by 0x404105: execute_pipeline (in /home/fiaudfiz/Documents/minishell/minishell)
+==237933==    by 0x402EC8: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==237933==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==237933==
+==237933==
+==237933== HEAP SUMMARY:
+==237933==     in use at exit: 323,111 bytes in 383 blocks
+==237933==   total heap usage: 720 allocs, 337 frees, 356,931 bytes allocated
+==237933==
+==237933== LEAK SUMMARY:
+==237933==    definitely lost: 0 bytes in 0 blocks
+==237933==    indirectly lost: 0 bytes in 0 blocks
+==237933==      possibly lost: 0 bytes in 0 blocks
+==237933==    still reachable: 323,111 bytes in 383 blocks
+==237933==         suppressed: 0 bytes in 0 blocks
+==237933== Rerun with --leak-check=full to see details of leaked memory
+==237933==
+==237933== For lists of detected and suppressed errors, rerun with: -s
+==237933== ERROR SUMMARY: 2 errors from 2 contexts (suppressed: 0 from 0)
+==237935==
+==237935== FILE DESCRIPTORS: 3 open (1 inherited) at exit.
+==237935== Open file descriptor 1: /dev/pts/0
+==237935==    at 0x49B660B: dup2 (dup2.c:29)
+==237935==    by 0x403195: execute_cmd_pipe (in /home/fiaudfiz/Documents/minishell/minishell)
+==237935==    by 0x404128: execute_pipeline (in /home/fiaudfiz/Documents/minishell/minishell)
+==237935==    by 0x402EC8: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==237935==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==237935==
+==237935== Open file descriptor 0:
+==237935==    at 0x49B660B: dup2 (dup2.c:29)
+==237935==    by 0x403180: execute_cmd_pipe (in /home/fiaudfiz/Documents/minishell/minishell)
+==237935==    by 0x404128: execute_pipeline (in /home/fiaudfiz/Documents/minishell/minishell)
+==237935==    by 0x402EC8: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==237935==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==237935==
+==237935==
+==237935== HEAP SUMMARY:
+==237935==     in use at exit: 329,279 bytes in 409 blocks
+==237935==   total heap usage: 720 allocs, 311 frees, 355,398 bytes allocated
+==237935==
+==237935== LEAK SUMMARY:
+==237935==    definitely lost: 0 bytes in 0 blocks
+==237935==    indirectly lost: 0 bytes in 0 blocks
+==237935==      possibly lost: 0 bytes in 0 blocks
+==237935==    still reachable: 329,279 bytes in 409 blocks
+==237935==         suppressed: 0 bytes in 0 blocks
+==237935== Rerun with --leak-check=full to see details of leaked memory
+==237935==
+==237935== For lists of detected and suppressed errors, rerun with: -s
+==237935== ERROR SUMMARY: 3 errors from 3 contexts (suppressed: 0 from 0)
+miniMishell$: ^C
+==237686== $: ^C
+==237686== Process terminating with default action of signal 2 (SIGINT)
+==237686==    at 0x48EC1BB: kill (syscall-template.S:120)
+==237686==    by 0x4899B0B: _rl_handle_signal (signals.c:297)
+==237686==    by 0x4899B0B: _rl_signal_handler (signals.c:152)
+==237686==    by 0x489AF7C: rl_getc (input.c:971)
+==237686==    by 0x489A1A6: rl_read_key (input.c:827)
+==237686==    by 0x487A82E: readline_internal_char (readline.c:632)
+==237686==    by 0x4884E64: readline_internal_charloop (readline.c:740)
+==237686==    by 0x4884E64: readline_internal (readline.c:752)
+==237686==    by 0x4884E64: readline (readline.c:386)
+==237686==    by 0x400802: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==237686==
+==237686== FILE DESCRIPTORS: 3 open (3 inherited) at exit.
+==237686==
+==237686== HEAP SUMMARY:
+==237686==     in use at exit: 329,246 bytes in 404 blocks
+==237686==   total heap usage: 720 allocs, 316 frees, 355,318 bytes allocated
+==237686==
+==237686== LEAK SUMMARY:
+==237686==    definitely lost: 0 bytes in 0 blocks
+==237686==    indirectly lost: 0 bytes in 0 blocks
+==237686==      possibly lost: 0 bytes in 0 blocks
+==237686==    still reachable: 329,246 bytes in 404 blocks
+==237686==         suppressed: 0 bytes in 0 blocks
+==237686== Rerun with --leak-check=full to see details of leaked memory
+==237686==
+==237686== For lists of detected and suppressed errors, rerun with: -s
+==237686== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+
+➜  minishell git:(main) ✗ export | export fjoiw=ij | export ok
+➜  minishell git:(main) ✗ ./minishell
+miniMishell$: export | export fjoiw=ij | export ok
+miniMishell$: "                                                                           "
+minishell:                                                                            : command not found
+miniMishell$:
+miniMishell$: 3==      possibly lost: 0 bytes in 0 blocks
+==237933==    still reachable: 323,111 bytes in 383 blocks
+==237933==         suppressed: 0 bytes in 0 blocks
+==237933== Rerun with --leak-check=full to see details of leaked memory
+==237933==
+==237933== For lists of detected and suppressed errors, rerun with: -s
+==237933== ERROR SUMMARY: 2 errors from 2 contexts (suppressed: 0 from 0)
+==237935==
+==237935== FILE DESCRIPTORS: 3 open (1 inherited) at exit.
+==237935== Open file descriptor 1: /dev/pts/0
+==237935==    at 0x49B660B: dup2 (dup2.c:29)
+==237935==    by 0x403195: execute_cmd_pipe (in /home/fiaudfiz/Documents/minishell/minishell)
+==237935==    by 0x404128: execute_pipeline (in /home/fiaudfiz/Documents/minishell/minishell)
+==237935==    by 0x402EC8: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==237935==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==237935==
+==237935== Open file descriptor 0:
+==237935==    at 0x49B660B: dup2 (dup2.c:29)
+==237935==    by 0x403180: execute_cmd_pipe (in /home/fiaudfiz/Documents/minishell/minishell)
+==237935==    by 0x404128: execute_pipeline (in /home/fiaudfiz/Documents/minishell/minishell)
+==237935==    by 0x402EC8: executor (in /home/fiaudfiz/Documents/minishell/minishell)
+==237935==    by 0x400851: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==237935==
+==237935==
+==237935== HEAP SUMMARY:
+==237935==     in use at exit: 329,279 bytes in 409 blocks
+==237935==   total heap usage: 720 allocs, 311 frees, 355,398 bytes allocated
+==237935==
+==237935== LEAK SUMMARY:
+==237935==    definitely lost: 0 bytes in 0 blocks
+==237935==    indirectly lost: 0 bytes in 0 blocks
+==237935==      possibly lost: 0 bytes in 0 blocks
+==237935==    still reachable: 329,279 bytes in 409 blocks
+==237935==         suppressed: 0 bytes in 0 blocks
+==237935== Rerun with --leak-check=full to see details of leaked memory
+==237935==
+==237935== For lists of detected and suppressed errors, rerun with: -s
+==237935== ERROR SUMMARY: 3 errors from 3 contexts (suppressed: 0 from 0)
+miniMishell$: ^C
+==237686== $: ^C
+==237686== Process terminating with default action of signal 2 (SIGINT)
+==237686==    at 0x48EC1BB: kill (syscall-template.S:120)
+==237686==    by 0x4899B0B: _rl_handle_signal (signals.c:297)
+==237686==    by 0x4899B0B: _rl_signal_handler (signals.c:152)
+==237686==    by 0x489AF7C: rl_getc (input.c:971)
+==237686==    by 0x489A1A6: rl_read_key (input.c:827)
+==237686==    by 0x487A82E: readline_internal_char (readline.c:632)
+==237686==    by 0x4884E64: readline_internal_charloop (readline.c:740)
+==237686==    by 0x4884E64: readline_internal (readline.c:752)
+==237686==    by 0x4884E64: readline (readline.c:386)
+==237686==    by 0x400802: main (in /home/fiaudfiz/Documents/minishell/minishell)
+==237686==
+==237686== FILE DESCRIPTORS: 3 open (3 inherited) at exit.
+==237686==
+==237686== HEAP SUMMARY:
+==237686==     in use at exit: 329,246 bytes in 404 blocks
+==237686==   total heap usage: 720 allocs, 316 frees, 355,318 bytes allocated
+==237686==
+==237686== LEAK SUMMARY:
+==237686==    definitely lost: 0 bytes in 0 blocks
+==237686==    indirectly lost: 0 bytes in 0 blocks
+==237686==      possibly lost: 0 bytes in 0 blocks
+minishell: 3==: command not found
+miniMishell$:
+miniMishell$:
+miniMishell$:
+miniMishell$:
+miniMishell$:
+miniMishell$:
+miniMishell$:
+miniMishell$:
+miniMishell$:
+miniMishell$:
+miniMishell$:
+miniMishell$:
+miniMishell$:
+miniMishell$: 3==      possibly lost: 0 bytes in 0 blocks
+minishell: 3==: command not found
+miniMishell$: exit
+exit
+➜  minishell git:(main) ✗ bash --posix
+bash-5.3$ 3==      possibly lost: 0 bytes in 0 blocks
+bash: 3==: command not found
+bash-5.3$ exit
+exit
+➜  minishell git:(main) ✗ ./minishell
+miniMishell$: <><><>
+minishell: syntax error near unexpected token `>'
+miniMishell$: &&&
+minishell: syntax error near unexpected token `&&'
+minishell: syntax error near unexpected token `&'
+miniMishell$: &
+minishell: syntax error near unexpected token `&'
+miniMishell$: &&
+minishell: syntax error near unexpected token `&&'
+minishell: syntax error near unexpected token `newline'
+miniMishell$: &&&
+minishell: syntax error near unexpected token `&&'
+minishell: syntax error near unexpected token `&'
+miniMishell$: &&&&
+minishell: syntax error near unexpected token `&&'
+minishell: syntax error near unexpected token `&&'
+miniMishell$: &&&&&&&&&&&&&
+minishell: syntax error near unexpected token `&&'
+minishell: syntax error near unexpected token `&&'
+miniMishell$: |||||||||||||||||||||||||||||||
+minishell: syntax error near unexpected token `||'
+minishell: syntax error near unexpected token `||'
+miniMishell$: bash --posix
+bash-5.3$ &&
+bash: syntax error near unexpected token `&&'
+bash-5.3$ exit
+exit
+miniMishell$:
+miniMishell$:
+miniMishell$:
+miniMishell$: cafefewop^C
+miniMishell$: &&
+minishell: syntax error near unexpected token `&&'
+minishell: syntax error near unexpected token `newline'
+miniMishell$: ()
+minishell: (): command not found
+miniMishell$: | ok
+minishell: syntax error near unexpected token `|'
+minishell: Bad file descriptor
+miniMishell$: | ls
+minishell: syntax error near unexpected token `|'
+minishell: Bad file descriptor
+miniMishell$: ls | > out >> ok | ls -a
+.	   .git		images	 LICENSE    no_perm	     ok    out2       tests
+..	   .gitignore	include  Makefile   norme_format.sh  out   README.md  Usage_norme_format.txt
+file.supp  .gitmodules	lib	 minishell  obj		     out1  src	      vgcore.237935
+miniMishell$: ls
+file.supp  lib	     minishell	      obj  out1       src		      vgcore.237935
+images	   LICENSE   no_perm	      ok   out2       tests
+include    Makefile  norme_format.sh  out  README.md  Usage_norme_format.txt
+miniMishell$: ls | > out >> ok1 | ls -a
+.	   .gitignore	lib	   no_perm	    ok1   README.md		  vgcore.237935
+..	   .gitmodules	LICENSE    norme_format.sh  out   src
+file.supp  images	Makefile   obj		    out1  tests
+.git	   include	minishell  ok		    out2  Usage_norme_format.txt
+miniMishell$: ls
+file.supp  lib	     minishell	      obj  out	 README.md  Usage_norme_format.txt
+images	   LICENSE   no_perm	      ok   out1  src	    vgcore.237935
+include    Makefile  norme_format.sh  ok1  out2  tests
+miniMishell$: bash--posix
+minishell: bash--posix: command not found
+miniMishell$: bash --posix
+bash-5.3$ ls | > out3 >> ok2 | ls -a
+.	   .gitignore	lib	   no_perm	    ok1   out2	     tests
+..	   .gitmodules	LICENSE    norme_format.sh  ok2   out3	     Usage_norme_format.txt
+file.supp  images	Makefile   obj		    out   README.md  vgcore.237935
+.git	   include	minishell  ok		    out1  src
+bash-5.3$ ls
+file.supp  lib	     minishell	      obj  ok2	 out2	    src			    vgcore.237935
+images	   LICENSE   no_perm	      ok   out	 out3	    tests
+include    Makefile  norme_format.sh  ok1  out1  README.md  Usage_norme_format.txt
+bash-5.3$ exit
+exit
+miniMishell$: '"$arg'
+minishell: "$arg: command not found
+miniMishell$: ./Makefile
+minishell: ./Makefile: Permission denied
+miniMishell$: ./ok
+minishell: ./ok: Permission denied
+miniMishell$: bash --posix
+bash-5.3$ ./Makefile
+bash: ./Makefile: Permission denied
+bash-5.3$ exit
+exit
+miniMishell$: ?$
+minishell: ?$: command not found
+miniMishell$: ?$?
+minishell: ?127: command not found
+miniMishell$: '' '' ''
+minishell: /home/fiaudfiz/.local/bin/: Is a directory
+miniMishell$: bash --posix
+bash-5.3$ '' '' ''
+bash: : command not found
+bash-5.3$ ""
+bash: : command not found
+bash-5.3$ exit
+exit
+miniMishell$: ""
+minishell: /home/fiaudfiz/.local/bin/: Is a directory
+miniMishell$: '"'
+minishell: ": command not found
+miniMishell$: "''"
+minishell: '': command not found
+miniMishell$:                                                               ls
+file.supp  lib	     minishell	      obj  ok2	 out2	    src			    vgcore.237935
+images	   LICENSE   no_perm	      ok   out	 out3	    tests
+include    Makefile  norme_format.sh  ok1  out1  README.md  Usage_norme_format.txt
+miniMishell$: export arg=123
+miniMishell$: << 123
+'> '^C
+➜  minishell git:(main) ✗ ./minishell
+miniMishell$: << 123
+'> 'few^M^M^M^M^M^C
+miniMishell$: miniMishell$: ^C
+➜  minishell git:(main) ✗ ./minishell
+miniMishell$: << 123
+'> '^M^M^M^M^M^M^M^M^M^M^M^M^M^C
+miniMishell$: miniMishell$: ^C
+➜  minishell git:(main) ✗ ./minishell
+miniMishell$: << ''
+'> '^M^M^M^M^M^M^M^M^M^M^M^M^M^M^M^M^M^M^M^M^C
+miniMishell$: miniMishell$: ^C
+➜  minishell git:(main) ✗ ./minishell
+miniMishell$: exit 0000000000000002
+exit
+➜  minishell git:(main) ✗ echo $?
+2
+➜  minishell git:(main) ✗ ./minishell
+miniMishell$: $? + $?
+minishell: 0: command not found
+miniMishell$: $? + $?
+minishell: 127: command not found
+miniMishell$: bash --posix
+bash-5.3$ $? + $?
+bash: 0: command not found
+bash-5.3$ $? + $?
+bash: 127: command not found
+bash-5.3$ $? + $?
+bash: 127: command not found
+bash-5.3$ exit
+exit
+miniMishell$: $$
+minishell: $$: command not found
+miniMishell$: '$$?'
+minishell: $$?: command not found
+miniMishell$: "$$?"
+minishell: $127: command not found
+miniMishell$: '$'"
+miniMishell$: '$''"'
+minishell: $": command not found
+miniMishell$: '      '''       ''         ''''
+minishell:       : command not found
+miniMishell$: good luck
+minishell: good: command not found
+miniMishell$: ^C
+miniMishell$:
+miniMishell$: ld
+/usr/bin/ld.bfd: no input files
+miniMishell$:
+➜  minishell git:(main) ✗ chmod 777 no_perm
+➜  minishell git:(main) ✗ rm -rf no_perm
+➜  minishell git:(main) ✗ ls
+file.supp  include  LICENSE   minishell        obj        src    Usage_norme_format.txt
+images     lib      Makefile  norme_format.sh  README.md  tests
+➜  minishell git:(main) ✗
