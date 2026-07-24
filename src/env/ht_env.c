@@ -45,7 +45,7 @@ t_env_val	add_env(t_env *env, char *key, char *str, t_env_flags flags)
 	size_t	index;
 	size_t	deleted;
 
-	if (!env || !key)
+	if (!env || !key || !str)
 		return (ENV_ERROR);
 	if (env->entries == env->capacity)
 		return (ENV_FULL);

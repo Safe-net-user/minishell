@@ -103,11 +103,15 @@ static char	*search_path(char **path, char *cmd)
 
 char	*find_path(t_mms *mms, t_ast *node, t_executor *exec)
 {
-	char	**path;
-	char	*result;
+	char		**path;
+	char		*result;
+	t_env_entry	*entry;
 
 	(void)exec;
-	path = ft_split(get_env(mms->env, "PATH")->value, ':');
+	entry = get_env(mms->env, "PATH");
+	if (!entry)
+		return (NULL);
+	path = ft_split(entry->value, ':');
 	if (!path || !path[0])
 	{
 		free_path_arr(path);

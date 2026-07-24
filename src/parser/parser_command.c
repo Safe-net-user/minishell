@@ -50,12 +50,12 @@ int	count_tokens(t_tk *token)
 
 	temp = token;
 	count = 0;
-	while (temp->type_tk == TOK_WORD
+	while (temp && (temp->type_tk == TOK_WORD
 		|| temp->type_tk == TOK_LESS
 		|| temp->type_tk == TOK_DLESS
 		|| temp->type_tk == TOK_GREAT
 		|| temp->type_tk == TOK_DGREAT
-		|| temp->type_tk == TOK_DELIMITER)
+		|| temp->type_tk == TOK_DELIMITER))
 	{
 		count++;
 		temp = next_token(temp);
@@ -87,9 +87,13 @@ bool	parse_redirection(t_mms *mms, t_tk **token, t_ast *node)
 	t_redir	*cur;
 
 	new = stack_alloc(mms->sa, sizeof(t_redir));
+	if (!new)
+		return (false);
 	new->type_tk = (*token)->type_tk;
 	new->next = NULL;
 	*token = next_token(*token);
+	if (!*token)
+		return (parser_error(mms, *token), false);
 	if ((*token)->type_tk != TOK_WORD && (*token)->type_tk != TOK_DELIMITER)
 		return (parser_error(mms, *token), false);
 	new->file = (*token)->value;
@@ -142,6 +146,8 @@ t_ast	*parse_command(t_mms *mms, t_tk **token)
 	if (!is_command_token((*token)->type_tk))
 		return (parser_error(mms, *token), NULL);
 	node = stack_alloc(mms->sa, sizeof(t_ast));
+	if (!node)
+		return (NULL);
 	node->type = NODE_CMD;
 	node->left = NULL;
 	node->right = NULL;
@@ -149,6 +155,10 @@ t_ast	*parse_command(t_mms *mms, t_tk **token)
 	count = count_tokens(*token);
 	node->tokens = stack_alloc(mms->sa,
 			sizeof(t_tk *) * (count + 1));
+	if (!node->tokens) {
+		free(node);
+		return (NULL);
+	}
 	i = 0;
 	while (is_command_token((*token)->type_tk))
 	{

@@ -28,11 +28,21 @@ int	env_arr_to_ht(char **envp, t_env *ht)
 		start = ft_strdup(envp[i]);
 		if (!start)
 			return (0);
-		while (start[j] != '=')
+		while (start[j] && start[j] != '=')
 			j++;
+		if (start[j] != '=')
+		{
+			free(start);
+			i++;
+			continue;
+		}
 		start[j] = '\0';
 		j++;
-		add_env(ht, start, &start[j], EXPORTED);
+		if (add_env(ht, start, &start[j], EXPORTED) == ENV_ERROR)
+		{
+			free(start);
+			return (0);
+		}
 		free(start);
 		i++;
 	}

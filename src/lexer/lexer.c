@@ -27,6 +27,8 @@ int emit_tk(t_lx *lx)
 	if (!tk)
 		return (0);
 	tk->value = ft_strdup(lx->sb->str);
+	if (!tk->value)
+		return (0);
 	tk->flags = lx->tk->flags;
 	if (lx->is_next_delimiter)
 		lx->tk->type_tk = TOK_DELIMITER;
@@ -45,7 +47,7 @@ int emit_eof(t_lx *lx)
 	tk = stack_alloc(lx->mms->sa, sizeof(t_tk));
 	if (!tk)
 		return (0);
-	tk->value = "";
+	tk->value = NULL;
 	tk->flags = 0;
 	tk->type_tk = TOK_EOF;
 	return (1);
@@ -76,7 +78,11 @@ t_lx *init_s_lx( char *cmdl, t_mms *mms)
 	lx->sb = init_sb(DEFAULT_SB_SIZE);
 	lx->is_next_delimiter = 0;
 	if (!lx->sb)
+	{
+		free(lx->tk);
+		free(lx);
 		return (NULL);
+	}
 	return (lx);
 }
 
