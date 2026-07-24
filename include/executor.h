@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/11 11:23:14 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/24 00:05:24 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/24 14:16:21 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,5 +59,7 @@ int	execute_pipeline(t_mms *mms, t_ast *node, t_pipeline *pipeline);
 int	redirection(t_mms *mms, t_ast *node);
 
 char	**hash_table_to_envp(t_ht *ht);
+
+int	execute_redir_only(t_mms *mms, t_ast *node);
 
 #endif
