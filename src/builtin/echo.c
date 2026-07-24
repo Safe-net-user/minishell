@@ -14,6 +14,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
+#include "ft_io.h"
 #include "ft_strings.h"
 #include "builtin.h"
 
@@ -39,23 +40,25 @@ t_builts_val	builtin_echo(char **tab)
 	bool	new_line_active;
 	int		i;
 
-	if (!tab)
-		return (BUI_ERROR);
-	new_line_active = 1;
-	i = 1;
-	while (tab[i] && n_option_isvalid(tab[i]))
-	{
-		new_line_active = 0;
-		i++;
-	}
-	while (tab[i])
-	{
-		write(STDOUT_FILENO, tab[i], ft_strlen(tab[i]));
-		if (tab[i + 1])
-			write(STDOUT_FILENO, " ", 1);
-		i++;
-	}
-	if (new_line_active)
-		write(STDOUT_FILENO, "\n", 1);
-	return (BUI_SUCCESS);
+    if (!tab) {
+        ft_putstr_fd("miniMishell: echo: internal error\n", STDERR_FILENO);
+        return (1);
+    }
+    new_line_active = 1;
+    i = 1;
+    while (tab[i] && n_option_isvalid(tab[i]))
+    {
+        new_line_active = 0;
+        i++;
+    }
+    while (tab[i])
+    {
+        write(STDOUT_FILENO, tab[i], ft_strlen(tab[i]));
+        if (tab[i + 1])
+            write(STDOUT_FILENO, " ", 1);
+        i++;
+    }
+    if (new_line_active)
+        write(STDOUT_FILENO, "\n", 1);
+    return (0);
 }

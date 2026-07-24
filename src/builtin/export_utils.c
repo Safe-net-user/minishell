@@ -7,7 +7,7 @@ int is_validname(char *str)
 {
 	if (!str)
 		return (0);
-	if (ft_isdigit(str[0]) || ft_isalpha(str[0]) || str[0] == '_')
+	if (ft_isalpha(str[0]) || str[0] == '_')
 		return (1);
 	return (0);
 }

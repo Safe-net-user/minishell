@@ -21,14 +21,6 @@ typedef enum e_builtins_val
 	BUI_SUCCESS,
 	BUI_ERROR,
 	BUI_TOO_MANY_ARGS,
-	BUI_HOME_NOT_SET,
-	BUI_OLDPWD_NOT_SET,
-	BUI_INVALID_VAR_NAME,
-	BUI_INVALID_VAR_NAME_SIZE,
-	BUI_INVALID_KEY_NAME_SIZE,
-	BUI_READONLY_VAR,
-	BUI_NONE,
-	BUI_NUMERIC_ARG_REQUIRED,
 }	t_builts_val;
 
 static inline void	swap_addr(t_env_entry *a, t_env_entry *b)

@@ -19,8 +19,13 @@ t_builts_val builtin_pwd(void)
 {
 	char *pwd;
 
-	pwd = getcwd(NULL, 0);
-	printf("%s\n", pwd);
-	free(pwd);
-	return (BUI_SUCCESS);
+    pwd = getcwd(NULL, 0);
+    if (!pwd)
+    {
+        perror("miniMishell: pwd: ");
+        return (1);
+    }
+    printf("%s\n", pwd);
+    free(pwd);
+    return (0);
 }
