@@ -33,7 +33,7 @@
 static	t_mms	*init_og_struct(void)
 {
 	t_mms	*mms;
-	
+
 	mms = malloc(sizeof(t_mms));
 	if (!mms)
 		return (0);
@@ -69,7 +69,7 @@ int main(UNUSED int ac, UNUSED char **av, char **envp)
 	char 	*result;
 	t_mms	*mms;
 	t_ast 	*head;
-	
+
 	mms = init_og_struct();
 	if (!mms || set_og_struct(mms, envp) == 0)
 	{
@@ -79,7 +79,7 @@ int main(UNUSED int ac, UNUSED char **av, char **envp)
 	set_signaux_interactif();
 	while (1)
 	{
-		stack_reset(mms->sa);   // CHANGE: reset AVANT de lexer/parser la nouvelle ligne
+		stack_reset(mms->sa); // CHANGE: reset AVANT de lexer/parser la nouvelle ligne
 		result = readline("miniMishell$: ");
 		if (!result)
 		{
@@ -110,4 +110,4 @@ int main(UNUSED int ac, UNUSED char **av, char **envp)
 	return (0);
 }
 
-// compiler avec -lreadline  
+// compiler avec -lreadline

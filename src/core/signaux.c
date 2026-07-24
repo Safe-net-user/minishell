@@ -29,8 +29,8 @@ void	handle_sigint(int sig)
 }
 
 
-void    set_signaux_interactif(void)
+void set_signaux_interactif(void)
 {
-    signal(SIGINT, handle_sigint);
-    signal(SIGQUIT, SIG_IGN);
+	signal(SIGINT, handle_sigint);
+	signal(SIGQUIT, SIG_IGN);
 }

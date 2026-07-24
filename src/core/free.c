@@ -55,15 +55,15 @@ void	free_stack_allocator(t_stack_alloc *sa)
 	free(sa);
 }
 
-void    free_og_struct(t_mms *mms)
+void free_og_struct(t_mms *mms)
 {
-    if (!mms)
-        return ;
-    free_hash_table(mms->alias);
-    free_hash_table(mms->cmd_path);
-    free_env(mms->env);
-    free_stack_allocator(mms->sa);
-	free(mms->cwd); 
-    free(mms->name);
-    free(mms);
+	if (!mms)
+		return ;
+	free_hash_table(mms->alias);
+	free_hash_table(mms->cmd_path);
+	free_env(mms->env);
+	free_stack_allocator(mms->sa);
+	free(mms->cwd);
+	free(mms->name);
+	free(mms);
 }
