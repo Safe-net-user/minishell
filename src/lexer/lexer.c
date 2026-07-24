@@ -139,12 +139,12 @@ t_val_lx	lexer(char *cmdl, t_mms *mms)
 			free_lexer(lx);
 			return (LX_ERROR);
 		}
-		if (!emit_eof(lx))
+	}
+	if (!emit_eof(lx))
 		{
 			free_lexer(lx);
 			return (LX_ERROR);
 		}
-	}
 	free_lexer(lx);
 	return (LX_SUCCESS);
 }
