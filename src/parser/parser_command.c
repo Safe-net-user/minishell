@@ -155,8 +155,6 @@ t_ast	*parse_command(t_mms *mms, t_tk **token)
 	count = count_tokens(*token);
 	node->tokens = stack_alloc(mms->sa,
 			sizeof(t_tk *) * (count + 1));
-	if (!node->tokens)
-		return (NULL);
 	i = 0;
 	while (is_command_token((*token)->type_tk))
 	{

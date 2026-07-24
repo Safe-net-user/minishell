@@ -76,12 +76,18 @@ t_ast	*parse_pipe(t_mms *mms, t_tk **token)
 	t_ast	*node;
 
 	left = parse_command(mms, token);
+	if (!left)
+		return (NULL);
 	while ((*token)->type_tk == TOK_PIPE)
 	{
 		node = stack_alloc(mms->sa, sizeof(t_ast));
+		if (!node)
+			return (NULL);
 		node->type = NODE_PIPE;
 		node->left = left;
 		*token = next_token(*token);
+		if (!token)
+			return (NULL);
 		node->right = parse_command(mms, token);
 		if (!node->right)
 			return (NULL);
