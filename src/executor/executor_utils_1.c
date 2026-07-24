@@ -6,11 +6,12 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/24 16:24:40 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/24 16:28:34 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/24 16:35:15 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "executor.h"
+#include "ft_strings.h"
 
 static void	free_envp(char **envp, size_t size)
 {
@@ -19,7 +20,7 @@ static void	free_envp(char **envp, size_t size)
 	free(envp);
 }
 
-static char	*entry_to_envp(t_ht_entry *entry)
+static char	*entry_to_envp(t_entry *entry)
 {
 	char	*env;
 	size_t	len;
@@ -34,7 +35,7 @@ static char	*entry_to_envp(t_ht_entry *entry)
 	return (env);
 }
 
-static int	add_envp_entry(char **envp, size_t *j, t_ht_entry *entry)
+static int	add_envp_entry(char **envp, size_t *j, t_entry *entry)
 {
 	if (!entry->key || entry->key == (char *)DELETED)
 		return (0);

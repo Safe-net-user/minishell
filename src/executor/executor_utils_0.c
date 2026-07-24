@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   executor_utils.c                                   :+:      :+:    :+:   */
+/*   executor_utils_0.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 17:47:54 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/24 16:24:19 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/24 16:31:49 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <errno.h>
+#include <string.h>
 
 /**
  * @brief Converts an array of token structures into an array of command strings.
@@ -67,7 +68,7 @@ int	execute_redir_only(t_mms *mms, t_ast *node)
 	return (status);
 }
 
-static int	exec_command(char *cmd_path, char **cmd_tab, char **envp)
+int	exec_command(char *cmd_path, char **cmd_tab, char **envp)
 {
 	execve(cmd_path, cmd_tab, envp);
 	if (errno == EACCES)

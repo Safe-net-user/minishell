@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 14:51:42 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/24 13:48:24 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/24 16:39:05 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,14 +24,13 @@
 
  */
 
-
 t_tk	*next_token(t_tk *cur)
 {
 	t_header	*h;
 
 	h = (t_header *)cur - 1;
 	return ((t_tk *)((uint8_t *)cur + h->size
-			+ sizeof(t_header)));
+		+ sizeof(t_header)));
 }
 
 /**
@@ -133,7 +132,6 @@ static void	add_word(t_ast *node, t_tk **token, int *i)
  * @return Pointer to the created command AST node, or NULL if a syntax
  *         error is encountered.
  */
-
 
 t_ast	*parse_command(t_mms *mms, t_tk **token)
 {

@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 14:55:04 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/23 15:02:02 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/24 16:38:35 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,8 +126,10 @@ t_ast	*parse_or_and(t_mms *mms, t_tk **token)
 		|| (*token)->type_tk == TOK_OR_IF)
 	{
 		node = stack_alloc(mms->sa, sizeof(t_ast));
-		node->type = (*token)->type_tk == TOK_AND_IF
-			? NODE_AND : NODE_OR;
+		if ((*token)->type_tk == TOK_AND_IF)
+			node->type = NODE_AND;
+		else
+			node->type = NODE_OR;
 		node->left = left;
 		*token = next_token(*token);
 		node->right = parse_pipe(mms, token);
