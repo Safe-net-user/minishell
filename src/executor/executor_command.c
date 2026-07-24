@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 16:53:07 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/24 16:20:52 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/24 22:59:59 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 #include <sys/wait.h>
 #include <sys/stat.h>
 #include <string.h>
+#define _POSIX_C_SOURCE 200809L
 
 /**
  * @brief Executes an external command using execve().

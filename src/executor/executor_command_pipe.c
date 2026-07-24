@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 17:45:31 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/23 23:38:45 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/24 22:59:51 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include <unistd.h>
 #include <signal.h>
 #include "expander.h"
+#define _POSIX_C_SOURCE 200809L
 
 static int	setup_pipe_fds(int fd_in, int fd_out)
 {
