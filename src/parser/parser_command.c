@@ -21,7 +21,7 @@
  *
  * @param cur Current token.
  * @return Pointer to the next token in memory.
- 
+
  */
 
 
