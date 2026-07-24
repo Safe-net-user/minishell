@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 14:51:09 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/23 22:08:43 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/24 13:18:25 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,14 +26,21 @@
 
 void	parser_error(t_mms *mms, t_tk *tok)
 {
+	char	*token;
+
 	mms->last_status = 2;
 	if (tok->type_tk == TOK_EOF)
+	{
 		fprintf(stderr,
 			"minishell: syntax error near unexpected token `newline'\n");
-	else
-		fprintf(stderr,
-			"minishell: syntax error near unexpected token `%s'\n",
-			tok->value ? tok->value : token_to_string(tok->type_tk));
+		return ;
+	}
+	token = tok->value;
+	if (!token)
+		token = token_to_string(tok->type_tk);
+	fprintf(stderr,
+		"minishell: syntax error near unexpected token `%s'\n",
+		token);
 }
 
 /**
