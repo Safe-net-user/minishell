@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 16:55:56 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/23 23:43:40 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/24 14:30:23 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 #include "gnl.h"
 #include <unistd.h>
 #include "ft_strings.h"
+#include "signal.h"
+#include "sys/wait.h"
 
 /**
  * @brief Reads a line from standard input and writes it to the here-document pipe.
@@ -29,11 +31,18 @@
  *         -1 if the write to the pipe fails.
  */
 
-int	execute_here_doc(int *fd_here_doc, char *lim_nl)
+int	execute_here_doc(t_mms *mms, int *fd_here_doc, char *lim_nl)
 {
-	char	*line;
+	char			*line;
+	char			*ps2;
+	t_env_entry		*entry;
 
-	fprintf(stdout, "> ");
+	entry = get_env(mms->env, "PS2");
+	if (entry && entry->value)
+		ps2 = entry->value;
+	else
+		ps2 = "> ";
+	write(STDOUT_FILENO, ps2, ft_strlen(ps2));
 	line = get_next_line(0);
 	if (!line || ft_strcmp(line, lim_nl) == 0)
 	{
@@ -68,22 +77,13 @@ static int	init_here_doc(t_redir *redir, int *fd_here_doc, char **lim_nl)
 	return (0);
 }
 
-static int	here_doc_error(int *fd_here_doc, char *lim_nl)
-{
-	get_next_line(-1);
-	free(lim_nl);
-	close(fd_here_doc[0]);
-	close(fd_here_doc[1]);
-	return (-1);
-}
-
-static int	fill_here_doc(int *fd_here_doc, char *lim_nl)
+static int	fill_here_doc(t_mms *mms, int *fd_here_doc, char *lim_nl)
 {
 	int	res;
 
 	while (1)
 	{
-		res = execute_here_doc(fd_here_doc, lim_nl);
+		res = execute_here_doc(mms, fd_here_doc, lim_nl);
 		if (res == -1)
 			return (1);
 		if (res == 1)
@@ -109,14 +109,33 @@ int	here_doc(t_mms *mms, t_redir *redir)
 {
 	int		fd_here_doc[2];
 	char	*lim_nl;
+	pid_t	pid;
 
 	(void)mms;
 	if (init_here_doc(redir, fd_here_doc, &lim_nl) == -1)
 		return (-1);
-	if (fill_here_doc(fd_here_doc, lim_nl) == 1)
-		return (here_doc_error(fd_here_doc, lim_nl));
-	get_next_line(-1);
-	free(lim_nl);
+	pid = fork();
+	if (pid == -1)
+	{
+		perror("minishell");
+		free(lim_nl);
+		close(fd_here_doc[0]);
+		close(fd_here_doc[1]);
+		return (-1);
+	}
+	if (pid == 0)
+	{
+		close(fd_here_doc[0]);
+		signal(SIGINT, SIG_DFL);
+		if (fill_here_doc(mms, fd_here_doc, lim_nl) == 1)
+			exit(1);
+		get_next_line(-1);
+		free(lim_nl);
+		close(fd_here_doc[1]);
+		exit(0);
+	}
 	close(fd_here_doc[1]);
+	free(lim_nl);
+	waitpid(pid, NULL, 0);
 	return (fd_here_doc[0]);
 }

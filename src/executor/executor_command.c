@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 16:53:07 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/24 00:27:39 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/24 14:06:05 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,6 +129,8 @@ int	execute_cmd(t_mms *mms, t_ast *node)
 	t_executor	exec;
 
 	expand(mms, &node->tokens);
+	if (!node->tokens || !node->tokens[0])
+		return (execute_redir_only(mms, node));
 	if (builtin(node))
 		return (execute_builtin(mms, node));
 	exec.pid = fork();

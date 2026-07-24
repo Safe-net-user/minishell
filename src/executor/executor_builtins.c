@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/09 17:20:34 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/23 23:07:49 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/24 14:02:16 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,8 @@ int	exec_builtin(t_mms *mms, t_ast *node)
 
 int	builtin(t_ast *node)
 {
+	if (!node->tokens || !node->tokens[0])
+		return (0);
 	if (ft_strcmp(node->tokens[0]->value, "echo") == 0
 		|| ft_strcmp(node->tokens[0]->value, "cd") == 0
 		|| ft_strcmp(node->tokens[0]->value, "pwd") == 0

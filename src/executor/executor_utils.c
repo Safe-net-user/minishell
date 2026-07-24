@@ -6,12 +6,13 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 17:47:54 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/24 08:52:37 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/24 14:22:01 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "executor.h"
 #include "ft_strings.h"
+#include <unistd.h>
 
 /**
  * @brief Converts an array of token structures into an array of command strings.
@@ -79,4 +80,20 @@ char	**hash_table_to_envp(t_ht *ht)
 	}
 	envp[j] = NULL;
 	return (envp);
+}
+
+int	execute_redir_only(t_mms *mms, t_ast *node)
+{
+	int	saved_in;
+	int	saved_out;
+	int	status;
+
+	saved_in = dup(STDIN_FILENO);
+	saved_out = dup(STDOUT_FILENO);
+	status = redirection(mms, node);
+	dup2(saved_in, STDIN_FILENO);
+	dup2(saved_out, STDOUT_FILENO);
+	close(saved_in);
+	close(saved_out);
+	return (status);
 }
