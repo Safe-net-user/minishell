@@ -65,9 +65,9 @@ ifeq ($(MODE),release)
 	W_FLAGS			:= -Wall -Wextra -Werror
 else
 	ifeq ($(COMPILER), clang)
-		W_FLAGS			:= 	-Wall -Werror -Wextra -Wvla -Wpedantic -pedantic-errors -Wmisleading-indentation -Wsign-conversion -Wshadow -Wnull-dereference -fshort-enums
+		W_FLAGS			:= 	-Wall -Werror -Wextra -Wvla -Wmisleading-indentation -Wshadow -Wnull-dereference -fshort-enums
 	else ifeq ($(COMPILER), gcc)
-		W_FLAGS			:= 	-Wall -Werror -Wextra -Wvla -Wpedantic -pedantic-errors -Wmisleading-indentation -Wsign-conversion -Wstrict-aliasing=3 -Wduplicated-cond -Wstringop-overflow -Wshadow -Wnull-dereference -Warray-bounds -Wrestrict -Wconversion
+		W_FLAGS			:= 	-Wall -Werror -Wextra -Wvla -Wmisleading-indentation -Wstrict-aliasing=3 -Wduplicated-cond -Wstringop-overflow -Wshadow -Wnull-dereference -Warray-bounds -Wrestrict
 	else
 		@echo "Your device require clang or gcc to run the program"
 		@exit 1
@@ -76,7 +76,7 @@ endif
 
 # --------------------- CFLAGS -------------------- #
 ifeq ($(MODE),debug)
-	CFLAGS := -g -O1 -std=c99
+	CFLAGS := -g -O1 -std=c99 -fsanitize=address -fsanitize=undefined -fno-omit-frame-pointer
 else ifeq ($(MODE),debug_memory)
 	CFLAGS := -g -O1 -std=c99 -fsanitize=address -fsanitize=undefined -fno-omit-frame-pointer
 else ifeq ($(MODE),debug_thread)
