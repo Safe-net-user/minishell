@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/11 13:49:27 by gd-hallu          #+#    #+#             */
-/*   Updated: 2026/07/24 17:27:48 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/24 22:55:56 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,7 +106,7 @@ int	set_exported_env_ht(t_mms *mms, char **envp)
 int	set_var_env_ht(t_mms *mms)
 {
 	add_env(mms->env, "PS1", "miniMishell$ ", 0);
-	add_env(mms->env, "PS2", "'> '", 0);
+	add_env(mms->env, "PS2", "> ", 0);
 	if (!get_env(mms->env, "PATH"))
 		add_env(mms->env, "PATH", "/usr/local/bin:/usr/bin", 0);
 	return (1);
