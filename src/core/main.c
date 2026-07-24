@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/09 10:30:51 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/24 21:29:05 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/24 23:01:07 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ static int	handle_input(char *result, t_mms *mms)
 	}
 	if (lexer(result, mms) != LX_SUCCESS)
 	{
-		g_signal = LX_ERROR;
+		mms->last_status = 2;
 		free(result);
 		return (1);
 	}
@@ -119,7 +119,6 @@ int	main(UNUSED int ac, UNUSED char **av, char **envp)
 		free_og_struct(mms);
 		return (EXIT_FAILURE);
 	}
-	set_signaux_interactif();
 	while (1)
 	{
 		stack_reset(mms->sa);
