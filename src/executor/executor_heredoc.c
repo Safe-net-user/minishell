@@ -6,16 +6,16 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 16:55:56 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/24 16:18:18 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/25 01:08:48 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "executor.h"
-#include "gnl.h"
 #include <unistd.h>
 #include "ft_strings.h"
 #include "signal.h"
 #include "sys/wait.h"
+#include "heredoc.h"
 
 /**
  * @brief Reads a line from standard input and writes it to the
@@ -44,8 +44,8 @@ int	execute_here_doc(t_mms *mms, int *fd_here_doc, char *lim_nl)
 	else
 		ps2 = "> ";
 	write(STDOUT_FILENO, ps2, ft_strlen(ps2));
-	line = get_next_line(0);
-	if (!line || ft_strcmp(line, lim_nl) == 0)
+	line = heredoc_gnl(0);
+	if (!line || line_matches_delim(line, lim_nl))
 	{
 		free(line);
 		return (1);
@@ -67,7 +67,7 @@ static int	init_here_doc(t_redir *redir, int *fd_here_doc, char **lim_nl)
 		perror("minishell");
 		return (-1);
 	}
-	*lim_nl = ft_strjoin(redir->file, "\n");
+	*lim_nl = ft_strdup(redir->file);
 	if (!*lim_nl)
 	{
 		print_error("memory allocation failed");
@@ -100,7 +100,7 @@ static void	here_doc_child(t_mms *mms, int *fd_here_doc, char *lim_nl)
 	close(fd_here_doc[0]);
 	signal(SIGINT, SIG_DFL);
 	status = fill_here_doc(mms, fd_here_doc, lim_nl);
-	get_next_line(-1);
+	heredoc_gnl_reset();
 	free(lim_nl);
 	close(fd_here_doc[1]);
 	exit(status);
