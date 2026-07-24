@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/09 10:30:51 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/24 08:59:54 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/24 11:38:58 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,7 @@ int main(UNUSED int ac, UNUSED char **av, char **envp)
 	set_signaux_interactif();
 	while (1)
 	{
+		stack_reset(mms->sa);   // CHANGE: reset AVANT de lexer/parser la nouvelle ligne
 		result = readline("miniMishell$: ");
 		if (!result)
 		{
@@ -100,10 +101,12 @@ int main(UNUSED int ac, UNUSED char **av, char **envp)
 		free(result);
 		head = parser(mms);
 		if (head)
+		{
 			mms->last_status = executor(mms, head);
-			//stack_reset
-	// mettre a jour g_signal pour echo $? avec last status
+			free_ast_values(head);
+		}
 	}
+	free_og_struct(mms);
 	return (0);
 }
 
