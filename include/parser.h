@@ -36,10 +36,10 @@ typedef struct s_redir
 
 typedef struct s_ast
 {
-	t_node_type	type;
+	t_node_type		type;
 	struct s_ast	*left;
 	struct s_ast	*right;
-	t_redir		*redirect;
+	t_redir			*redirect;
 	union
 	{
 		t_tk	**tokens;

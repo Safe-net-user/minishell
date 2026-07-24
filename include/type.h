@@ -10,9 +10,10 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-# ifndef TYPE_H
-#define TYPE_H
+#ifndef TYPE_H
+# define TYPE_H
 
-typedef struct s_env t_env;
-typedef struct s_mms t_mms;
+typedef struct s_env	t_env;
+typedef struct s_mms	t_mms;
+
 #endif

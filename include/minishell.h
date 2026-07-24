@@ -13,12 +13,12 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-#define UNUSED __attribute__((unused))
+# define UNUSED __attribute__((unused))
 
 # include <sys/types.h>
 # include "ft_hashtable.h"
 # include "ft_stack_alloc.h"
-#include "type.h"
+# include "type.h"
 # include "env.h"
 # include "parser.h"
 
@@ -41,25 +41,24 @@
  */
 struct s_mms
 {
-    t_env           *env;           /**< Environment variables */
-    t_ht            *cmd_path;      /**< Command path */
-    t_ht            *alias;         /**< Shell aliases*/
-    t_stack_alloc   *sa;            /**< Stack allocator */
-    char            *name;          /**< Shell executable name and value of special parameter $0 */
-    char            *cwd;           /**< Current working directory */
-    mode_t          umask;          /**< Process file creation mask */
-    int             last_status;    /**< Value of the special parameter $? */
+	t_env			*env;
+	t_ht			*cmd_path;
+	t_ht			*alias;
+	t_stack_alloc	*sa;
+	char			*name;
+	char			*cwd;
+	mode_t			umask;
+	int				last_status;
 };
 
-void    set_signaux_interactif(void); //signaux interactif
-
+void	set_signaux_interactif(void);
 
 /* Free functions */
-void    free_og_struct(t_mms *mms);
+void	free_og_struct(t_mms *mms);
 void	free_stack_allocator(t_stack_alloc *sa);
 void	free_ast_values(t_ast *node);
 void	stack_reset(t_stack_alloc *sa);
 
-extern int g_signal; // la variable globale (signal)
+extern int	g_signal;
 
 #endif

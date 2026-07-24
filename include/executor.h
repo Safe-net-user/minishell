@@ -34,33 +34,32 @@ typedef struct s_pipeline
 	pid_t	*pids;
 }	t_pipeline;
 
-int	executor(t_mms *mms, t_ast *head);
+int		executor(t_mms *mms, t_ast *head);
 
-int	builtin(t_ast *node);
-int	exec_builtin(t_mms *mms, t_ast *node);
+int		builtin(t_ast *node);
+int		exec_builtin(t_mms *mms, t_ast *node);
 
-
-int	execute_cmd(t_mms *mms, t_ast *node);
-int	execute_cmd_pipe(t_mms *mms, t_ast *cmd, int fd_in, int fd_out);
+int		execute_cmd(t_mms *mms, t_ast *node);
+int		execute_cmd_pipe(t_mms *mms, t_ast *cmd, int fd_in, int fd_out);
 char	**tks_to_cmd_tab(t_mms *mms, t_tk **tokens);
-int	execute(t_mms *mms, t_ast *node, t_executor *exec);
+int		execute(t_mms *mms, t_ast *node, t_executor *exec);
 
 void	print_error(char *msg);
 void	print_cmd_not_found(char *cmd);
 void	print_exec_error(char *path, char *msg);
 
-int	here_doc(t_mms *mms, t_redir *redir);
+int		here_doc(t_mms *mms, t_redir *redir);
 
 char	*find_path(t_mms *mms, t_ast *node, t_executor *exec);
-int	path_relative(t_ast *node);
+int		path_relative(t_ast *node);
 
-int	pipeline(t_mms *mms, t_ast *node);
-int	execute_pipeline(t_mms *mms, t_ast *node, t_pipeline *pipeline);
+int		pipeline(t_mms *mms, t_ast *node);
+int		execute_pipeline(t_mms *mms, t_ast *node, t_pipeline *pipeline);
 
-int	redirection(t_mms *mms, t_ast *node);
+int		redirection(t_mms *mms, t_ast *node);
 
 char	**hash_table_to_envp(t_ht *ht);
 
-int	execute_redir_only(t_mms *mms, t_ast *node);
+int		execute_redir_only(t_mms *mms, t_ast *node);
 
 #endif
