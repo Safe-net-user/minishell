@@ -99,6 +99,7 @@ $(SRC)/$(LEXER)/lx_normal.c \
 $(SRC)/$(LEXER)/lx_squote.c \
 $(SRC)/$(LEXER)/lx_dquote.c \
 $(SRC)/$(LEXER)/lx_operator.c \
+$(SRC)/$(LEXER)/lx_utils.c \
 $(SRC)/$(EXPANDER)/expander.c \
 $(SRC)/$(PARSER)/parser.c \
 $(SRC)/$(PARSER)/parser_command.c \
@@ -122,6 +123,7 @@ $(SRC)/$(BUILTIN)/env.c \
 $(SRC)/$(BUILTIN)/exit.c \
 $(SRC)/$(BUILTIN)/export.c \
 $(SRC)/$(BUILTIN)/export_utils.c \
+$(SRC)/$(BUILTIN)/export_utils_2.c \
 $(SRC)/$(BUILTIN)/pwd.c \
 $(SRC)/$(BUILTIN)/unset.c \
 
