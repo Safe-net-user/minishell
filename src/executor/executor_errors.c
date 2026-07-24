@@ -6,13 +6,22 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 17:01:15 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/23 23:42:32 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/24 14:59:37 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "executor.h"
 #include <unistd.h>
 #include "ft_strings.h"
+
+void	print_exec_error(char *path, char *msg)
+{
+	write(2, "minishell: ", 11);
+	write(2, path, ft_strlen(path));
+	write(2, ": ", 2);
+	write(2, msg, ft_strlen(msg));
+	write(2, "\n", 1);
+}
 
 void	print_error(char *msg)
 {

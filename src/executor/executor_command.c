@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 16:53:07 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/24 14:06:05 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/24 15:05:35 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@
 #include <unistd.h>
 #include "expander.h"
 #include <sys/wait.h>
+#include <sys/stat.h>
+#include <string.h>
 
 /**
  * @brief Executes an external command using execve().
@@ -32,9 +34,13 @@
  *         fails for any other reason (command not found, etc).
  */
 
+
+
 int	execute(t_mms *mms, t_ast *node, t_executor *exec)
 {
-	char	**cmd_tab;
+	char		**cmd_tab;
+	char		**envp;
+	struct stat	st;
 
 	cmd_tab = tks_to_cmd_tab(mms, node->tokens);
 	if (!cmd_tab)
@@ -42,11 +48,25 @@ int	execute(t_mms *mms, t_ast *node, t_executor *exec)
 		print_error("memory allocation failed");
 		return (1);
 	}
-	execve(exec->cmd_path, cmd_tab, hash_table_to_envp(mms->cmd_path));
-	perror("minishell");
-	if (errno == EACCES)
+	if (stat(exec->cmd_path, &st) == 0 && S_ISDIR(st.st_mode))
+	{
+		print_exec_error(exec->cmd_path, "Is a directory");
 		return (126);
-	return (127);
+	}
+	envp = env_to_envp(mms->env);
+	execve(exec->cmd_path, cmd_tab, envp);
+	if (errno == EACCES)
+	{
+		print_exec_error(exec->cmd_path, "Permission denied");
+		return (126);
+	}
+	if (errno == ENOENT)
+	{
+		print_exec_error(exec->cmd_path, "No such file or directory");
+		return (127);
+	}
+	print_exec_error(exec->cmd_path, strerror(errno));
+	return (126);
 }
 
 
