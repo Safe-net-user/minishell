@@ -53,7 +53,7 @@ int	emit_eof(t_lx *lx)
 	return (1);
 }
 
-void	fill_lx(t_lx *lx)
+void	fill_lx(t_lx *lx, char *cmdl, t_mms *mms, t_tk *tk)
 {
 	lx->cmdl = cmdl;
 	lx->state = LX_NORMAL;
@@ -79,7 +79,7 @@ t_lx	*init_s_lx( char *cmdl, t_mms *mms)
 		free(lx);
 		return (0);
 	}
-	fill_lx(lx);
+	fill_lx(lx, cmdl, mms, tk);
 	lx->sb = init_sb(DEFAULT_SB_SIZE);
 	lx->is_next_delimiter = 0;
 	if (!lx->sb)

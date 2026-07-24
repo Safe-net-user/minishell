@@ -101,6 +101,11 @@ $(SRC)/$(LEXER)/lx_dquote.c \
 $(SRC)/$(LEXER)/lx_operator.c \
 $(SRC)/$(LEXER)/lx_utils.c \
 $(SRC)/$(EXPANDER)/expander.c \
+$(SRC)/$(EXPANDER)/expander_dquote.c \
+$(SRC)/$(EXPANDER)/expander_squote.c \
+$(SRC)/$(EXPANDER)/expander_expansion.c \
+$(SRC)/$(EXPANDER)/expander_normal.c \
+$(SRC)/$(EXPANDER)/expander_utils.c \
 $(SRC)/$(PARSER)/parser.c \
 $(SRC)/$(PARSER)/parser_command.c \
 $(SRC)/$(PARSER)/parser_operator.c \

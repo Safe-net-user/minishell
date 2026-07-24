@@ -29,7 +29,7 @@ static int	reset_cmd_path(t_mms *mms)
 	return (1);
 }
 
-static int	return_bad_alloc_msg(void)
+static int	return_bad_alloc(void)
 {
 	ft_putstr_fd("miniMishell: unset: internal error\n", STDERR_FILENO);
 	return (0);

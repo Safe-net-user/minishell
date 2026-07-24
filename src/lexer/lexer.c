@@ -17,7 +17,7 @@
 #include "ft_strings.h"
 #include <unistd.h>
 
-static t_lx	*lx_end(t_lx *lx)
+static t_val_lx	lx_end(t_lx *lx)
 {
 	if (lx->state == LX_SQUOTE)
 	{

@@ -109,10 +109,12 @@ static int	process_input(t_mms *mms)
 	return (handle_input(result, mms));
 }
 
-int	main(UNUSED int ac, UNUSED char **av, char **envp)
+int	main(int ac, char **av, char **envp)
 {
 	t_mms	*mms;
 
+	(void)ac;
+	(void)av;
 	mms = init_og_struct();
 	if (!mms || set_og_struct(mms, envp) == 0)
 	{
