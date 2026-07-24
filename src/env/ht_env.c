@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ht_env.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/11 13:51:41 by gd-hallu          #+#    #+#             */
-/*   Updated: 2026/06/11 15:50:04 by gd-hallu         ###   ########.fr       */
+/*   Updated: 2026/07/24 10:52:47 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,6 +130,7 @@ t_env_val   del_env(t_env *env, char *key)
         {
             env->entries--;
             free(env->indexes[index].value);
+            free(env->indexes[index].key);
             env->indexes[index].key = DELETED;
             return (ENV_SUCCESS);
         }

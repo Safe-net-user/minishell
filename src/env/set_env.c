@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   set_env.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/11 13:49:27 by gd-hallu          #+#    #+#             */
-/*   Updated: 2026/06/19 11:52:30 by gd-hallu         ###   ########.fr       */
+/*   Updated: 2026/07/24 10:43:48 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,25 +30,43 @@
 int	set_exported_env_ht(t_mms *mms, char **envp)
 {
 	t_env_entry	*p;
+	char		*cwd;
 	char		*path;
+	char		*lvl_str;
+	char		*pwd;
 	int			shell_lvl;
-	
-	path = getcwd(NULL, 0);
-	ft_strlcat(path, "minishell", 10);
-	if (env_arr_to_ht(envp, mms->env) == 0)
+
+	cwd = getcwd(NULL, 0);
+	if (!cwd)
 		return (0);
+	path = ft_strjoin(cwd, "/minishell");
+	free(cwd);
+	if (!path)
+		return (0);
+	if (env_arr_to_ht(envp, mms->env) == 0)
+	{
+		free(path);
+		return (0);
+	}
 	if (!get_env(mms->env, "_"))
 		add_env(mms->env, "_", path, EXPORTED + READONLY);
+	free(path);
 	p = get_env(mms->env, "SHLVL");
 	if (!p)
 		add_env(mms->env, "SHLVL", "1", EXPORTED);
 	else
 	{
 		shell_lvl = ft_atoi(p->value) + 1;
-		add_env(mms->env, "SHLVL", ft_itoa(shell_lvl), EXPORTED);
+		lvl_str = ft_itoa(shell_lvl);
+		add_env(mms->env, "SHLVL", lvl_str, EXPORTED);
+		free(lvl_str);
 	}
 	if (!get_env(mms->env, "PWD"))
-		add_env(mms->env, "PWD", getcwd(NULL, 0), EXPORTED);
+	{
+		pwd = getcwd(NULL, 0);
+		add_env(mms->env, "PWD", pwd, EXPORTED);
+		free(pwd);
+	}
 	return (1);
 }
 
