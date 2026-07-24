@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/09 15:49:14 by gd-hallu          #+#    #+#             */
-/*   Updated: 2026/07/24 17:20:24 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/24 20:44:27 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ void	free_stack_allocator(t_stack_alloc *sa);
 void	free_ast_values(t_ast *node);
 void	stack_reset(t_stack_alloc *sa);
 bool	is_blank(const char *s);
+char    *read_line(void);
 
 extern int	g_signal;
 

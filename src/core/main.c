@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/09 10:30:51 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/24 17:19:51 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/24 20:43:38 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,7 @@ static int	process_input(t_mms *mms)
 {
 	char	*result;
 
-	result = readline("miniMishell$: ");
+	result = read_line();
 	if (!result)
 	{
 		if (g_signal == SIGINT)
