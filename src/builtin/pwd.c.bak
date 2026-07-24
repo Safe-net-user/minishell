@@ -15,12 +15,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-t_builts_val builtin_pwd(void)
+t_builts_val     builtin_pwd(void)
 {
-	char *pwd;
+    char *pwd;
 
-	pwd = getcwd(NULL, 0);
-	printf("%s\n", pwd);
-	free(pwd);
-	return (BUI_SUCCESS);
+    pwd = getcwd(NULL, 0);
+    printf("%s\n", pwd);
+    free(pwd);
+    return (BUI_SUCCESS);
 }

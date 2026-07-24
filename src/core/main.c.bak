@@ -102,17 +102,17 @@ int main(UNUSED int ac, UNUSED char **av, char **envp)
 			break;
 		}
 		if (*result)
-		add_history(result);
+    	add_history(result);
 		if (is_blank(result))
 		{
-			free(result);
-			continue;
+    		free(result);
+    		continue;
 		}
 		if (lexer(result, mms) != LX_SUCCESS)
 		{
-			g_signal = LX_ERROR;
-			free(result);
-			continue;
+    		g_signal = LX_ERROR;
+    		free(result);
+    		continue;
 		}
 		free(result);
 		head = parser(mms);

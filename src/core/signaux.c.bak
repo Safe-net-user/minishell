@@ -1,26 +1,36 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pwd.c                                              :+:      :+:    :+:   */
+/*   signaux.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/06/11 11:24:11 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/06/11 11:38:51 by fiaudfiz         ###   ########.fr       */
+/*   Created: 2026/06/11 21:18:50 by fiaudfiz          #+#    #+#             */
+/*   Updated: 2026/07/23 23:37:22 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "builtin.h"
-#include <unistd.h>
+#include <signal.h>
 #include <stdio.h>
-#include <stdlib.h>
+#include <unistd.h>
+#include "minishell.h"
+#include "readline/readline.h"
 
-t_builts_val builtin_pwd(void)
+int g_signal = 0;
+
+void	handle_sigint(int sig)
 {
-	char *pwd;
+	(void)sig;
+	g_signal = SIGINT;
+	write(STDOUT_FILENO, "\n", 1);
+	rl_on_new_line();
+	rl_replace_line("", 0);
+	rl_redisplay();
+}
 
-	pwd = getcwd(NULL, 0);
-	printf("%s\n", pwd);
-	free(pwd);
-	return (BUI_SUCCESS);
+
+void set_signaux_interactif(void)
+{
+	signal(SIGINT, handle_sigint);
+	signal(SIGQUIT, SIG_IGN);
 }

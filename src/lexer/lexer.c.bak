@@ -19,65 +19,65 @@
 
 int emit_tk(t_lx *lx)
 {
-	t_tk *tk;
+    t_tk *tk;
 
-	if (!lx)
-		return (0);
-	tk = stack_alloc(lx->mms->sa, sizeof(t_tk));
-	if (!tk)
-		return (0);
-	tk->value = ft_strdup(lx->sb->str);
-	tk->flags = lx->tk->flags;
-	if (lx->is_next_delimiter)
-		lx->tk->type_tk = TOK_DELIMITER;
-	lx->is_next_delimiter = 0;
-	tk->type_tk = lx->tk->type_tk;
-	clear_sb(lx->sb);
-	lx->tk->flags = 0;
-	lx->tk->type_tk = TOK_WORD;
-	return (1);
+    if (!lx)
+        return (0);
+    tk = stack_alloc(lx->mms->sa, sizeof(t_tk));
+    if (!tk)
+        return (0);
+    tk->value = ft_strdup(lx->sb->str);
+    tk->flags = lx->tk->flags;
+    if (lx->is_next_delimiter)
+        lx->tk->type_tk = TOK_DELIMITER;
+    lx->is_next_delimiter = 0;
+    tk->type_tk = lx->tk->type_tk;
+    clear_sb(lx->sb);
+    lx->tk->flags = 0;
+    lx->tk->type_tk = TOK_WORD;
+    return (1);
 }
 
 int emit_eof(t_lx *lx)
 {
-	t_tk *tk;
+    t_tk *tk;
 
-	tk = stack_alloc(lx->mms->sa, sizeof(t_tk));
-	if (!tk)
-		return (0);
-	tk->value = "";
-	tk->flags = 0;
-	tk->type_tk = TOK_EOF;
-	return (1);
+    tk = stack_alloc(lx->mms->sa, sizeof(t_tk));
+    if (!tk)
+        return (0);
+    tk->value = "";
+    tk->flags = 0;
+    tk->type_tk = TOK_EOF;
+    return (1);
 }
 
 t_lx *init_s_lx( char *cmdl, t_mms *mms)
 {
-	t_lx *lx;
-	t_tk *tk;
+    t_lx *lx;
+    t_tk *tk;
 
-	lx = malloc(sizeof(t_lx));
-	if (!lx)
-		return (0);
-	tk = malloc(sizeof(t_tk));
-	if (!tk)
-	{
-		free(lx);
-		return (0);
-	}
-	lx->cmdl = cmdl;
-	lx->state = LX_NORMAL;
-	lx->index = 0;
-	lx->mms = mms;
-	lx->tk = tk;
-	lx->tk->value = NULL;
-	lx->tk->flags = 0;
-	lx->tk->type_tk = 0;
-	lx->sb = init_sb(DEFAULT_SB_SIZE);
-	lx->is_next_delimiter = 0;
-	if (!lx->sb)
-		return (NULL);
-	return (lx);
+    lx = malloc(sizeof(t_lx));
+    if (!lx)
+        return (0);
+    tk = malloc(sizeof(t_tk));
+    if (!tk)
+    {
+        free(lx);
+        return (0);
+    }
+    lx->cmdl = cmdl;
+    lx->state = LX_NORMAL;
+    lx->index = 0;
+    lx->mms = mms;
+    lx->tk = tk;
+    lx->tk->value = NULL;
+    lx->tk->flags = 0;
+    lx->tk->type_tk = 0;
+    lx->sb = init_sb(DEFAULT_SB_SIZE);
+    lx->is_next_delimiter = 0;
+    if (!lx->sb)
+        return (NULL);
+    return (lx);
 }
 
 /**

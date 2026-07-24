@@ -18,14 +18,14 @@
 #include <unistd.h>
 
 
-/**
+/** 
  * @brief Initializes environment hash table from envp.
- *
+ * 
  * @note Ensures mandatory variables (_ , SHLVL, PWD) exist.
- *
+ * 
  * @param mms Mini-shell context structure
  * @param envp Null-terminated environment array
- *
+ * 
 */
 int	set_exported_env_ht(t_mms *mms, char **envp)
 {
@@ -70,16 +70,16 @@ int	set_exported_env_ht(t_mms *mms, char **envp)
 	return (1);
 }
 
-/**
+/** 
  * @brief Add intern shell variable in environment hash table.
- *
+ * 
  * @note Ensures PATH exist.
- *
+ * 
  * @param mms Mini-shell context structure
- *
+ * 
 */
 int	set_var_env_ht(t_mms *mms)
-{
+{	
 	add_env(mms->env, "PS1", "miniMishell$ ", 0);
 	add_env(mms->env, "PS2", "'> '", 0);
 	if (!get_env(mms->env, "PATH"))

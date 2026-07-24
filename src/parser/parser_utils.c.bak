@@ -1,26 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pwd.c                                              :+:      :+:    :+:   */
+/*   parser_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/06/11 11:24:11 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/06/11 11:38:51 by fiaudfiz         ###   ########.fr       */
+/*   Created: 2026/07/23 14:55:25 by fiaudfiz          #+#    #+#             */
+/*   Updated: 2026/07/24 10:05:59 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "builtin.h"
-#include <unistd.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include "parser.h"
 
-t_builts_val builtin_pwd(void)
+bool	is_command_token(t_type_tk type)
 {
-	char *pwd;
-
-	pwd = getcwd(NULL, 0);
-	printf("%s\n", pwd);
-	free(pwd);
-	return (BUI_SUCCESS);
+	return (type == TOK_WORD
+		|| type == TOK_LESS
+		|| type == TOK_DLESS
+		|| type == TOK_GREAT
+		|| type == TOK_DGREAT
+		|| type == TOK_DELIMITER);
 }
