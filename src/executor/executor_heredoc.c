@@ -90,7 +90,7 @@ static int	fill_here_doc(int *fd_here_doc, char *lim_nl)
 			break ;
 	}
 	return (0);
-}   
+}
 
 /**
  * @brief Reads and stores here-document input into a pipe.
@@ -120,4 +120,3 @@ int	here_doc(t_mms *mms, t_redir *redir)
 	close(fd_here_doc[1]);
 	return (fd_here_doc[0]);
 }
-
