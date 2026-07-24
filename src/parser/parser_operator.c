@@ -122,10 +122,14 @@ t_ast	*parse_or_and(t_mms *mms, t_tk **token)
 	t_ast	*node;
 
 	left = parse_pipe(mms, token);
-	while ((*token)->type_tk == TOK_AND_IF
-		|| (*token)->type_tk == TOK_OR_IF)
+	if (!left)
+		return (NULL);
+	while (*token && ((*token)->type_tk == TOK_AND_IF
+		|| (*token)->type_tk == TOK_OR_IF))
 	{
 		node = stack_alloc(mms->sa, sizeof(t_ast));
+		if (!node)
+			return (NULL);
 		if ((*token)->type_tk == TOK_AND_IF)
 			node->type = NODE_AND;
 		else

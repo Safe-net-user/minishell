@@ -47,7 +47,7 @@ int emit_eof(t_lx *lx)
 	tk = stack_alloc(lx->mms->sa, sizeof(t_tk));
 	if (!tk)
 		return (0);
-	tk->value = NULL;
+	tk->value = "";
 	tk->flags = 0;
 	tk->type_tk = TOK_EOF;
 	return (1);
