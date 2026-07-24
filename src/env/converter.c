@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/10 14:01:35 by gd-hallu          #+#    #+#             */
-/*   Updated: 2026/07/24 15:02:50 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/24 17:30:08 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,10 +33,37 @@ int	env_arr_to_ht(char **envp, t_env *ht)
 		start[j] = '\0';
 		j++;
 		add_env(ht, start, &start[j], EXPORTED);
-		free(start); // CHANGE: add_env copie key/value en interne (ft_strdup), donc start doit être libéré ici
+		free(start);
 		i++;
 	}
 	return (1);
+}
+
+static void	free_envp(char **envp, size_t size)
+{
+	while (size > 0)
+		free(envp[--size]);
+	free(envp);
+}
+
+static char	*env_entry_to_str(t_env_entry *entry)
+{
+	char	*line;
+	char	*result;
+
+	line = ft_strjoin(entry->key, "=");
+	if (!line)
+		return (NULL);
+	result = ft_strjoin(line, entry->value);
+	free(line);
+	return (result);
+}
+
+static int	is_exported(t_env_entry *entry)
+{
+	return (entry->key != NULL
+		&& entry->key != DELETED
+		&& (entry->flags & EXPORTED));
 }
 
 /**
@@ -50,10 +77,9 @@ int	env_arr_to_ht(char **envp, t_env *ht)
  */
 char	**env_to_envp(t_env *env)
 {
-	char	**envp;
-	size_t	i;
-	size_t	j;
-	char	*line;
+	char		**envp;
+	size_t		i;
+	size_t		j;
 
 	envp = malloc(sizeof(char *) * (env->entries + 1));
 	if (!envp)
@@ -62,16 +88,11 @@ char	**env_to_envp(t_env *env)
 	j = 0;
 	while (i < env->capacity)
 	{
-		if (env->indexes[i].key != NULL && env->indexes[i].key != DELETED
-			&& (env->indexes[i].flags & EXPORTED))
+		if (is_exported(&env->indexes[i]))
 		{
-			line = ft_strjoin(env->indexes[i].key, "=");
-			if (!line)
-				return (free(envp), NULL);
-			envp[j] = ft_strjoin(line, env->indexes[i].value);
-			free(line);
+			envp[j] = env_entry_to_str(&env->indexes[i]);
 			if (!envp[j])
-				return (free(envp), NULL);
+				return (free_envp(envp, j), NULL);
 			j++;
 		}
 		i++;

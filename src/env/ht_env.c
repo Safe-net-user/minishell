@@ -19,9 +19,9 @@
 #include "ft_stdlib.h"
 #include <stdio.h>
 
-t_env *init_env(size_t n)
+t_env	*init_env(size_t n)
 {
-	t_env *env;
+	t_env	*env;
 
 	if (n == 0 || n > SIZE_MAX / sizeof(t_env_entry))
 		return (NULL);
@@ -39,10 +39,10 @@ t_env *init_env(size_t n)
 	return (env);
 }
 
-t_env_val add_env(t_env *env, char *key, char *str, t_env_flags flags)
+t_env_val	add_env(t_env *env, char *key, char *str, t_env_flags flags)
 {
-	size_t n;
-	size_t index;
+	size_t	n;
+	size_t	index;
 
 	if (!env || !key)
 		return (ENV_ERROR);
@@ -68,11 +68,11 @@ t_env_val add_env(t_env *env, char *key, char *str, t_env_flags flags)
 	return (ENV_SUCCESS);
 }
 
-t_env_entry *get_env(t_env *env, char *key)
+t_env_entry	*get_env(t_env *env, char *key)
 {
-	size_t n;
-	size_t index;
-	size_t tmp_index;
+	size_t	n;
+	size_t	index;
+	size_t	tmp_index;
 
 	if (!env || !key)
 		return (NULL);
@@ -93,9 +93,9 @@ t_env_entry *get_env(t_env *env, char *key)
 	return (NULL);
 }
 
-void free_env(t_env *env)
+void	free_env(t_env *env)
 {
-	size_t i;
+	size_t	i;
 
 	if (!env)
 		return ;
@@ -113,10 +113,10 @@ void free_env(t_env *env)
 	free(env);
 }
 
-t_env_val del_env(t_env *env, char *key)
+t_env_val	del_env(t_env *env, char *key)
 {
-	size_t n;
-	size_t index;
+	size_t	n;
+	size_t	index;
 
 	if (!env || !key)
 		return (ENV_ERROR);

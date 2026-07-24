@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/11 13:49:27 by gd-hallu          #+#    #+#             */
-/*   Updated: 2026/07/24 10:43:48 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/24 17:27:48 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,51 @@
 #include "env.h"
 #include <unistd.h>
 
+static int	init_underscore(t_env *env, char *path)
+{
+	if (!get_env(env, "_"))
+	{
+		if (add_env(env, "_", path, EXPORTED + READONLY) == ENV_ERROR)
+			return (0);
+	}
+	return (1);
+}
+
+static int	init_shlvl(t_env *env)
+{
+	t_env_entry	*entry;
+	char		*lvl_str;
+	int			shell_lvl;
+
+	entry = get_env(env, "SHLVL");
+	if (!entry)
+		return (add_env(env, "SHLVL", "1", EXPORTED) != ENV_ERROR);
+	shell_lvl = ft_atoi(entry->value) + 1;
+	lvl_str = ft_itoa(shell_lvl);
+	if (!lvl_str)
+		return (0);
+	add_env(env, "SHLVL", lvl_str, EXPORTED);
+	free(lvl_str);
+	return (1);
+}
+
+static int	init_pwd(t_env *env)
+{
+	char	*pwd;
+
+	if (get_env(env, "PWD"))
+		return (1);
+	pwd = getcwd(NULL, 0);
+	if (!pwd)
+		return (0);
+	if (add_env(env, "PWD", pwd, EXPORTED) == ENV_ERROR)
+	{
+		free(pwd);
+		return (0);
+	}
+	free(pwd);
+	return (1);
+}
 
 /**
  * @brief Initializes environment hash table from envp.
@@ -27,14 +72,12 @@
  * @param envp Null-terminated environment array
  *
 */
+
 int	set_exported_env_ht(t_mms *mms, char **envp)
 {
-	t_env_entry	*p;
-	char		*cwd;
-	char		*path;
-	char		*lvl_str;
-	char		*pwd;
-	int			shell_lvl;
+	char	*cwd;
+	char	*path;
+	int		status;
 
 	cwd = getcwd(NULL, 0);
 	if (!cwd)
@@ -43,31 +86,13 @@ int	set_exported_env_ht(t_mms *mms, char **envp)
 	free(cwd);
 	if (!path)
 		return (0);
-	if (env_arr_to_ht(envp, mms->env) == 0)
-	{
-		free(path);
-		return (0);
-	}
-	if (!get_env(mms->env, "_"))
-		add_env(mms->env, "_", path, EXPORTED + READONLY);
+	status = env_arr_to_ht(envp, mms->env);
+	if (status != 0)
+		status = init_underscore(mms->env, path);
 	free(path);
-	p = get_env(mms->env, "SHLVL");
-	if (!p)
-		add_env(mms->env, "SHLVL", "1", EXPORTED);
-	else
-	{
-		shell_lvl = ft_atoi(p->value) + 1;
-		lvl_str = ft_itoa(shell_lvl);
-		add_env(mms->env, "SHLVL", lvl_str, EXPORTED);
-		free(lvl_str);
-	}
-	if (!get_env(mms->env, "PWD"))
-	{
-		pwd = getcwd(NULL, 0);
-		add_env(mms->env, "PWD", pwd, EXPORTED);
-		free(pwd);
-	}
-	return (1);
+	if (!status || !init_shlvl(mms->env))
+		return (0);
+	return (init_pwd(mms->env));
 }
 
 /**
