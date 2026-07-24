@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/11 11:42:49 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/06/13 16:26:10 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/24 23:37:59 by gaspard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,84 +16,6 @@
 #include "ft_strings.h"
 #include <unistd.h>
 #include "ft_io.h"
-
-static int	print_exported_var(t_env *env)
-{
-	t_env_entry	*arr;
-	t_env_entry	*curr;
-
-	arr = malloc(sizeof(*arr) * (env->entries + 1));
-	if (!arr)
-		return (ft_putstr_fd("miniMishell: export: internal error\n", STDERR_FILENO), 1);
-	ht_to_arr(env, arr);
-	if (!sort_arr(arr))
-	{
-		free(arr);
-		ft_putstr_fd("miniMishell: export: internal error\n", STDERR_FILENO);
-		return (1);
-	}
-	curr = arr;
-	while (curr->key)
-	{
-		if (curr->value)
-			printf("export %s=\"%s\"\n", curr->key, curr->value);
-		else
-			printf("export %s\n", curr->key);
-		curr++;
-	}
-	free(arr);
-	return (0);
-}
-
-static int	alone_key_job(t_mms *mms, char *buffer_key)
-{
-	t_env_entry	*entry;
-
-	entry = get_env(mms->env, buffer_key);
-	if (!entry)
-		return (!add_env(mms->env, buffer_key, NULL, EXPORTED));
-	entry->flags |= EXPORTED;
-	return (0);
-}
-
-static t_builts_val	copy_key(char *dst, char *src, size_t *i)
-{
-	while (src[*i] && src[*i] != '=')
-	{
-		if (*i >= ENV_KEY_MAX)
-		{
-			ft_putstr_fd("miniMishell: export: key is too long\n", STDERR_FILENO);
-			return (1);
-		}
-		dst[*i] = src[*i];
-		(*i)++;
-	}
-	dst[*i] = '\0';
-	if (!is_validname(dst))
-	{
-		ft_putstr_fd("miniMishell: export: invalid identifier\n", STDERR_FILENO);
-		return (1);
-	}
-	return (0);
-}
-
-static t_builts_val	copy_value(char *dst, char *src, size_t *i)
-{
-	size_t	j;
-
-	j = 0;
-	while (src[*i])
-	{
-		if (j >= ENV_NAME_MAX)
-		{
-			ft_putstr_fd("miniMishell: export: value is too long\n", STDERR_FILENO);
-			return (1);
-		}
-		dst[j++] = src[(*i)++];
-	}
-	dst[j] = '\0';
-	return (0);
-}
 
 static t_builts_val	assign(t_mms *mms, char *buffer_key, char *src)
 {

@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/11 16:49:01 by gd-hallu          #+#    #+#             */
-/*   Updated: 2026/07/24 11:11:57 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/24 23:25:22 by gaspard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@
 # include <stdbool.h>
 
 # define BUFFER_TOKEN 2048
-# define DEFAULT_SB_SIZE 64
 
 typedef enum e_type_tk
 {
@@ -100,7 +99,7 @@ typedef struct s_lx
 	bool	is_next_delimiter;
 }	t_lx;
 
-typedef t_val_lx	(*state_lx_fn)(t_lx *);
+typedef t_val_lx	(*t_state_lx_fn)(t_lx *);
 
 t_val_lx			lexer(char *cmdl, t_mms *mms);
 int					emit_tk(t_lx *lx);
@@ -110,5 +109,10 @@ t_val_lx			lx_normal(t_lx *lx);
 t_val_lx			lx_squote(t_lx *lx);
 t_val_lx			lx_dquote(t_lx *lx);
 t_val_lx			lx_operator(t_lx *lx);
+
+int					emit_tk(t_lx *lx);
+int					emit_eof(t_lx *lx);
+t_lx				*init_s_lx( char *cmdl, t_mms *mms);
+void				free_lexer(t_lx *lx);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/11 11:24:11 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/06/11 11:38:51 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/24 23:38:28 by gaspard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,17 +15,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-t_builts_val builtin_pwd(void)
+t_builts_val	builtin_pwd(void)
 {
-	char *pwd;
+	char	*pwd;
 
-    pwd = getcwd(NULL, 0);
-    if (!pwd)
-    {
-        perror("miniMishell: pwd: ");
-        return (1);
-    }
-    printf("%s\n", pwd);
-    free(pwd);
-    return (0);
+	pwd = getcwd(NULL, 0);
+	if (!pwd)
+	{
+		perror("miniMishell: pwd: ");
+		return (1);
+	}
+	printf("%s\n", pwd);
+	free(pwd);
+	return (0);
 }

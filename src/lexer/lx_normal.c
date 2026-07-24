@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   lx_normal.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: gaspard <marvin@42.fr>                     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/07/24 23:55:04 by gaspard           #+#    #+#             */
+/*   Updated: 2026/07/24 23:55:47 by gaspard          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "lexer.h"
 
 static void	lx_begin_squote(t_lx *lx)
@@ -37,7 +49,7 @@ t_val_lx	lx_normal(t_lx *lx)
 	char	c;
 
 	c = lx->cmdl[lx->index];
-	if (c == '|'|| c == '&'|| c == '<'|| c == '>')
+	if (c == '|' || c == '&' || c == '<' || c == '>')
 	{
 		lx->state = LX_OPERATOR;
 		return (LX_SUCCESS);
@@ -48,7 +60,7 @@ t_val_lx	lx_normal(t_lx *lx)
 		lx_begin_dquote(lx);
 	else if (c == '$')
 		lx_dollar(lx);
-	else if (c == ' '|| c == '\t')
+	else if (c == ' ' || c == '\t')
 		return (lx_space(lx));
 	else
 	{

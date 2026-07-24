@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/24 15:59:19 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/24 16:00:44 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/24 23:52:15 by gaspard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,8 +43,12 @@ t_builts_val	builtin_unset(t_mms *mms, char **argv);
 
 /* ------------- utils functions -------------*/
 int				is_validname(char *str);
-void				ht_to_arr(t_env *env, t_env_entry *arr);
+void			ht_to_arr(t_env *env, t_env_entry *arr);
 size_t			len_arr(t_env_entry *entries);
 int				sort_arr(t_env_entry *entries);
+int				print_exported_var(t_env *env);
+int				alone_key_job(t_mms *mms, char *buffer_key);
+t_builts_val	copy_key(char *dst, char *src, size_t *i);
+t_builts_val	copy_value(char *dst, char *src, size_t *i);
 
 #endif

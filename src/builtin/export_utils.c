@@ -1,9 +1,21 @@
-# include "builtin.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   export_utils.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: gaspard <marvin@42.fr>                     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/07/24 23:28:26 by gaspard           #+#    #+#             */
+/*   Updated: 2026/07/24 23:31:29 by gaspard          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "builtin.h"
 #include <stddef.h>
 #include "env.h"
 #include "ft_strings.h"
 
-int is_validname(char *str)
+int	is_validname(char *str)
 {
 	if (!str)
 		return (0);
@@ -11,18 +23,20 @@ int is_validname(char *str)
 		return (1);
 	return (0);
 }
-void ht_to_arr(t_env *env, t_env_entry *arr)
+
+void	ht_to_arr(t_env *env, t_env_entry *arr)
 {
-	t_env_entry *entry;
-	t_env_entry *limit;
-	t_env_entry *curr_p;
+	t_env_entry	*entry;
+	t_env_entry	*limit;
+	t_env_entry	*curr_p;
 
 	entry = env->indexes;
 	limit = env->indexes + env->capacity;
 	curr_p = arr;
 	while (entry < limit)
 	{
-		if (entry->key != NULL && entry->key != DELETED && entry->flags & EXPORTED)
+		if (entry->key != NULL && entry->key \
+!= DELETED && entry->flags & EXPORTED)
 		{
 			*curr_p = *entry;
 			curr_p++;
@@ -32,9 +46,9 @@ void ht_to_arr(t_env *env, t_env_entry *arr)
 	curr_p->key = NULL;
 }
 
-size_t len_arr(t_env_entry *entries)
+size_t	len_arr(t_env_entry *entries)
 {
-	size_t count;
+	size_t	count;
 
 	count = 0;
 	while (entries->key)
@@ -45,12 +59,12 @@ size_t len_arr(t_env_entry *entries)
 	return (count);
 }
 
-int sort_arr(t_env_entry *entries)
+int	sort_arr(t_env_entry *entries)
 {
-	size_t i;
-	size_t j;
-	t_env_entry *limit;
-	size_t n;
+	size_t		i;
+	size_t		j;
+	t_env_entry	*limit;
+	size_t		n;
 
 	if (!entries)
 		return (0);
