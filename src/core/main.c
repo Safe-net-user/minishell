@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/09 10:30:51 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/24 15:05:07 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/24 17:19:51 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,20 +25,10 @@
 #include "parser.h"
 #include "executor.h"
 
-static bool	is_blank(const char *s)
-{
-	while (*s)
-	{
-		if (!isspace((unsigned char)*s))
-			return (false);
-		s++;
-	}
-	return (true);
-}
-
 /**
  * A noter que si HOME est change, alors la ht des commandes doit etre videe.
- * Penser a revenir sur cette taille car on risque largement de cache miss. (n x sizeof(type))
+ * Penser a revenir sur cette taille car on risque largement de cache miss.
+ * (n x sizeof(type))
  * Penser aux conditions si une allocation rate.
  */
 static	t_mms	*init_og_struct(void)
@@ -64,7 +54,7 @@ static	t_mms	*init_og_struct(void)
 	return (mms);
 }
 
-static	int set_og_struct(t_mms *mms, char **envp)
+static int	set_og_struct(t_mms *mms, char **envp)
 {
 	if (!mms || !envp)
 		return (0);
@@ -75,11 +65,53 @@ static	int set_og_struct(t_mms *mms, char **envp)
 	return (1);
 }
 
-int main(UNUSED int ac, UNUSED char **av, char **envp)
+static int	handle_input(char *result, t_mms *mms)
 {
-	char 	*result;
+	t_ast	*head;
+
+	if (*result)
+		add_history(result);
+	if (is_blank(result))
+	{
+		free(result);
+		return (1);
+	}
+	if (lexer(result, mms) != LX_SUCCESS)
+	{
+		g_signal = LX_ERROR;
+		free(result);
+		return (1);
+	}
+	free(result);
+	head = parser(mms);
+	if (head)
+	{
+		mms->last_status = executor(mms, head);
+		free_ast_values(head);
+	}
+	return (1);
+}
+
+static int	process_input(t_mms *mms)
+{
+	char	*result;
+
+	result = readline("miniMishell$: ");
+	if (!result)
+	{
+		if (g_signal == SIGINT)
+		{
+			g_signal = 0;
+			return (1);
+		}
+		return (0);
+	}
+	return (handle_input(result, mms));
+}
+
+int	main(UNUSED int ac, UNUSED char **av, char **envp)
+{
 	t_mms	*mms;
-	t_ast 	*head;
 
 	mms = init_og_struct();
 	if (!mms || set_og_struct(mms, envp) == 0)
@@ -90,40 +122,10 @@ int main(UNUSED int ac, UNUSED char **av, char **envp)
 	set_signaux_interactif();
 	while (1)
 	{
-		stack_reset(mms->sa); // CHANGE: reset AVANT de lexer/parser la nouvelle ligne
-		result = readline("miniMishell$: ");
-		if (!result)
-		{
-			if (g_signal == SIGINT)
-			{
-				g_signal = 0;
-				continue;
-			}
-			break;
-		}
-		if (*result)
-		add_history(result);
-		if (is_blank(result))
-		{
-			free(result);
-			continue;
-		}
-		if (lexer(result, mms) != LX_SUCCESS)
-		{
-			g_signal = LX_ERROR;
-			free(result);
-			continue;
-		}
-		free(result);
-		head = parser(mms);
-		if (head)
-		{
-			mms->last_status = executor(mms, head);
-			free_ast_values(head);
-		}
+		stack_reset(mms->sa);
+		if (!process_input(mms))
+			break ;
 	}
 	free_og_struct(mms);
 	return (0);
 }
-
-// compiler avec -lreadline

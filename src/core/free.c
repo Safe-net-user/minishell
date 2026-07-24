@@ -55,7 +55,7 @@ void	free_stack_allocator(t_stack_alloc *sa)
 	free(sa);
 }
 
-void free_og_struct(t_mms *mms)
+void	free_og_struct(t_mms *mms)
 {
 	if (!mms)
 		return ;
