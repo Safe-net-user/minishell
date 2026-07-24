@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/09 10:30:51 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/24 11:38:58 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/24 15:05:07 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,17 @@
 #include <signal.h>
 #include "parser.h"
 #include "executor.h"
+
+static bool	is_blank(const char *s)
+{
+	while (*s)
+	{
+		if (!isspace((unsigned char)*s))
+			return (false);
+		s++;
+	}
+	return (true);
+}
 
 /**
  * A noter que si HOME est change, alors la ht des commandes doit etre videe.
@@ -91,12 +102,17 @@ int main(UNUSED int ac, UNUSED char **av, char **envp)
 			break;
 		}
 		if (*result)
-			add_history(result);
+    	add_history(result);
+		if (is_blank(result))
+		{
+    		free(result);
+    		continue;
+		}
 		if (lexer(result, mms) != LX_SUCCESS)
 		{
-			g_signal = LX_ERROR;
-			free(result);
-			continue;
+    		g_signal = LX_ERROR;
+    		free(result);
+    		continue;
 		}
 		free(result);
 		head = parser(mms);
