@@ -6,12 +6,14 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 14:51:09 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/24 18:00:53 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/24 18:29:55 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
 #include "minishell.h"
+#include <unistd.h>
+#include "ft_strings.h"
 
 /**
  * @brief Print a parser syntax error.

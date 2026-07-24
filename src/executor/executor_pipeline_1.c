@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 17:49:46 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/23 23:46:22 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/24 19:52:08 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,10 @@ static void	pipeline_child(t_mms *mms, t_pipeline *pipeline, int i)
 static int	create_pipeline_process(t_mms *mms, t_pipeline *pipeline, int i)
 {
 	if (pipe(pipeline->fd) == -1)
+	{
+		perror("minishell");
 		return (1);
+	}
 	pipeline->pids[i] = fork();
 	if (pipeline->pids[i] == -1)
 	{
@@ -57,6 +60,8 @@ static int	create_last_process(t_mms *mms, t_pipeline *pipeline)
 	if (pipeline->pids[i] == -1)
 	{
 		perror("minishell");
+		if (pipeline->fd_prev != -1)
+			close(pipeline->fd_prev);
 		return (1);
 	}
 	if (pipeline->pids[i] == 0)
