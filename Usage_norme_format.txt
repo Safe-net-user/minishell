@@ -1,0 +1,25 @@
+Usage :
+
+bash
+chmod +x norm_format.sh
+./norm_format.sh src/executor/*.c          # fichiers un par un
+./norm_format.sh --dir src/                # tout un dossier (.c et .h)
+./norm_format.sh --no-backup fichier.c      # sans garder de .bak
+
+Par défaut il garde un fichier.c.bak à côté avant de toucher quoi que ce soit — compare avec diff si tu veux vérifier ce qui a changé.
+
+Ce qu'il corrige tout seul (sans jamais toucher au contenu des strings/char littéraux, testé) :
+
+indentation en tabs (unité 4)
+doubles espaces dans le code collapsés en un seul, hors strings/commentaires
+espaces/tabs en fin de ligne supprimés
+lignes vides "sales" (avec espaces dedans) → vraiment vides
+CRLF → LF
+une seule ligne vide finale
+
+Ce qu'il signale mais ne corrige pas (imprimé en fin d'exécution, à traiter à la main) : 
+fonctions >25 lignes, 
+>5 fonctions/fichier, 
+mots-clés interdits (for, switch, goto...), 
+lignes >80 colonnes 
+— ces heuristiques sont approximatives (comptage d'accolades brut), donc prends-les comme indices, pas comme vérité absolue.
