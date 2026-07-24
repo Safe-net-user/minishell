@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/11 11:23:14 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/24 14:16:21 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/24 14:59:50 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ int	execute(t_mms *mms, t_ast *node, t_executor *exec);
 
 void	print_error(char *msg);
 void	print_cmd_not_found(char *cmd);
+void	print_exec_error(char *path, char *msg);
 
 int	here_doc(t_mms *mms, t_redir *redir);
 

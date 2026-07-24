@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env.h                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/10 16:25:31 by gd-hallu          #+#    #+#             */
-/*   Updated: 2026/06/30 13:09:18 by gd-hallu         ###   ########.fr       */
+/*   Updated: 2026/07/24 14:59:08 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ void        free_env(t_env *env);
 
 /* Converter functions */
 int         env_arr_to_ht(char **envp, t_env *ht);
+char	**env_to_envp(t_env *env);
 
 /* Setter functions */
 int	set_exported_env_ht(t_mms *mms, char **envp);
