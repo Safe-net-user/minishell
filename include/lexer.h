@@ -6,14 +6,14 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/11 16:49:01 by gd-hallu          #+#    #+#             */
-/*   Updated: 2026/07/23 18:09:23 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/24 11:11:57 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef LEXER_H
 # define LEXER_H
 
-#include "minishell.h"
+#include "type.h"
 #include "ft_string_builder.h"
 #include <stdbool.h>
 

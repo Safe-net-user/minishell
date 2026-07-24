@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/09 15:49:14 by gd-hallu          #+#    #+#             */
-/*   Updated: 2026/06/30 13:09:44 by gd-hallu         ###   ########.fr       */
+/*   Updated: 2026/07/24 11:36:22 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 # include "ft_stack_alloc.h"
 #include "type.h"
 # include "env.h"
+# include "parser.h"
 
 # define INIT_SIZE_HT 1024
 # define INIT_SIZE_SA 32768
@@ -55,6 +56,9 @@ void    set_signaux_interactif(void); //signaux interactif
 
 /* Free functions */
 void    free_og_struct(t_mms *mms);
+void	free_stack_allocator(t_stack_alloc *sa);
+void	free_ast_values(t_ast *node);
+void	stack_reset(t_stack_alloc *sa);
 
 extern int g_signal; // la variable globale (signal)
 
