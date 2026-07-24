@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 16:56:45 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/23 23:45:04 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/24 08:52:15 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,6 +90,7 @@ static char	*search_path(char **path, char *cmd)
 	i = 0;
 	while (path[i])
 	{
+		
 		temp = build_path(path[i], cmd);
 		if (!temp)
 			return (NULL);
@@ -107,7 +108,7 @@ char	*find_path(t_mms *mms, t_ast *node, t_executor *exec)
 	char	*result;
 
 	(void)exec;
-	path = ft_split(get_pointer(mms->cmd_path, "PATH"), ':');
+	path = ft_split(get_env(mms->env, "PATH")->value, ':');
 	if (!path || !path[0])
 	{
 		free_path_arr(path);
