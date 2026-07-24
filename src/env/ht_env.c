@@ -25,7 +25,7 @@ t_env	*init_env(size_t n)
 
 	if (n == 0 || n > SIZE_MAX / sizeof(t_env_entry))
 		return (NULL);
-	env = ft_calloc(1, sizeof(t_env_entry));
+	env = ft_calloc(1, sizeof(t_env));
 	if (!env)
 		return (NULL);
 	env->indexes = ft_calloc(n, sizeof(t_env_entry));
@@ -43,6 +43,7 @@ t_env_val	add_env(t_env *env, char *key, char *str, t_env_flags flags)
 {
 	size_t	n;
 	size_t	index;
+	size_t	deleted;
 
 	if (!env || !key)
 		return (ENV_ERROR);
@@ -50,9 +51,15 @@ t_env_val	add_env(t_env *env, char *key, char *str, t_env_flags flags)
 		return (ENV_FULL);
 	n = ft_strlen(key);
 	index = joaat_hash((unsigned char *)key, n) % env->capacity;
+	deleted = SIZE_MAX;
 	while (env->indexes[index].key != NULL)
 	{
-		if (ft_strncmp(env->indexes[index].key, key, n) == 0)
+		if (env->indexes[index].key == DELETED)
+		{
+			if (deleted == SIZE_MAX)
+				deleted = index;
+		}
+		else if (ft_strncmp(env->indexes[index].key, key, n + 1) == 0)
 		{
 			free(env->indexes[index].value);
 			env->indexes[index].value = ft_strdup(str);
@@ -61,8 +68,10 @@ t_env_val	add_env(t_env *env, char *key, char *str, t_env_flags flags)
 		}
 		index = (index + 1) % env->capacity;
 	}
-	env->indexes[index].value = ft_strdup(str);
+	if (deleted != SIZE_MAX)
+		index = deleted;
 	env->indexes[index].key = ft_strdup(key);
+	env->indexes[index].value = ft_strdup(str);
 	env->indexes[index].flags = flags;
 	env->entries++;
 	return (ENV_SUCCESS);
