@@ -6,7 +6,7 @@
 #    By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/05/18 23:16:53 by gd-hallu          #+#    #+#              #
-#    Updated: 2026/07/24 16:29:03 by fiaudfiz         ###   ########.fr        #
+#    Updated: 2026/07/24 17:43:57 by fiaudfiz         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -89,10 +89,11 @@ endif
 SOURCES 			:= \
 $(SRC)/$(CORE)/main.c \
 $(SRC)/$(CORE)/free.c \
+$(SRC)/$(CORE)/utils.c \
+$(SRC)/$(CORE)/signaux.c \
 $(SRC)/$(ENV)/ht_env.c \
 $(SRC)/$(ENV)/converter.c \
 $(SRC)/$(ENV)/set_env.c \
-$(SRC)/$(CORE)/signaux.c \
 $(SRC)/$(LEXER)/lexer.c \
 $(SRC)/$(LEXER)/lx_normal.c \
 $(SRC)/$(LEXER)/lx_squote.c \
