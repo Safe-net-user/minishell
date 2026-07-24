@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 14:55:25 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/23 14:55:27 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/24 10:05:59 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,5 +18,6 @@ bool	is_command_token(t_type_tk type)
 		|| type == TOK_LESS
 		|| type == TOK_DLESS
 		|| type == TOK_GREAT
-		|| type == TOK_DGREAT);
+		|| type == TOK_DGREAT
+		|| type == TOK_DELIMITER);
 }

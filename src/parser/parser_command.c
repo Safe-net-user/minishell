@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 14:51:42 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/23 15:02:31 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/24 10:25:24 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,8 @@ int	count_tokens(t_tk *token)
 		|| temp->type_tk == TOK_LESS
 		|| temp->type_tk == TOK_DLESS
 		|| temp->type_tk == TOK_GREAT
-		|| temp->type_tk == TOK_DGREAT)
+		|| temp->type_tk == TOK_DGREAT
+		|| temp->type_tk == TOK_DELIMITER)
 	{
 		count++;
 		temp = next_token(temp);
@@ -90,7 +91,7 @@ bool	parse_redirection(t_mms *mms, t_tk **token, t_ast *node)
 	new->type_tk = (*token)->type_tk;
 	new->next = NULL;
 	*token = next_token(*token);
-	if ((*token)->type_tk != TOK_WORD)
+	if ((*token)->type_tk != TOK_WORD && (*token)->type_tk != TOK_DELIMITER)
 		return (parser_error(mms, *token), false);
 	new->file = (*token)->value;
 	*token = next_token(*token);
