@@ -90,7 +90,6 @@ static char	*search_path(char **path, char *cmd)
 	i = 0;
 	while (path[i])
 	{
-
 		temp = build_path(path[i], cmd);
 		if (!temp)
 			return (NULL);

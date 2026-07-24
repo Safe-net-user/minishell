@@ -6,13 +6,15 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 17:47:54 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/24 14:22:01 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/24 16:24:19 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "executor.h"
 #include "ft_strings.h"
 #include <unistd.h>
+#include <fcntl.h>
+#include <errno.h>
 
 /**
  * @brief Converts an array of token structures into an array of command strings.
@@ -49,39 +51,6 @@ char	**tks_to_cmd_tab(t_mms *mms, t_tk **tokens)
 	return (cmd_tab);
 }
 
-char	**hash_table_to_envp(t_ht *ht)
-{
-	char	**envp;
-	size_t	i;
-	size_t	j;
-	size_t	len;
-
-	envp = malloc(sizeof(char *) * (ht->entries + 1));
-	if (!envp)
-		return (NULL);
-	i = 0;
-	j = 0;
-	while (i < ht->capacity)
-	{
-		if (ht->indexes[i].key
-			&& ht->indexes[i].key != (char *)DELETED)
-		{
-			len = ft_strlen(ht->indexes[i].key)
-				+ 1 + ft_strlen(ht->indexes[i].value) + 1;
-			envp[j] = malloc(len);
-			if (!envp[j])
-				return (NULL);
-			ft_strlcpy(envp[j], ht->indexes[i].key, len);
-			ft_strlcat(envp[j], "=", len);
-			ft_strlcat(envp[j], ht->indexes[i].value, len);
-			j++;
-		}
-		i++;
-	}
-	envp[j] = NULL;
-	return (envp);
-}
-
 int	execute_redir_only(t_mms *mms, t_ast *node)
 {
 	int	saved_in;
@@ -96,4 +65,21 @@ int	execute_redir_only(t_mms *mms, t_ast *node)
 	close(saved_in);
 	close(saved_out);
 	return (status);
+}
+
+static int	exec_command(char *cmd_path, char **cmd_tab, char **envp)
+{
+	execve(cmd_path, cmd_tab, envp);
+	if (errno == EACCES)
+	{
+		print_exec_error(cmd_path, "Permission denied");
+		return (126);
+	}
+	if (errno == ENOENT)
+	{
+		print_exec_error(cmd_path, "No such file or directory");
+		return (127);
+	}
+	print_exec_error(cmd_path, strerror(errno));
+	return (126);
 }

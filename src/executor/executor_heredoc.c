@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 16:55:56 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/24 14:30:23 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/24 16:18:18 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,17 +18,18 @@
 #include "sys/wait.h"
 
 /**
- * @brief Reads a line from standard input and writes it to the here-document pipe.
+ * @brief Reads a line from standard input and writes it to the
+ *        here-document pipe.
  *
  * Prompts the user for input, reads a line from standard input, and compares it
- * with the here-document delimiter. If the delimiter is reached or an end-of-file
+ * with the here-document delimiter.If the delimiter is reached or an end-of-file
  * is encountered, the function stops reading.
  *
  * @param[in]  fd_here_doc File descriptors of the here-document pipe.
  * @param[in]  lim_nl      Delimiter marking the end of the here-document.
  *
- * @return 1 if the delimiter is reached or EOF is encountered, 0 otherwise,
- *         -1 if the write to the pipe fails.
+ * @return 1 if the delimiter is reached or EOF is encountered,
+ *         0 otherwise, -1 if the write to the pipe fails.
  */
 
 int	execute_here_doc(t_mms *mms, int *fd_here_doc, char *lim_nl)
@@ -92,12 +93,26 @@ static int	fill_here_doc(t_mms *mms, int *fd_here_doc, char *lim_nl)
 	return (0);
 }
 
+static void	here_doc_child(t_mms *mms, int *fd_here_doc, char *lim_nl)
+{
+	int	status;
+
+	close(fd_here_doc[0]);
+	signal(SIGINT, SIG_DFL);
+	status = fill_here_doc(mms, fd_here_doc, lim_nl);
+	get_next_line(-1);
+	free(lim_nl);
+	close(fd_here_doc[1]);
+	exit(status);
+}
+
 /**
  * @brief Reads and stores here-document input into a pipe.
  *
- * Creates a pipe and continuously reads lines from standard input until the
- * here-document delimiter is encountered or EOF is reached. The input is
- * written to the pipe, whose read end is returned for later use as standard input.
+ * Creates a pipe and continuously reads lines from standard input
+ * until the here-document delimiter is encountered or EOF is reached.
+ * The input is written to the pipe, whose read end is returned for 
+ * later use as standard input.
  *
  * @param[in]  mms  Pointer to the minishell main structure.
  * @param[in]  redir Here-document redirection containing the delimiter.
@@ -111,7 +126,6 @@ int	here_doc(t_mms *mms, t_redir *redir)
 	char	*lim_nl;
 	pid_t	pid;
 
-	(void)mms;
 	if (init_here_doc(redir, fd_here_doc, &lim_nl) == -1)
 		return (-1);
 	pid = fork();
@@ -124,16 +138,7 @@ int	here_doc(t_mms *mms, t_redir *redir)
 		return (-1);
 	}
 	if (pid == 0)
-	{
-		close(fd_here_doc[0]);
-		signal(SIGINT, SIG_DFL);
-		if (fill_here_doc(mms, fd_here_doc, lim_nl) == 1)
-			exit(1);
-		get_next_line(-1);
-		free(lim_nl);
-		close(fd_here_doc[1]);
-		exit(0);
-	}
+		here_doc_child(mms, fd_here_doc, lim_nl);
 	close(fd_here_doc[1]);
 	free(lim_nl);
 	waitpid(pid, NULL, 0);

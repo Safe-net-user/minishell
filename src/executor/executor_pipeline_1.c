@@ -93,7 +93,6 @@ static int	wait_pipeline(t_pipeline *pipeline)
 	return (1);
 }
 
-
 /**
  * @brief Creates and executes the processes of a command pipeline.
  *

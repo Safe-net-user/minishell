@@ -88,7 +88,6 @@ t_ast	**add_cmd_pipeline(t_mms *mms, t_ast *node, int nb_cmd)
 	return (cmd_list);
 }
 
-
 /**
  * @brief Prepares and executes a pipeline of commands.
  *

@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 16:55:06 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/23 23:39:11 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/24 16:19:00 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,8 @@ int	redirection_in(t_mms *mms, t_redir *redir)
  * descriptor with the opened file.
  *
  * @param[in] mms   Pointer to the minishell main structure.
- * @param[in] redir Output redirection containing the file path and redirection type.
+ * @param[in] redir Output redirection containing 
+ * the file path and redirection type.
  *
  * @return 0 on success, 1 if the file cannot be opened or standard output
  *         cannot be redirected.
