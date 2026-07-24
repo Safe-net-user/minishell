@@ -44,4 +44,15 @@ typedef struct s_exp
 typedef t_val_exp	(*t_exp_variant_fn)(t_exp *);
 
 t_val_exp	expand(t_mms *mms, t_tk ***tks);
+t_val_exp	exp_dquote(t_exp *exp);
+t_val_exp	exp_append_expansion(t_exp *exp);
+t_val_exp	exp_squote(t_exp *exp);
+t_val_exp	exp_normal(t_exp *exp);
+t_val_exp	exp_append_expansion(t_exp *exp);
+void		init_lut(t_exp_variant_fn *lut);
+t_exp		*init_expander(t_mms *mms);
+void		reset_expander(t_exp *exp, char *str);
+void		init_lut(t_exp_variant_fn *lut);
+t_exp		*init_expander(t_mms *mms);
+
 #endif
