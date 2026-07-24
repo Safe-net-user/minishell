@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/09 10:30:51 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/24 20:43:38 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/24 21:29:05 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,6 +123,7 @@ int	main(UNUSED int ac, UNUSED char **av, char **envp)
 	while (1)
 	{
 		stack_reset(mms->sa);
+		set_signaux_interactif();
 		if (!process_input(mms))
 			break ;
 	}
