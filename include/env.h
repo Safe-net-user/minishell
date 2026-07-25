@@ -16,8 +16,6 @@
 # include <stddef.h>
 # include "type.h"
 
-# define DELETED ((void *)-1)
-
 # define ENV_KEY_MAX 256
 # define ENV_NAME_MAX 8192
 
@@ -43,6 +41,13 @@ typedef struct s_env_entry
 	int		place;
 }	t_env_entry;
 
+typedef struct s_env_add
+{
+	char			*key;
+	char			*str;
+	t_env_flags		flags;
+}	t_env_add;
+
 struct s_env
 {
 	t_env_entry	*indexes;
@@ -60,6 +65,13 @@ void		free_env(t_env *env);
 /* Converter functions */
 int			env_arr_to_ht(char **envp, t_env *ht);
 char		**env_to_envp(t_env *env);
+
+int			add_env_entry(t_env *ht, char *start);
+t_env		*init_env(size_t n);
+void		free_env(t_env *env);
+t_env_val	update_env(t_env_entry *entry, t_env_add *data);
+
+
 
 /* Setter functions */
 int			set_exported_env_ht(t_mms *mms, char **envp);

@@ -19,62 +19,62 @@
 #include "ft_stdlib.h"
 #include <stdio.h>
 
-t_env	*init_env(size_t n)
+static t_env_val	insert_env(t_env_entry *entry, t_env_add *data)
 {
-	t_env	*env;
-
-	if (n == 0 || n > SIZE_MAX / sizeof(t_env_entry))
-		return (NULL);
-	env = ft_calloc(1, sizeof(t_env));
-	if (!env)
-		return (NULL);
-	env->indexes = ft_calloc(n, sizeof(t_env_entry));
-	if (!env->indexes)
+	entry->key = ft_strdup(data->key);
+	entry->value = ft_strdup(data->str);
+	if (!entry->key || !entry->value)
 	{
-		free(env);
-		return (NULL);
+		free(entry->key);
+		free(entry->value);
+		return (ENV_ERROR);
 	}
-	env->entries = 0;
-	env->capacity = n;
-	return (env);
+	entry->flags = data->flags;
+	return (ENV_SUCCESS);
+}
+
+static t_env_val	find_env_slot(t_env *env, t_env_add *data, size_t n)
+{
+	ssize_t	index;
+	ssize_t	deleted;
+
+	index = joaat_hash((unsigned char *)data->key, n)
+		% env->capacity;
+	deleted = -1;
+	while (env->indexes[index].key != NULL)
+	{
+		if (env->indexes[index].key == ((void *)-1))
+		{
+			if (deleted == -1)
+				deleted = index;
+		}
+		else if (ft_strncmp(env->indexes[index].key,
+				data->key, n + 1) == 0)
+			return (update_env(&env->indexes[index], data));
+		index = (index + 1) % env->capacity;
+	}
+	if (deleted != -1)
+		index = deleted;
+	if (insert_env(&env->indexes[index], data) == ENV_ERROR)
+		return (ENV_ERROR);
+	env->entries++;
+	return (ENV_SUCCESS);
 }
 
 t_env_val	add_env(t_env *env, char *key, char *str, t_env_flags flags)
 {
-	size_t	n;
-	size_t	index;
-	size_t	deleted;
+	t_env_add	data;
+	size_t		n;
 
 	if (!env || !key || !str)
 		return (ENV_ERROR);
 	if (env->entries == env->capacity)
 		return (ENV_FULL);
+	data.key = key;
+	data.str = str;
+	data.flags = flags;
 	n = ft_strlen(key);
-	index = joaat_hash((unsigned char *)key, n) % env->capacity;
-	deleted = SIZE_MAX;
-	while (env->indexes[index].key != NULL)
-	{
-		if (env->indexes[index].key == DELETED)
-		{
-			if (deleted == SIZE_MAX)
-				deleted = index;
-		}
-		else if (ft_strncmp(env->indexes[index].key, key, n + 1) == 0)
-		{
-			free(env->indexes[index].value);
-			env->indexes[index].value = ft_strdup(str);
-			env->indexes[index].flags = flags;
-			return (ENV_SUCCESS);
-		}
-		index = (index + 1) % env->capacity;
-	}
-	if (deleted != SIZE_MAX)
-		index = deleted;
-	env->indexes[index].key = ft_strdup(key);
-	env->indexes[index].value = ft_strdup(str);
-	env->indexes[index].flags = flags;
-	env->entries++;
-	return (ENV_SUCCESS);
+	return (find_env_slot(env, &data, n));
 }
 
 t_env_entry	*get_env(t_env *env, char *key)
@@ -90,7 +90,7 @@ t_env_entry	*get_env(t_env *env, char *key)
 	tmp_index = (index - 1) % env->capacity;
 	while (env->indexes[index].key != NULL)
 	{
-		if (env->indexes[index].key != DELETED)
+		if (env->indexes[index].key != ((void *)-1))
 		{
 			if (ft_strncmp(env->indexes[index].key, key, n + 1) == 0)
 				return (&env->indexes[index]);
@@ -100,26 +100,6 @@ t_env_entry	*get_env(t_env *env, char *key)
 		index = (index + 1) % env->capacity;
 	}
 	return (NULL);
-}
-
-void	free_env(t_env *env)
-{
-	size_t	i;
-
-	if (!env)
-		return ;
-	i = 0;
-	while (i < env->capacity)
-	{
-		if (env->indexes[i].key != NULL && env->indexes[i].key != DELETED)
-		{
-			free(env->indexes[i].value);
-			free(env->indexes[i].key);
-		}
-		i++;
-	}
-	free(env->indexes);
-	free(env);
 }
 
 t_env_val	del_env(t_env *env, char *key)
@@ -140,7 +120,7 @@ t_env_val	del_env(t_env *env, char *key)
 			env->entries--;
 			free(env->indexes[index].value);
 			free(env->indexes[index].key);
-			env->indexes[index].key = DELETED;
+			env->indexes[index].key = ((void *)-1);
 			return (ENV_SUCCESS);
 		}
 		index = (index + 1) % env->capacity;

@@ -18,32 +18,16 @@
 int	env_arr_to_ht(char **envp, t_env *ht)
 {
 	size_t	i;
-	size_t	j;
 	char	*start;
 
 	i = 0;
 	while (envp[i])
 	{
-		j = 0;
 		start = ft_strdup(envp[i]);
 		if (!start)
 			return (0);
-		while (start[j] && start[j] != '=')
-			j++;
-		if (start[j] != '=')
-		{
-			free(start);
-			i++;
-			continue;
-		}
-		start[j] = '\0';
-		j++;
-		if (add_env(ht, start, &start[j], EXPORTED) == ENV_ERROR)
-		{
-			free(start);
+		if (!add_env_entry(ht, start))
 			return (0);
-		}
-		free(start);
 		i++;
 	}
 	return (1);
@@ -72,7 +56,7 @@ static char	*env_entry_to_str(t_env_entry *entry)
 static int	is_exported(t_env_entry *entry)
 {
 	return (entry->key != NULL
-		&& entry->key != DELETED
+		&& entry->key != ((void *)-1)
 		&& (entry->flags & EXPORTED));
 }
 

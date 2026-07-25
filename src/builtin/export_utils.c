@@ -36,7 +36,7 @@ void	ht_to_arr(t_env *env, t_env_entry *arr)
 	while (entry < limit)
 	{
 		if (entry->key != NULL && entry->key \
-!= DELETED && entry->flags & EXPORTED)
+!= ((void *)-1) && entry->flags & EXPORTED)
 		{
 			*curr_p = *entry;
 			curr_p++;

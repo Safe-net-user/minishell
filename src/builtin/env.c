@@ -24,7 +24,7 @@ static int	print_exported_var_env(t_env *env)
 	while (entry < limit)
 	{
 		if (entry->key != NULL
-			&& entry->key != DELETED
+			&& entry->key != ((void *)-1)
 			&& (entry->flags & EXPORTED)
 			&& entry->value != NULL)
 		{

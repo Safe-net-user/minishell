@@ -94,6 +94,7 @@ $(SRC)/$(CORE)/signaux.c \
 $(SRC)/$(ENV)/ht_env.c \
 $(SRC)/$(ENV)/converter.c \
 $(SRC)/$(ENV)/set_env.c \
+$(SRC)/$(ENV)/env_utils.c \
 $(SRC)/$(LEXER)/lexer.c \
 $(SRC)/$(LEXER)/lx_normal.c \
 $(SRC)/$(LEXER)/lx_squote.c \
