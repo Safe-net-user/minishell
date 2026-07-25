@@ -6,14 +6,14 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/25 00:56:15 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/25 01:10:57 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/25 01:48:41 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "heredoc.h"
+#include <errno.h>
 
 static char	*g_hd_buf = NULL;
-
 
 static int	hd_fill_buffer(int fd)
 {
@@ -24,6 +24,8 @@ static int	hd_fill_buffer(int fd)
 	while (!hd_strchr(g_hd_buf, '\n') && bytes_read > 0)
 	{
 		bytes_read = read(fd, read_buf, HD_BUFFER_SIZE);
+		if (bytes_read == -1 && errno == EINTR)
+			return (-2);
 		if (bytes_read == -1)
 		{
 			free(g_hd_buf);
@@ -89,12 +91,16 @@ static char	*hd_extract_rest(char *buf)
 	return (rest);
 }
 
-char	*heredoc_gnl(int fd)
+char	*heredoc_gnl(int fd, int *interrupted)
 {
 	char	*line;
 	char	*tmp;
+	int		res;
 
-	if (hd_fill_buffer(fd) == -1)
+	res = hd_fill_buffer(fd);
+	if (interrupted)
+		*interrupted = (res == -2);
+	if (res == -1 || res == -2)
 		return (NULL);
 	if (!g_hd_buf || !g_hd_buf[0])
 	{

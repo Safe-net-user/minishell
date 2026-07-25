@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/09 10:30:51 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/24 23:01:07 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/25 01:43:35 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,6 +121,7 @@ int	main(int ac, char **av, char **envp)
 		free_og_struct(mms);
 		return (EXIT_FAILURE);
 	}
+	mms->tty_fd = dup(STDIN_FILENO);
 	while (1)
 	{
 		stack_reset(mms->sa);

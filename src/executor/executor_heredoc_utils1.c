@@ -6,11 +6,12 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/25 00:58:17 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/25 01:07:26 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/25 01:23:56 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "heredoc.h"
+#include "ft_strings.h"
 
 size_t	hd_strlen(const char *s)
 {

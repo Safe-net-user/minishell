@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 16:55:56 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/25 01:08:48 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/25 01:56:20 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,18 @@
 #include "signal.h"
 #include "sys/wait.h"
 #include "heredoc.h"
+#include <termios.h>
+
+static void	restore_canonical_tty(int fd)
+{
+	struct termios	term;
+
+	if (tcgetattr(fd, &term) == -1)
+		return ;
+	term.c_iflag |= ICRNL;
+	term.c_lflag |= ICANON | ECHO;
+	tcsetattr(fd, TCSANOW, &term);
+}
 
 /**
  * @brief Reads a line from standard input and writes it to the
@@ -37,6 +49,7 @@ int	execute_here_doc(t_mms *mms, int *fd_here_doc, char *lim_nl)
 	char			*line;
 	char			*ps2;
 	t_env_entry		*entry;
+	int				interrupted;
 
 	entry = get_env(mms->env, "PS2");
 	if (entry && entry->value)
@@ -44,7 +57,12 @@ int	execute_here_doc(t_mms *mms, int *fd_here_doc, char *lim_nl)
 	else
 		ps2 = "> ";
 	write(STDOUT_FILENO, ps2, ft_strlen(ps2));
-	line = heredoc_gnl(0);
+	line = heredoc_gnl(mms->tty_fd, &interrupted);
+	if (interrupted)
+	{
+		free(line);
+		return (-2);
+	}
 	if (!line || line_matches_delim(line, lim_nl))
 	{
 		free(line);
@@ -85,6 +103,8 @@ static int	fill_here_doc(t_mms *mms, int *fd_here_doc, char *lim_nl)
 	while (1)
 	{
 		res = execute_here_doc(mms, fd_here_doc, lim_nl);
+		if (res == -2)
+			return (130);
 		if (res == -1)
 			return (1);
 		if (res == 1)
@@ -99,6 +119,7 @@ static void	here_doc_child(t_mms *mms, int *fd_here_doc, char *lim_nl)
 
 	close(fd_here_doc[0]);
 	signal(SIGINT, SIG_DFL);
+	restore_canonical_tty(mms->tty_fd);
 	status = fill_here_doc(mms, fd_here_doc, lim_nl);
 	heredoc_gnl_reset();
 	free(lim_nl);
