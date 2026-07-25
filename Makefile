@@ -6,7 +6,7 @@
 #    By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/05/18 23:16:53 by gd-hallu          #+#    #+#              #
-#    Updated: 2026/07/25 01:23:20 by fiaudfiz         ###   ########.fr        #
+#    Updated: 2026/07/25 03:49:10 by fiaudfiz         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -100,7 +100,8 @@ $(SRC)/$(LEXER)/lx_normal.c \
 $(SRC)/$(LEXER)/lx_squote.c \
 $(SRC)/$(LEXER)/lx_dquote.c \
 $(SRC)/$(LEXER)/lx_operator.c \
-$(SRC)/$(LEXER)/lx_utils.c \
+$(SRC)/$(LEXER)/lx_utils_0.c \
+$(SRC)/$(LEXER)/lx_utils_1.c \
 $(SRC)/$(EXPANDER)/expander.c \
 $(SRC)/$(EXPANDER)/expander_dquote.c \
 $(SRC)/$(EXPANDER)/expander_squote.c \
