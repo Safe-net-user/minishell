@@ -32,17 +32,37 @@ static t_val_exp	expand_word(t_exp *exp, t_exp_variant_fn *lut)
 	return (EXP_SUCCESS);
 }
 
-static t_val_exp	expand_token(t_exp *exp, t_tk *tk, t_exp_variant_fn *lut)
+static void	remove_token(t_tk **tks, size_t index)
+{
+	size_t	i;
+
+	i = index;
+	while (tks[i])
+	{
+		tks[i] = tks[i + 1];
+		i++;
+	}
+}
+
+static t_val_exp	expand_token(t_exp *exp, t_tk **tks, size_t index, t_exp_variant_fn *lut)
 {
 	char	*new_value;
+	t_tk	*tk;
 
+	tk = tks[index];
 	if (!tk->value)
 		return (EXP_SUCCESS);
 	reset_expander(exp, tk->value);
 	if (tk->type_tk != TOK_WORD && tk->type_tk != TOK_DELIMITER)
 		return (EXP_SUCCESS);
-	if (expand_word(exp, lut))
+	if (expand_word(exp, lut) != EXP_SUCCESS)
 		return (EXP_ERROR);
+	if (!exp->sb->str[0])
+	{
+		free(tk->value);
+		remove_token(tks, index);
+		return (EXP_SUCCESS);
+	}
 	new_value = ft_strdup(exp->sb->str);
 	if (!new_value)
 		return (EXP_ERROR);
@@ -66,7 +86,7 @@ t_val_exp	expand(t_mms *mms, t_tk ***tks)
 	i = 0;
 	while ((*tks)[i])
 	{
-		if (expand_token(exp, (*tks)[i], lut) == EXP_ERROR)
+		if (expand_token(exp, (*tks), i, lut) == EXP_ERROR)
 		{
 			free_sb(exp->sb);
 			free(exp);
