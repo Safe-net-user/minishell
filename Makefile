@@ -6,7 +6,7 @@
 #    By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/05/18 23:16:53 by gd-hallu          #+#    #+#              #
-#    Updated: 2026/07/25 01:04:03 by fiaudfiz         ###   ########.fr        #
+#    Updated: 2026/07/25 01:23:20 by fiaudfiz         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -123,7 +123,7 @@ $(SRC)/$(EXECUTOR)/executor_redir.c \
 $(SRC)/$(EXECUTOR)/executor_utils_0.c \
 $(SRC)/$(EXECUTOR)/executor_utils_1.c \
 $(SRC)/$(EXECUTOR)/executor_heredoc_utils_0.c \
-$(SRC)/$(EXECUTOR)/executor_heredoc_utils_1.c \
+$(SRC)/$(EXECUTOR)/executor_heredoc_utils1.c \
 $(SRC)/$(BUILTIN)/cd.c \
 $(SRC)/$(BUILTIN)/echo.c \
 $(SRC)/$(BUILTIN)/env.c \
