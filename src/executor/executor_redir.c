@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 16:55:06 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/25 02:37:24 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/25 03:13:53 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ static int	expand_redir_file(t_mms *mms, t_redir *redir)
 	t_tk	*arr[2];
 	t_tk	**arr_ptr;
 	char	*dup_file;
+	char	*old_file;
 
 	dup_file = ft_strdup(redir->file);
 	if (!dup_file)
@@ -32,9 +33,11 @@ static int	expand_redir_file(t_mms *mms, t_redir *redir)
 	arr[0] = &tk;
 	arr[1] = NULL;
 	arr_ptr = arr;
-	if (!expand(mms, &arr_ptr))
+	if (expand(mms, &arr_ptr) != EXP_SUCCESS)
 		return (1);
+	old_file = redir->file;
 	redir->file = arr[0]->value;
+	free(old_file);
 	return (0);
 }
 

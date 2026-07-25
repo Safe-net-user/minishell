@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lx_utils.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gaspard <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/25 00:06:45 by gaspard           #+#    #+#             */
-/*   Updated: 2026/07/25 00:13:16 by gaspard          ###   ########.fr       */
+/*   Updated: 2026/07/25 03:11:25 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,17 @@ int	emit_tk(t_lx *lx)
 	tk = stack_alloc(lx->mms->sa, sizeof(t_tk));
 	if (!tk)
 		return (0);
-	tk->value = ft_strdup(lx->sb->str);
-	if (!tk->value)
-		return (0);
+	if (lx->tk->type_tk == TOK_PIPE || lx->tk->type_tk == TOK_AND_IF
+		|| lx->tk->type_tk == TOK_OR_IF || lx->tk->type_tk == TOK_AMPERSAND
+		|| lx->tk->type_tk == TOK_LESS || lx->tk->type_tk == TOK_GREAT
+		|| lx->tk->type_tk == TOK_DGREAT || lx->tk->type_tk == TOK_DLESS)
+		tk->value = NULL;
+	else
+	{
+		tk->value = ft_strdup(lx->sb->str);
+		if (!tk->value)
+			return (0);
+	}
 	tk->flags = lx->tk->flags;
 	if (lx->is_next_delimiter)
 		lx->tk->type_tk = TOK_DELIMITER;
