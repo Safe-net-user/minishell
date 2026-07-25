@@ -6,23 +6,12 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 14:51:42 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/24 16:39:05 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/25 03:55:38 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
 #include "minishell.h"
-
-/**
- * @brief Returns the token located immediately after the current token.
- *
- * Retrieves the allocation header preceding the current token, then uses
- * the stored block size to compute the address of the next token.
- *
- * @param cur Current token.
- * @return Pointer to the next token in memory.
-
- */
 
 t_tk	*next_token(t_tk *cur)
 {
@@ -33,16 +22,6 @@ t_tk	*next_token(t_tk *cur)
 		+ sizeof(t_header)));
 }
 
-/**
- * @brief Counts the consecutive command-related tokens.
- *
- * Traverses the token sequence starting at the given token and counts
- * word and redirection tokens until another token type is encountered.
- *
- * @param token First token to examine.
- * @return Number of consecutive command-related tokens.
- */
-
 int	count_tokens(t_tk *token)
 {
 	t_tk	*temp;
@@ -51,35 +30,17 @@ int	count_tokens(t_tk *token)
 	temp = token;
 	count = 0;
 	while (temp && (temp->type_tk == TOK_WORD
-		|| temp->type_tk == TOK_LESS
-		|| temp->type_tk == TOK_DLESS
-		|| temp->type_tk == TOK_GREAT
-		|| temp->type_tk == TOK_DGREAT
-		|| temp->type_tk == TOK_DELIMITER))
+			|| temp->type_tk == TOK_LESS
+			|| temp->type_tk == TOK_DLESS
+			|| temp->type_tk == TOK_GREAT
+			|| temp->type_tk == TOK_DGREAT
+			|| temp->type_tk == TOK_DELIMITER))
 	{
 		count++;
 		temp = next_token(temp);
 	}
 	return (count);
 }
-
-/**
- * @brief Parse a redirection operator.
- *
- * Dispatches the parsing to either the input or output redirection parser
- * depending on the current token.
- *
- * Supported operators:
- *
- *     <   <<
- *     >   >>
- *
- * @param mms Main minishell structure.
- * @param token Pointer to the current token pointer.
- * @param node Command node receiving the parsed redirection.
- *
- * @return true on success, false if a syntax error occurs.
- */
 
 bool	parse_redirection(t_mms *mms, t_tk **token, t_ast *node)
 {
@@ -117,26 +78,6 @@ static void	add_word(t_ast *node, t_tk **token, int *i)
 	*token = next_token(*token);
 }
 
-/**
- * @brief Parse a simple command and its redirections.
- *
- * This function creates a NODE_CMD node and consumes all consecutive
- * command words and redirection operators.
- *
- * Every WORD token is stored in the argv array, while redirection
- * operators are attached to the command redirection lists.
- *
- * Parsing stops when an operator with a lower precedence (|, &&, ||)
- * or the end of the input is reached.
- *
- * @param mms Main minishell structure containing the stack allocator.
- * @param token Pointer to the current token pointer.
- *              The pointer is updated as tokens are consumed.
- *
- * @return Pointer to the created command AST node, or NULL if a syntax
- *         error is encountered.
- */
-
 t_ast	*parse_command(t_mms *mms, t_tk **token)
 {
 	t_ast	*node;
@@ -148,10 +89,7 @@ t_ast	*parse_command(t_mms *mms, t_tk **token)
 	node = stack_alloc(mms->sa, sizeof(t_ast));
 	if (!node)
 		return (NULL);
-	node->type = NODE_CMD;
-	node->left = NULL;
-	node->right = NULL;
-	node->redirect = NULL;
+	init_cmd_node(node);
 	count = count_tokens(*token);
 	node->tokens = stack_alloc(mms->sa,
 			sizeof(t_tk *) * (count + 1));

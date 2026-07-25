@@ -1,31 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parser_utils.c                                     :+:      :+:    :+:   */
+/*   lx_utils_1.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/07/23 14:55:25 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/25 03:56:33 by fiaudfiz         ###   ########.fr       */
+/*   Created: 2026/07/25 03:48:05 by fiaudfiz          #+#    #+#             */
+/*   Updated: 2026/07/25 03:50:04 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "parser.h"
+#include "lexer.h"
 
-bool	is_command_token(t_type_tk type)
+bool	is_no_value_tk(t_type_tk type)
 {
-	return (type == TOK_WORD
-		|| type == TOK_LESS
-		|| type == TOK_DLESS
-		|| type == TOK_GREAT
-		|| type == TOK_DGREAT
-		|| type == TOK_DELIMITER);
-}
-
-void	init_cmd_node(t_ast *node)
-{
-	node->type = NODE_CMD;
-	node->left = NULL;
-	node->right = NULL;
-	node->redirect = NULL;
+	return (type == TOK_PIPE || type == TOK_AND_IF
+		|| type == TOK_OR_IF || type == TOK_AMPERSAND
+		|| type == TOK_LESS || type == TOK_GREAT
+		|| type == TOK_DGREAT || type == TOK_DLESS);
 }

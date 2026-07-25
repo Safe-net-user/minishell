@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expander.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gaspard <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/25 01:27:50 by gaspard           #+#    #+#             */
-/*   Updated: 2026/07/25 01:27:56 by gaspard          ###   ########.fr       */
+/*   Updated: 2026/07/25 03:51:50 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,8 @@ static void	remove_token(t_tk **tks, size_t index)
 	}
 }
 
-static t_val_exp	expand_token(t_exp *exp, t_tk **tks, size_t index, t_exp_variant_fn *lut)
+static t_val_exp	expand_token(t_exp *exp, t_tk **tks,
+	size_t index, t_exp_variant_fn *lut)
 {
 	char	*new_value;
 	t_tk	*tk;
