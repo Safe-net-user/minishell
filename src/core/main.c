@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/09 10:30:51 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/25 01:43:35 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/25 02:15:25 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,14 +98,7 @@ static int	process_input(t_mms *mms)
 
 	result = read_line();
 	if (!result)
-	{
-		if (g_signal == SIGINT)
-		{
-			g_signal = 0;
-			return (1);
-		}
 		return (0);
-	}
 	return (handle_input(result, mms));
 }
 
@@ -122,10 +115,11 @@ int	main(int ac, char **av, char **envp)
 		return (EXIT_FAILURE);
 	}
 	mms->tty_fd = dup(STDIN_FILENO);
+	set_signaux_interactif();
 	while (1)
 	{
 		stack_reset(mms->sa);
-		set_signaux_interactif();
+		g_signal = 0;
 		if (!process_input(mms))
 			break ;
 	}
