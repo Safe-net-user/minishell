@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gaspard <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/24 23:36:26 by gaspard           #+#    #+#             */
-/*   Updated: 2026/07/24 23:36:57 by gaspard          ###   ########.fr       */
+/*   Updated: 2026/07/25 03:37:08 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 static void	exit_shell(t_mms *mms, int status)
 {
 	ft_putstr_fd("exit\n", STDOUT_FILENO);
+	free_ast_values(mms->current_ast);
 	free_og_struct(mms);
 	exit(status);
 }

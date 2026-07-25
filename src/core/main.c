@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/09 10:30:51 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/25 02:15:25 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/25 03:34:59 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,7 @@ static int	handle_input(char *result, t_mms *mms)
 	head = parser(mms);
 	if (head)
 	{
+		mms->current_ast = head;
 		mms->last_status = executor(mms, head);
 		free_ast_values(head);
 	}

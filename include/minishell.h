@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/09 15:49:14 by gd-hallu          #+#    #+#             */
-/*   Updated: 2026/07/25 01:42:04 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/25 03:36:08 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ struct s_mms
 	char			*cwd;
 	mode_t			umask;
     int				tty_fd;
+    t_ast           *current_ast;
 	int				last_status;
 };
 
