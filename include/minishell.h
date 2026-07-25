@@ -46,8 +46,8 @@ struct s_mms
 	char			*name;
 	char			*cwd;
 	mode_t			umask;
-    int				tty_fd;
-    t_ast           *current_ast;
+	int				tty_fd;
+	t_ast			*current_ast;
 	int				last_status;
 };
 

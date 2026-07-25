@@ -71,8 +71,6 @@ t_env		*init_env(size_t n);
 void		free_env(t_env *env);
 t_env_val	update_env(t_env_entry *entry, t_env_add *data);
 
-
-
 /* Setter functions */
 int			set_exported_env_ht(t_mms *mms, char **envp);
 int			set_var_env_ht(t_mms *mms);

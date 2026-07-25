@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef HEREDOC_GNL_H
-# define HEREDOC_GNL_H
+#ifndef HEREDOC_H
+# define HEREDOC_H
 
 # include <stdlib.h>
 # include <unistd.h>
@@ -25,6 +25,6 @@ void	heredoc_gnl_reset(void);
 size_t	hd_strlen(const char *s);
 char	*hd_strchr(const char *s, int c);
 char	*hd_strjoin_free(char *s1, char *s2);
-int	line_matches_delim(char *line, char *lim);
+int		line_matches_delim(char *line, char *lim);
 
 #endif

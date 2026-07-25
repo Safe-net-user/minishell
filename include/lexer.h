@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/11 16:49:01 by gd-hallu          #+#    #+#             */
-/*   Updated: 2026/07/24 23:25:22 by gaspard          ###   ########.fr       */
+/*   Updated: 2026/07/25 03:48:35 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,5 +114,6 @@ int					emit_tk(t_lx *lx);
 int					emit_eof(t_lx *lx);
 t_lx				*init_s_lx( char *cmdl, t_mms *mms);
 void				free_lexer(t_lx *lx);
+bool				is_no_value_tk(t_type_tk type);
 
 #endif
