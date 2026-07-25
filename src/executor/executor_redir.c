@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 16:55:06 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/24 16:19:00 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/07/25 02:37:24 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,19 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include "expander.h"
+#include "ft_strings.h"
 
 static int	expand_redir_file(t_mms *mms, t_redir *redir)
 {
 	t_tk	tk;
 	t_tk	*arr[2];
 	t_tk	**arr_ptr;
+	char	*dup_file;
 
-	tk.value = redir->file;
+	dup_file = ft_strdup(redir->file);
+	if (!dup_file)
+		return (1);
+	tk.value = dup_file;
 	tk.flags = 0;
 	tk.type_tk = TOK_WORD;
 	arr[0] = &tk;
