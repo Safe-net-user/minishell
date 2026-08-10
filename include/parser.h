@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/16 10:27:34 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/25 03:56:05 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/08/10 14:02:53 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ typedef struct s_ast
 	t_redir			*redirect;
 	union
 	{
-		t_tk	**tokens;
+		t_tk	**tokens; 
 	};
 }	t_ast;
 
