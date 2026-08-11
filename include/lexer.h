@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/11 16:49:01 by gd-hallu          #+#    #+#             */
-/*   Updated: 2026/07/25 03:48:35 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/08/10 18:24:17 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,8 @@ typedef struct s_tk
 	char		*value;
 	t_flag_tk	flags;
 	t_type_tk	type_tk;
+	t_tk		*next;
+	t_tk		*prev;
 }	t_tk;
 
 typedef struct s_lx
