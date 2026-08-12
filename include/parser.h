@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/16 10:27:34 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/10 14:02:53 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/08/11 13:04:48 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,22 +27,17 @@ typedef enum e_node_type
 	NODE_REDIR
 }	t_node_type;
 
-typedef struct s_redir
-{
-	t_type_tk		type_tk;
-	char			*file;
-	struct s_redir	*next;
-}	t_redir;
+//au debut du parser, faire les next et les prev, modifier la struct du parser et la strcut de redirection puis ajoputer << 1 par ex et enfin refaire l'executor avec le .md
 
 typedef struct s_ast
 {
 	t_node_type		type;
 	struct s_ast	*left;
 	struct s_ast	*right;
-	t_redir			*redirect;
+	t_tk			*redirect;
 	union
 	{
-		t_tk	**tokens; 
+		t_tk	*tokens; 
 	};
 }	t_ast;
 
@@ -54,10 +49,10 @@ void		init_cmd_node(t_ast *node);
 char		*token_to_string(t_type_tk type);
 void		parser_error(t_mms *mms, t_tk *tok);
 
-bool		parse_redirection(t_mms *mms, t_tk **token, t_ast *node);
-t_ast		*parse_command(t_mms *mms, t_tk **token);
-t_ast		*parse_pipe(t_mms *mms, t_tk **token);
-t_ast		*parse_or_and(t_mms *mms, t_tk **token);
+bool		parse_redirection(t_mms *mms, t_tk *token, t_ast *node);
+t_ast		*parse_command(t_mms *mms, t_tk *token);
+t_ast		*parse_pipe(t_mms *mms, t_tk *token);
+t_ast		*parse_or_and(t_mms *mms, t_tk *token);
 
 t_ast		*parser(t_mms *mms);
 
