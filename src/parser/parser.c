@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 14:51:09 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/24 18:29:55 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/08/12 13:13:26 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,27 @@
 #include "minishell.h"
 #include <unistd.h>
 #include "ft_strings.h"
+
+t_tk *link_tokens(t_tk *token)
+{
+	t_tk *temp_next;
+	t_tk *temp_prev;
+	t_tk *head;
+
+	head = token;
+	temp_prev = NULL;
+	while (token->type_tk != TOK_EOF)
+	{
+		token->prev = temp_prev;
+		temp_prev = token;
+		temp_next = next_token(token);
+		token->next = temp_next;
+		token = next_token(token);
+	}
+	token->prev = temp_prev;
+	token->next = NULL;
+	return (head);
+}
 
 /**
  * @brief Print a parser syntax error.
@@ -71,6 +92,6 @@ t_ast	*parser(t_mms *mms)
 {
 	t_tk	*first;
 
-	first = (t_tk *)(mms->sa->buffer + sizeof(t_header));
-	return (parse_or_and(mms, &first));
+	first = link_tokens((t_tk *)(mms->sa->buffer + sizeof(t_header)));
+	return (parse_or_and(mms, first));
 }

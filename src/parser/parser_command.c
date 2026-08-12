@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 14:51:42 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/25 03:55:38 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/08/12 12:50:33 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,70 +37,99 @@ int	count_tokens(t_tk *token)
 			|| temp->type_tk == TOK_DELIMITER))
 	{
 		count++;
-		temp = next_token(temp);
+		temp = temp->next;
 	}
 	return (count);
 }
-
-bool	parse_redirection(t_mms *mms, t_tk **token, t_ast *node)
+//peut etre ajouter prev pour expander donc ici on consomme 2 tokens pour verifier que on a bien un file apres un operator
+bool	parse_redirection(t_mms *mms, t_tk *token, t_ast *node)
 {
-	t_redir	*new;
-	t_redir	*cur;
+	t_tk	*new_op;
+	t_tk	*new_file;
+	t_tk	*cur;
 
-	new = stack_alloc(mms->sa, sizeof(t_redir));
-	if (!new)
+	new_op = stack_alloc(mms->sa, sizeof(t_tk));
+	if (!new_op)
 		return (false);
-	new->type_tk = (*token)->type_tk;
-	new->next = NULL;
-	*token = next_token(*token);
-	if (!*token)
-		return (parser_error(mms, *token), false);
-	if ((*token)->type_tk != TOK_WORD && (*token)->type_tk != TOK_DELIMITER)
-		return (parser_error(mms, *token), false);
-	new->file = (*token)->value;
-	*token = next_token(*token);
+	new_op->type_tk = token->type_tk;
+	new_op->flags = token->flags;
+	new_op->value = token->value;
+	new_op->next = NULL;
+	new_op->prev = NULL;
+	token = token->next;
+	if (!token)
+		return (parser_error(mms, token), false);
+	if (token->type_tk != TOK_WORD && token->type_tk != TOK_DELIMITER)
+		return (parser_error(mms, token), false);
+	new_file = stack_alloc(mms->sa, sizeof(t_tk));
+	if (!new_file)
+		return (false);
+	new_file->type_tk = token->type_tk;
+	new_file->flags = token->flags;
+	new_file->value = token->value;
+	new_file->next = NULL;
+	new_file->prev = new_op;
+	new_op->next = new_file;
 	if (!node->redirect)
-		node->redirect = new;
+		node->redirect = new_op;
 	else
 	{
 		cur = node->redirect;
 		while (cur->next)
 			cur = cur->next;
-		cur->next = new;
+		cur->next = new_op;
+		new_op->prev = cur;
 	}
 	return (true);
 }
-
-static void	add_word(t_ast *node, t_tk **token, int *i)
+static t_tk	*add_word(t_mms *mms, t_ast *node, t_tk *token)
 {
-	node->tokens[*i] = *token;
-	(*i)++;
-	*token = next_token(*token);
+	t_tk	*new_tk;
+	t_tk	*cur;
+
+	new_tk = stack_alloc(mms->sa, sizeof(t_tk));
+	if (!new_tk)
+		return (NULL);
+	new_tk->type_tk = token->type_tk;
+	new_tk->flags = token->flags;
+	new_tk->value = token->value;
+	new_tk->next = NULL;
+	new_tk->prev = NULL;
+	if (!node->tokens)
+		node->tokens = new_tk;
+	else
+	{
+		cur = node->tokens;
+		while (cur->next != NULL)
+			cur = cur->next;
+		cur->next = new_tk;
+		new_tk->prev = cur;
+	}
+	return (token->next);
 }
 
-t_ast	*parse_command(t_mms *mms, t_tk **token)
+t_ast	*parse_command(t_mms *mms, t_tk *token)
 {
 	t_ast	*node;
-	int		i;
-	int		count;
 
-	if (!is_command_token((*token)->type_tk))
-		return (parser_error(mms, *token), NULL);
+	if (!is_command_token(token->type_tk))
+		return (parser_error(mms, token), NULL);
 	node = stack_alloc(mms->sa, sizeof(t_ast));
 	if (!node)
 		return (NULL);
 	init_cmd_node(node);
-	count = count_tokens(*token);
-	node->tokens = stack_alloc(mms->sa,
-			sizeof(t_tk *) * (count + 1));
-	i = 0;
-	while (is_command_token((*token)->type_tk))
+	while (token && is_command_token(token->type_tk))
 	{
-		if ((*token)->type_tk == TOK_WORD)
-			add_word(node, token, &i);
-		else if (!parse_redirection(mms, token, node))
-			return (NULL);
+		if (token->type_tk == TOK_WORD)
+			token = add_word(mms, node, token);
+		else
+		{
+			if (!parse_redirection(mms, token, node))
+				return (NULL);
+			token = token->next->next;
+		}
+		if (!token)
+			break ;
 	}
-	node->tokens[i] = NULL;
 	return (node);
 }

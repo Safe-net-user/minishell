@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 14:55:25 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/25 03:56:33 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/08/12 13:28:05 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,4 +28,5 @@ void	init_cmd_node(t_ast *node)
 	node->left = NULL;
 	node->right = NULL;
 	node->redirect = NULL;
+	node->tokens = NULL;
 }
