@@ -16,58 +16,67 @@ static t_tk *new_token(char *value)
     tk->value = ft_strdup(value);
     tk->type_tk = TOK_WORD;
     tk->flags = TOKF_EXPANSION;
+    tk->next = NULL;
+    tk->prev = NULL;
     return (tk);
 }
 
-static void free_tokens(t_tk **tks)
+static void free_tokens(t_tk *tks)
 {
-    size_t i;
+    t_tk *tmp;
 
-    i = 0;
-    while (tks[i])
+    while (tks)
     {
-        free(tks[i]->value);
-        free(tks[i]);
-        i++;
+        tmp = tks->next;
+        free(tks->value);
+        free(tks);
+        tks = tmp;
     }
-    free(tks);
 }
 
-static t_tk **make_tokens(char *str)
+static t_tk *make_tokens(char *str)
 {
-    t_tk **tks;
-
-    tks = malloc(sizeof(*tks) * 2);
-    if (!tks)
-        return (NULL);
-    tks[0] = new_token(str);
-    tks[1] = NULL;
-    return (tks);
+    return (new_token(str));
 }
 
 static int run_test(t_mms *mms, char *input, char *expected)
 {
-    t_tk **tks;
+    t_tk *head;
 
-    tks = make_tokens(input);
+    head = make_tokens(input);
 
-    if (!expand(mms, &tks))
+    if (expand_tokens(mms, &head) != EXP_SUCCESS)
     {
-        printf("[KO] expand() failed\n");
+        printf("[KO] expand_tokens() failed\n");
+        free_tokens(head);
         return (0);
     }
 
-    if (!ft_strcmp(tks[0]->value, expected))
+    if (!head)
+    {
+        if (!ft_strcmp("", expected))
+            printf("[OK] \"%s\" -> \"%s\"\n", input, expected);
+        else
+        {
+            printf("[KO]\n");
+            printf("input    : %s\n", input);
+            printf("expected : %s\n", expected);
+            printf("got      : (token supprime, valeur vide)\n");
+        }
+        return (1);
+    }
+
+    if (!ft_strcmp(head->value, expected))
         printf("[OK] \"%s\" -> \"%s\"\n", input, expected);
     else
     {
         printf("[KO]\n");
         printf("input    : %s\n", input);
         printf("expected : %s\n", expected);
-        printf("got      : %s\n", tks[0]->value);
+        printf("got      : %s\n", head->value);
     }
 
-    free_tokens(tks);
+    free_tokens(head);
     return (1);
 }
 

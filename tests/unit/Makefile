@@ -26,7 +26,7 @@ LEXER          := lexer
 EXPANDER       := expander
 ENV            := env
 PARSER         := parser
-EXECUTOR       := executor
+EXECUTOR       := executor_old
 
 LIBFT          := $(ROOT_PROJECT)/lib/libft
 
@@ -49,7 +49,9 @@ $(ROOT_PROJECT)/$(OBJ)/$(LEXER)/lexer.o \
 $(ROOT_PROJECT)/$(OBJ)/$(LEXER)/lx_normal.o \
 $(ROOT_PROJECT)/$(OBJ)/$(LEXER)/lx_dquote.o \
 $(ROOT_PROJECT)/$(OBJ)/$(LEXER)/lx_squote.o \
-$(ROOT_PROJECT)/$(OBJ)/$(LEXER)/lx_operator.o
+$(ROOT_PROJECT)/$(OBJ)/$(LEXER)/lx_operator.o \
+$(ROOT_PROJECT)/$(OBJ)/$(LEXER)/lx_utils_0.o \
+$(ROOT_PROJECT)/$(OBJ)/$(LEXER)/lx_utils_1.o \
 
 EXPANDER_OBJ := \
 $(ROOT_PROJECT)/$(OBJ)/$(EXPANDER)/expander.o \

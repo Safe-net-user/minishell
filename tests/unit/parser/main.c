@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/03 14:33:39 by miouali           #+#    #+#             */
-/*   Updated: 2026/07/23 16:32:36 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/08/12 13:00:26 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,10 +60,23 @@ static void print_indent(int depth)
         printf("│   ");
 }
 
+static const char *redir_op_str(t_type_tk type)
+{
+    if (type == TOK_DLESS)
+        return ("<<");
+    if (type == TOK_LESS)
+        return ("<");
+    if (type == TOK_DGREAT)
+        return (">>");
+    if (type == TOK_GREAT)
+        return (">");
+    return ("?");
+}
+
 static void print_ast(t_ast *node, int depth)
 {
-    int     i;
-    t_redir *r;
+    t_tk    *tok;
+    t_tk    *op;
 
     if (!node)
         return ;
@@ -75,30 +88,24 @@ static void print_ast(t_ast *node, int depth)
     {
         printf(GREEN "CMD" RESET);
 
-        i = 0;
-        while (node->tokens && node->tokens[i])
-            printf(" [%s]", node->tokens[i++]->value);
-        if (i == 0)
+        tok = node->tokens;
+        if (!tok)
             printf(" (vide)");
-
+        while (tok)
+        {
+            printf(" [%s]", tok->value);
+            tok = tok->next;
+        }
         printf("\n");
 
-        if (node->redirect)
+        op = node->redirect;
+        while (op)
         {
-            r = node->redirect;
-            while (r)
-            {
-                print_indent(depth + 1);
-                if (r->type_tk == TOK_DLESS)
-                    printf(BLUE "<< %s" RESET "\n", r->file);
-                else if (r->type_tk == TOK_LESS)
-                    printf(BLUE "< %s" RESET "\n", r->file);
-                else if (r->type_tk == TOK_DGREAT)
-                    printf(BLUE ">> %s" RESET "\n", r->file);
-                else
-                    printf(BLUE "> %s" RESET "\n", r->file);
-                r = r->next;
-            }
+            if (!op->next)
+                break ;
+            print_indent(depth + 1);
+            printf(BLUE "%s %s" RESET "\n", redir_op_str(op->type_tk), op->next->value);
+            op = op->next->next;
         }
     }
     else
@@ -323,14 +330,6 @@ int main(void)
     SECTION("redirection APRES ou AU MILIEU des mots");
     /* ========================================================= */
 
-    /* parse_command ne consomme les redirs QUE dans la boucle
-       AVANT les mots. Une fois qu'on rentre dans la boucle TOK_WORD,
-       des qu'on croise un token de redirection on sort de la boucle
-       et la fonction retourne direct -- rien ne revient consommer
-       les tokens de redirection restants. Donc ici on s'attend a
-       voir "REDIR_IN" / "REDIR_OUT" ABSENTS de l'affichage alors
-       que la commande contient bien un '>' ou un '<'. */
-
     ADD(TOK_WORD, "cat");
     ADD(TOK_WORD, "file");
     ADD(TOK_GREAT, ">");
@@ -359,7 +358,6 @@ int main(void)
     SECTION("Redirection seule, sans argv");
     /* ========================================================= */
 
-    /* 2e commande du pipe n'a qu'un seul mot APRES sa redirection */
     ADD(TOK_WORD, "cat");
     ADD(TOK_LESS, "<");
     ADD(TOK_WORD, "infile");
