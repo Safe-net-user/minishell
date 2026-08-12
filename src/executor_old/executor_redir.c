@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 16:55:06 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/25 03:13:53 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/08/12 12:48:17 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,28 +16,21 @@
 #include "expander.h"
 #include "ft_strings.h"
 
-static int	expand_redir_file(t_mms *mms, t_redir *redir)
+static int	expand_redir_file(t_mms *mms, t_tk *op)
 {
-	t_tk	tk;
-	t_tk	*arr[2];
-	t_tk	**arr_ptr;
-	char	*dup_file;
-	char	*old_file;
+	t_tk	*file;
 
-	dup_file = ft_strdup(redir->file);
-	if (!dup_file)
+	file = op->next;
+	if (!file)
 		return (1);
-	tk.value = dup_file;
-	tk.flags = 0;
-	tk.type_tk = TOK_WORD;
-	arr[0] = &tk;
-	arr[1] = NULL;
-	arr_ptr = arr;
-	if (expand(mms, &arr_ptr) != EXP_SUCCESS)
+	if (expand_one(mms, &file) != EXP_SUCCESS)
 		return (1);
-	old_file = redir->file;
-	redir->file = arr[0]->value;
-	free(old_file);
+	if (!op->next || (op->next->type_tk != TOK_WORD
+			&& op->next->type_tk != TOK_DELIMITER))
+	{
+		print_error("ambiguous redirect");
+		return (1);
+	}
 	return (0);
 }
 
@@ -54,12 +47,12 @@ static int	expand_redir_file(t_mms *mms, t_redir *redir)
  *         cannot be redirected.
  */
 
-int	redirection_in(t_mms *mms, t_redir *redir)
+int	redirection_in(t_mms *mms, t_tk *redir)
 {
 	int	fd_in;
 
 	(void)mms;
-	fd_in = open(redir->file, O_RDONLY);
+	fd_in = open(redir->value, O_RDONLY);
 	if (fd_in == -1)
 	{
 		perror("minishell");
@@ -90,16 +83,16 @@ int	redirection_in(t_mms *mms, t_redir *redir)
  *         cannot be redirected.
  */
 
-int	redirection_out(t_mms *mms, t_redir *redir)
+int	redirection_out(t_mms *mms, t_tk *redir)
 {
 	int	fd_out;
 
 	(void)mms;
 	if (redir->type_tk == TOK_DGREAT)
-		fd_out = open(redir->file,
+		fd_out = open(redir->value,
 				O_WRONLY | O_CREAT | O_APPEND, 0644);
 	else
-		fd_out = open(redir->file,
+		fd_out = open(redir->value,
 				O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (fd_out == -1)
 	{
@@ -116,7 +109,7 @@ int	redirection_out(t_mms *mms, t_redir *redir)
 	return (0);
 }
 
-static int	redirection_heredoc(t_mms *mms, t_redir *redir)
+static int	redirection_heredoc(t_mms *mms, t_tk *redir)
 {
 	int	fd_heredoc;
 
@@ -149,26 +142,28 @@ static int	redirection_heredoc(t_mms *mms, t_redir *redir)
 
 int	redirection(t_mms *mms, t_ast *node)
 {
-	t_redir	*redir;
+	t_tk	*op;
 	int		status;
 
-	redir = node->redirect;
-	while (redir != NULL)
+	op = node->redirect;
+	while (op != NULL)
 	{
-		if (redir->type_tk != TOK_DLESS)
+		if (!op->next)
+			return (1);
+		if (op->type_tk != TOK_DLESS)
 		{
-			if (expand_redir_file(mms, redir))
+			if (expand_redir_file(mms, op))
 				return (1);
 		}
-		if (redir->type_tk == TOK_DLESS)
-			status = redirection_heredoc(mms, redir);
-		else if (redir->type_tk == TOK_LESS)
-			status = redirection_in(mms, redir);
+		if (op->type_tk == TOK_DLESS)
+			status = redirection_heredoc(mms, op->next);
+		else if (op->type_tk == TOK_LESS)
+			status = redirection_in(mms, op->next);
 		else
-			status = redirection_out(mms, redir);
+			status = redirection_out(mms, op->next);
 		if (status != 0)
 			return (status);
-		redir = redir->next;
+		op = op->next->next;
 	}
 	return (0);
 }

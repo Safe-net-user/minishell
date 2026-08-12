@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 16:53:07 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/24 23:03:11 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/08/12 12:43:50 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,13 +86,13 @@ static void	execute_child(t_mms *mms, t_ast *node)
 	if (status != 0)
 		exit(status);
 	if (path_relative(node))
-		exec.cmd_path = node->tokens[0]->value;
+		exec.cmd_path = node->tokens->value;
 	else
 	{
 		exec.cmd_path = find_path(mms, node, &exec);
 		if (exec.cmd_path == NULL)
 		{
-			print_cmd_not_found(node->tokens[0]->value);
+			print_cmd_not_found(node->tokens->value);
 			exit(127);
 		}
 	}
@@ -134,8 +134,8 @@ int	execute_cmd(t_mms *mms, t_ast *node)
 {
 	t_executor	exec;
 
-	expand(mms, &node->tokens);
-	if (!node->tokens || !node->tokens[0])
+	expand_tokens(mms, &node->tokens);
+	if (!node->tokens)
 		return (execute_redir_only(mms, node));
 	if (builtin(node))
 		return (execute_builtin(mms, node));

@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/11 11:23:14 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/24 23:23:53 by gaspard          ###   ########.fr       */
+/*   Updated: 2026/08/12 12:00:28 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,14 +41,14 @@ int		exec_builtin(t_mms *mms, t_ast *node);
 
 int		execute_cmd(t_mms *mms, t_ast *node);
 int		execute_cmd_pipe(t_mms *mms, t_ast *cmd, int fd_in, int fd_out);
-char	**tks_to_cmd_tab(t_mms *mms, t_tk **tokens);
+char	**tks_to_cmd_tab(t_mms *mms, t_tk *tokens);
 int		execute(t_mms *mms, t_ast *node, t_executor *exec);
 
 void	print_error(char *msg);
 void	print_cmd_not_found(char *cmd);
 void	print_exec_error(char *path, char *msg);
 
-int		here_doc(t_mms *mms, t_redir *redir);
+int		here_doc(t_mms *mms, t_tk *redir);
 
 char	*find_path(t_mms *mms, t_ast *node, t_executor *exec);
 int		path_relative(t_ast *node);

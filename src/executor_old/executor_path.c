@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 16:56:45 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/24 08:52:15 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/08/11 16:49:37 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ void	free_path_arr(char **arr)
 
 int	path_relative(t_ast *node)
 {
-	if (ft_strchr(node->tokens[0]->value, '/'))
+	if (ft_strchr(node->tokens->value, '/'))
 		return (1);
 	return (0);
 }
@@ -117,7 +117,7 @@ char	*find_path(t_mms *mms, t_ast *node, t_executor *exec)
 		free_path_arr(path);
 		return (NULL);
 	}
-	result = search_path(path, node->tokens[0]->value);
+	result = search_path(path, node->tokens->value);
 	free_path_arr(path);
 	return (result);
 }

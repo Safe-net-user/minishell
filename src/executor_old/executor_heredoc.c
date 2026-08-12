@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 16:55:56 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/25 01:56:20 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/08/11 16:49:16 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,14 +78,14 @@ int	execute_here_doc(t_mms *mms, int *fd_here_doc, char *lim_nl)
 	return (0);
 }
 
-static int	init_here_doc(t_redir *redir, int *fd_here_doc, char **lim_nl)
+static int	init_here_doc(t_tk *redir, int *fd_here_doc, char **lim_nl)
 {
 	if (pipe(fd_here_doc) == -1)
 	{
 		perror("minishell");
 		return (-1);
 	}
-	*lim_nl = ft_strdup(redir->file);
+	*lim_nl = ft_strdup(redir->value);
 	if (!*lim_nl)
 	{
 		print_error("memory allocation failed");
@@ -141,7 +141,7 @@ static void	here_doc_child(t_mms *mms, int *fd_here_doc, char *lim_nl)
  * @return The read end of the here-document pipe on success, -1 on error.
  */
 
-int	here_doc(t_mms *mms, t_redir *redir)
+int	here_doc(t_mms *mms, t_tk *redir)
 {
 	int		fd_here_doc[2];
 	char	*lim_nl;

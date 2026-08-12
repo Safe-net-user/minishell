@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 17:45:31 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/24 22:59:51 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/08/12 12:43:31 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,13 +39,13 @@ static int	get_cmd_path(t_mms *mms, t_ast *cmd, t_executor *exec)
 {
 	if (path_relative(cmd))
 	{
-		exec->cmd_path = cmd->tokens[0]->value;
+		exec->cmd_path = cmd->tokens->value;
 		return (0);
 	}
 	exec->cmd_path = find_path(mms, cmd, exec);
 	if (exec->cmd_path == NULL)
 	{
-		print_cmd_not_found(cmd->tokens[0]->value);
+		print_cmd_not_found(cmd->tokens->value);
 		return (127);
 	}
 	return (0);
@@ -81,7 +81,7 @@ int	execute_cmd_pipe(t_mms *mms, t_ast *cmd, int fd_in, int fd_out)
 	signal(SIGQUIT, SIG_DFL);
 	if (setup_pipe_fds(fd_in, fd_out) != 0)
 		return (1);
-	expand(mms, &cmd->tokens);
+	expand_tokens(mms, &cmd->tokens);
 	status = redirection(mms, cmd);
 	if (status != 0)
 		return (status);
