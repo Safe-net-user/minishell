@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/09 10:30:51 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/25 03:34:59 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/08/12 13:29:46 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,8 @@ static	t_mms	*init_og_struct(void)
 	mms->alias = init_hash_table(INIT_SIZE_HT);
 	mms->cmd_path = init_hash_table(INIT_SIZE_HT);
 	mms->sa = init_stack_allocator(INIT_SIZE_SA);
+	if (mms->sa)
+		ft_bzero(mms->sa->buffer, INIT_SIZE_SA); // zero-init sans toucher au submodule
 	mms->cwd = getcwd(NULL, 0);
 	mms->name = ft_strdup("miniMishell");
 	mms->last_status = 0;
