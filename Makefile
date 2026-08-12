@@ -6,7 +6,7 @@
 #    By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/05/18 23:16:53 by gd-hallu          #+#    #+#              #
-#    Updated: 2026/07/25 03:49:10 by fiaudfiz         ###   ########.fr        #
+#    Updated: 2026/08/12 14:12:10 by fiaudfiz         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -39,7 +39,7 @@ REPL			:= repl
 UTILS			:= utils
 ENV				:= env
 EXPANDER		:= expander
-EXECUTOR		:= executor
+EXECUTOR		:= executor_old
 
 # ---------------------- LIB --------------------- #
 LIBFT			:= libft.a
@@ -62,7 +62,7 @@ endif
 
 # --------------------- FLAGS --------------------- #
 ifeq ($(MODE),release)
-	W_FLAGS			:= -Wall -Wextra -Werror
+	W_FLAGS			:= -Wall -Wextra -Werror	
 else
 	ifeq ($(COMPILER), clang)
 		W_FLAGS			:= 	-Wall -Werror -Wextra -Wvla -Wmisleading-indentation -Wshadow -Wnull-dereference -fshort-enums
