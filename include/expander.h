@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/24 16:00:53 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/24 16:00:54 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/08/12 12:48:34 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,9 @@ typedef struct s_exp
 
 typedef t_val_exp	(*t_exp_variant_fn)(t_exp *);
 
-t_val_exp	expand(t_mms *mms, t_tk ***tks);
+t_val_exp	expand_tokens(t_mms *mms, t_tk **head);
+t_val_exp	expand_redirections(t_mms *mms, t_tk **head);
+t_val_exp	expand_one(t_mms *mms, t_tk **tk_ref);
 t_val_exp	exp_dquote(t_exp *exp);
 t_val_exp	exp_append_expansion(t_exp *exp);
 t_val_exp	exp_squote(t_exp *exp);
