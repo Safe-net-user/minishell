@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 16:53:07 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/12 12:43:50 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/08/13 11:06:23 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,19 +58,15 @@ int	execute(t_mms *mms, t_ast *node, t_executor *exec)
 
 static int	execute_builtin(t_mms *mms, t_ast *node)
 {
-	int	saved_in;
-	int	saved_out;
-	int	status;
+	t_saved_fd	saved;
+	int			status;
 
-	saved_in = dup(STDIN_FILENO);
-	saved_out = dup(STDOUT_FILENO);
+	if (!save_std_fd(&saved))
+		return (1);
 	status = redirection(mms, node);
 	if (status == 0)
 		status = exec_builtin(mms, node);
-	dup2(saved_in, STDIN_FILENO);
-	dup2(saved_out, STDOUT_FILENO);
-	close(saved_in);
-	close(saved_out);
+	restore_std_fd(&saved);
 	return (status);
 }
 
@@ -105,6 +101,8 @@ static int	wait_child(pid_t pid)
 
 	if (waitpid(pid, &status, 0) == -1)
 	{
+		if (errno == EINTR)
+			return (wait_child(pid));
 		perror("minishell");
 		return (1);
 	}
@@ -133,8 +131,13 @@ static int	wait_child(pid_t pid)
 int	execute_cmd(t_mms *mms, t_ast *node)
 {
 	t_executor	exec;
+	int			status;
 
-	expand_tokens(mms, &node->tokens);
+	if (expand_tokens(mms, &node->tokens) == EXP_ERROR)
+	{
+		print_error("expansion failed");
+		return (1);
+	}
 	if (!node->tokens)
 		return (execute_redir_only(mms, node));
 	if (builtin(node))
@@ -147,5 +150,9 @@ int	execute_cmd(t_mms *mms, t_ast *node)
 	}
 	if (exec.pid == 0)
 		execute_child(mms, node);
-	return (wait_child(exec.pid));
+	signal(SIGINT, SIG_IGN);
+	signal(SIGQUIT, SIG_IGN);
+	status = wait_child(exec.pid);
+	set_signaux_interactif();
+	return (status);
 }

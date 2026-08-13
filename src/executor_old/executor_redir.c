@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 16:55:06 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/12 12:48:17 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/08/13 12:09:47 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,17 +83,17 @@ int	redirection_in(t_mms *mms, t_tk *redir)
  *         cannot be redirected.
  */
 
-int	redirection_out(t_mms *mms, t_tk *redir)
+int	redirection_out(t_mms *mms, t_tk *op)
 {
-	int	fd_out;
+	int		fd_out;
+	char	*file;
 
 	(void)mms;
-	if (redir->type_tk == TOK_DGREAT)
-		fd_out = open(redir->value,
-				O_WRONLY | O_CREAT | O_APPEND, 0644);
+	file = op->next->value;
+	if (op->type_tk == TOK_DGREAT)
+		fd_out = open(file, O_WRONLY | O_CREAT | O_APPEND, 0644);
 	else
-		fd_out = open(redir->value,
-				O_WRONLY | O_CREAT | O_TRUNC, 0644);
+		fd_out = open(file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (fd_out == -1)
 	{
 		perror("minishell");
@@ -114,6 +114,8 @@ static int	redirection_heredoc(t_mms *mms, t_tk *redir)
 	int	fd_heredoc;
 
 	fd_heredoc = here_doc(mms, redir);
+	if (fd_heredoc == -2)
+		return (130);
 	if (fd_heredoc == -1)
 		return (1);
 	if (dup2(fd_heredoc, STDIN_FILENO) == -1)
@@ -160,7 +162,7 @@ int	redirection(t_mms *mms, t_ast *node)
 		else if (op->type_tk == TOK_LESS)
 			status = redirection_in(mms, op->next);
 		else
-			status = redirection_out(mms, op->next);
+			status = redirection_out(mms, op);
 		if (status != 0)
 			return (status);
 		op = op->next->next;

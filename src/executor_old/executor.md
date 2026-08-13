@@ -161,3 +161,15 @@ Cas spécial :
 ## Comment s'en servir
 
 Coche au fur et à mesure que tu réécris/valides chaque point. Pour chaque nouvelle fonction que tu écris, demande-toi : *"est-ce que je référence une struct/pointeur venant du lexer, du parser, ou d'un `stack_alloc` — et si oui, qui a la responsabilité de le libérer ?"* — c'est cette question précise qui a causé tous les leaks qu'on a corrigés aujourd'hui.
+
+
+
+
+
+
+test 136-140, 144
+test 53, 54
+test 171, 172
+
+~
+Ctrl + C et apres echo $?

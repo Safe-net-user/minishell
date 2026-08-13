@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/11 11:23:14 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/12 12:00:28 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/08/13 11:11:51 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,15 @@ typedef struct s_pipeline
 	pid_t	*pids;
 }	t_pipeline;
 
+typedef struct s_saved_fd
+{
+	int	in;
+	int	out;
+}	t_saved_fd;
+
 int		executor(t_mms *mms, t_ast *head);
+int	save_std_fd(t_saved_fd *saved);
+void	restore_std_fd(t_saved_fd *saved);
 
 int		builtin(t_ast *node);
 int		exec_builtin(t_mms *mms, t_ast *node);

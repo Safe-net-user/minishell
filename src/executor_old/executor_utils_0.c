@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 17:47:54 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/12 12:00:12 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/08/13 10:33:16 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,19 +40,39 @@ char	**tks_to_cmd_tab(t_mms *mms, t_tk *tokens)
 	return (cmd_tab);
 }
 
+int	save_std_fd(t_saved_fd *saved)
+{
+	saved->in = dup(STDIN_FILENO);
+	saved->out = dup(STDOUT_FILENO);
+	if (saved->in == -1 || saved->out == -1)
+	{
+		perror("minishell");
+		if (saved->in != -1)
+			close(saved->in);
+		if (saved->out != -1)
+			close(saved->out);
+		return (0);
+	}
+	return (1);
+}
+
+void	restore_std_fd(t_saved_fd *saved)
+{
+	dup2(saved->in, STDIN_FILENO);
+	dup2(saved->out, STDOUT_FILENO);
+	close(saved->in);
+	close(saved->out);
+}
+
 int	execute_redir_only(t_mms *mms, t_ast *node)
 {
-	int	saved_in;
-	int	saved_out;
-	int	status;
+	t_saved_fd	saved;
+	int			status;
 
-	saved_in = dup(STDIN_FILENO);
-	saved_out = dup(STDOUT_FILENO);
+	if (!save_std_fd(&saved))
+		return (1);
 	status = redirection(mms, node);
-	dup2(saved_in, STDIN_FILENO);
-	dup2(saved_out, STDOUT_FILENO);
-	close(saved_in);
-	close(saved_out);
+	restore_std_fd(&saved);
 	return (status);
 }
 
