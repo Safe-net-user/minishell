@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 14:55:04 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/11 10:11:14 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/08/13 12:35:11 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ char	*token_to_string(t_type_tk type)
 	return ("token");
 }
 
-t_ast	*parse_pipe(t_mms *mms, t_tk *token)
+t_ast	*parse_pipe(t_mms *mms, t_tk **token)
 {
 	t_ast	*left;
 	t_ast	*node;
@@ -42,15 +42,15 @@ t_ast	*parse_pipe(t_mms *mms, t_tk *token)
 	left = parse_command(mms, token);
 	if (!left)
 		return (NULL);
-	while (token->type_tk == TOK_PIPE)
+	while (*token && (*token)->type_tk == TOK_PIPE)
 	{
 		node = stack_alloc(mms->sa, sizeof(t_ast));
 		if (!node)
 			return (NULL);
 		node->type = NODE_PIPE;
 		node->left = left;
-		token = token->next;
-		if (!token)
+		*token = (*token)->next;
+		if (!*token)
 			return (NULL);
 		node->right = parse_command(mms, token);
 		if (!node->right)
@@ -60,7 +60,7 @@ t_ast	*parse_pipe(t_mms *mms, t_tk *token)
 	return (left);
 }
 
-t_ast	*parse_or_and(t_mms *mms, t_tk *token)
+t_ast	*parse_or_and(t_mms *mms, t_tk **token)
 {
 	t_ast	*left;
 	t_ast	*node;
@@ -68,18 +68,18 @@ t_ast	*parse_or_and(t_mms *mms, t_tk *token)
 	left = parse_pipe(mms, token);
 	if (!left)
 		return (NULL);
-	while (token && (token->type_tk == TOK_AND_IF
-			|| token->type_tk == TOK_OR_IF))
+	while (*token && ((*token)->type_tk == TOK_AND_IF
+			|| (*token)->type_tk == TOK_OR_IF))
 	{
 		node = stack_alloc(mms->sa, sizeof(t_ast));
 		if (!node)
 			return (NULL);
-		if ((token)->type_tk == TOK_AND_IF)
+		if ((*token)->type_tk == TOK_AND_IF)
 			node->type = NODE_AND;
 		else
 			node->type = NODE_OR;
 		node->left = left;
-		token = token->next;
+		*token = (*token)->next;
 		node->right = parse_pipe(mms, token);
 		if (!node->right)
 			return (NULL);

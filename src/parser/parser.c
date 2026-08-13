@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 14:51:09 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/12 13:13:26 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/08/13 12:33:42 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,5 +93,5 @@ t_ast	*parser(t_mms *mms)
 	t_tk	*first;
 
 	first = link_tokens((t_tk *)(mms->sa->buffer + sizeof(t_header)));
-	return (parse_or_and(mms, first));
+	return (parse_or_and(mms, &first));
 }

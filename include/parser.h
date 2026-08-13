@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/16 10:27:34 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/11 13:04:48 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/08/13 12:33:30 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,10 +49,10 @@ void		init_cmd_node(t_ast *node);
 char		*token_to_string(t_type_tk type);
 void		parser_error(t_mms *mms, t_tk *tok);
 
-bool		parse_redirection(t_mms *mms, t_tk *token, t_ast *node);
-t_ast		*parse_command(t_mms *mms, t_tk *token);
-t_ast		*parse_pipe(t_mms *mms, t_tk *token);
-t_ast		*parse_or_and(t_mms *mms, t_tk *token);
+bool		parse_redirection(t_mms *mms, t_tk **token, t_ast *node);
+t_ast		*parse_command(t_mms *mms, t_tk **token);
+t_ast		*parse_pipe(t_mms *mms, t_tk **token);
+t_ast		*parse_or_and(t_mms *mms, t_tk **token);
 
 t_ast		*parser(t_mms *mms);
 

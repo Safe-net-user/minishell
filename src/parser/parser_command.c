@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 14:51:42 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/12 12:50:33 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/08/13 12:34:41 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,31 +42,33 @@ int	count_tokens(t_tk *token)
 	return (count);
 }
 //peut etre ajouter prev pour expander donc ici on consomme 2 tokens pour verifier que on a bien un file apres un operator
-bool	parse_redirection(t_mms *mms, t_tk *token, t_ast *node)
+bool	parse_redirection(t_mms *mms, t_tk **token, t_ast *node)
 {
 	t_tk	*new_op;
 	t_tk	*new_file;
 	t_tk	*cur;
+	t_tk	*cursor;
 
+	cursor = *token;
 	new_op = stack_alloc(mms->sa, sizeof(t_tk));
 	if (!new_op)
 		return (false);
-	new_op->type_tk = token->type_tk;
-	new_op->flags = token->flags;
-	new_op->value = token->value;
+	new_op->type_tk = cursor->type_tk;
+	new_op->flags = cursor->flags;
+	new_op->value = cursor->value;
 	new_op->next = NULL;
 	new_op->prev = NULL;
-	token = token->next;
-	if (!token)
-		return (parser_error(mms, token), false);
-	if (token->type_tk != TOK_WORD && token->type_tk != TOK_DELIMITER)
-		return (parser_error(mms, token), false);
+	cursor = cursor->next;
+	if (!cursor)
+		return (parser_error(mms, cursor), false);
+	if (cursor->type_tk != TOK_WORD && cursor->type_tk != TOK_DELIMITER)
+		return (parser_error(mms, cursor), false);
 	new_file = stack_alloc(mms->sa, sizeof(t_tk));
 	if (!new_file)
 		return (false);
-	new_file->type_tk = token->type_tk;
-	new_file->flags = token->flags;
-	new_file->value = token->value;
+	new_file->type_tk = cursor->type_tk;
+	new_file->flags = cursor->flags;
+	new_file->value = cursor->value;
 	new_file->next = NULL;
 	new_file->prev = new_op;
 	new_op->next = new_file;
@@ -80,19 +82,21 @@ bool	parse_redirection(t_mms *mms, t_tk *token, t_ast *node)
 		cur->next = new_op;
 		new_op->prev = cur;
 	}
+	*token = cursor->next;
 	return (true);
 }
-static t_tk	*add_word(t_mms *mms, t_ast *node, t_tk *token)
+
+static bool	add_word(t_mms *mms, t_ast *node, t_tk **token)
 {
 	t_tk	*new_tk;
 	t_tk	*cur;
 
 	new_tk = stack_alloc(mms->sa, sizeof(t_tk));
 	if (!new_tk)
-		return (NULL);
-	new_tk->type_tk = token->type_tk;
-	new_tk->flags = token->flags;
-	new_tk->value = token->value;
+		return (false);
+	new_tk->type_tk = (*token)->type_tk;
+	new_tk->flags = (*token)->flags;
+	new_tk->value = (*token)->value;
 	new_tk->next = NULL;
 	new_tk->prev = NULL;
 	if (!node->tokens)
@@ -105,30 +109,30 @@ static t_tk	*add_word(t_mms *mms, t_ast *node, t_tk *token)
 		cur->next = new_tk;
 		new_tk->prev = cur;
 	}
-	return (token->next);
+	*token = (*token)->next;
+	return (true);
 }
 
-t_ast	*parse_command(t_mms *mms, t_tk *token)
+t_ast	*parse_command(t_mms *mms, t_tk **token)
 {
 	t_ast	*node;
 
-	if (!is_command_token(token->type_tk))
-		return (parser_error(mms, token), NULL);
+	if (!is_command_token((*token)->type_tk))
+		return (parser_error(mms, *token), NULL);
 	node = stack_alloc(mms->sa, sizeof(t_ast));
 	if (!node)
 		return (NULL);
 	init_cmd_node(node);
-	while (token && is_command_token(token->type_tk))
+	while (*token && is_command_token((*token)->type_tk))
 	{
-		if (token->type_tk == TOK_WORD)
-			token = add_word(mms, node, token);
-		else
+		if ((*token)->type_tk == TOK_WORD)
 		{
-			if (!parse_redirection(mms, token, node))
+			if (!add_word(mms, node, token))
 				return (NULL);
-			token = token->next->next;
 		}
-		if (!token)
+		else if (!parse_redirection(mms, token, node))
+			return (NULL);
+		if (!*token)
 			break ;
 	}
 	return (node);
