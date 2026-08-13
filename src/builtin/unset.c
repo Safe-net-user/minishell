@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   unset.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gaspard <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/24 23:38:42 by gaspard           #+#    #+#             */
-/*   Updated: 2026/07/24 23:42:33 by gaspard          ###   ########.fr       */
+/*   Updated: 2026/08/13 11:04:46 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,8 +50,9 @@ t_builts_val	builtin_unset(t_mms *mms, char **argv)
 		{
 			if (entry->flags & READONLY)
 			{
-				fprintf(stderr, "miniMishell: unset: %s: \
-readonly variable\n", entry->value);
+				ft_putstr_fd("miniMishell: unset: ", STDERR_FILENO);
+				ft_putstr_fd(entry->value, STDERR_FILENO);
+				ft_putstr_fd(": readonly variable\n", STDERR_FILENO);
 				return (1);
 			}
 			if (!ft_strcmp(entry->key, "PATH") && !reset_cmd_path(mms))

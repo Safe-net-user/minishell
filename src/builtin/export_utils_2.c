@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export_utils_2.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gaspard <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/24 23:49:07 by gaspard           #+#    #+#             */
-/*   Updated: 2026/07/24 23:50:41 by gaspard          ###   ########.fr       */
+/*   Updated: 2026/08/13 11:08:26 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,21 @@
 #include <unistd.h>
 #include "ft_io.h"
 
+static void	print_one_export(t_env_entry *curr)
+{
+	ft_putstr_fd("export ", STDOUT_FILENO);
+	ft_putstr_fd(curr->key, STDOUT_FILENO);
+	if (curr->value)
+	{
+		ft_putstr_fd("=\"", STDOUT_FILENO);
+		ft_putstr_fd(curr->value, STDOUT_FILENO);
+		ft_putstr_fd("\"\n", STDOUT_FILENO);
+	}
+	else
+		ft_putstr_fd("\n", STDOUT_FILENO);
+}
+
+
 int	print_exported_var(t_env *env)
 {
 	t_env_entry	*arr;
@@ -24,22 +39,23 @@ int	print_exported_var(t_env *env)
 
 	arr = malloc(sizeof(*arr) * (env->entries + 1));
 	if (!arr)
-		return (ft_putstr_fd("miniMishell: export: \
-internal error\n", STDERR_FILENO), 1);
+	{
+		ft_putstr_fd("miniMishell: export: internal error\n",
+			STDERR_FILENO);
+		return (1);
+	}
 	ht_to_arr(env, arr);
 	if (!sort_arr(arr))
 	{
 		free(arr);
-		ft_putstr_fd("miniMishell: export: internal error\n", STDERR_FILENO);
+		ft_putstr_fd("miniMishell: export: internal error\n",
+			STDERR_FILENO);
 		return (1);
 	}
 	curr = arr;
 	while (curr->key)
 	{
-		if (curr->value)
-			printf("export %s=\"%s\"\n", curr->key, curr->value);
-		else
-			printf("export %s\n", curr->key);
+		print_one_export(curr);
 		curr++;
 	}
 	free(arr);

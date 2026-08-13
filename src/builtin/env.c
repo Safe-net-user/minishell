@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gaspard <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/24 23:35:18 by gaspard           #+#    #+#             */
-/*   Updated: 2026/07/24 23:36:15 by gaspard          ###   ########.fr       */
+/*   Updated: 2026/08/13 11:08:57 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,10 @@ static int	print_exported_var_env(t_env *env)
 			&& (entry->flags & EXPORTED)
 			&& entry->value != NULL)
 		{
-			printf("%s=%s\n", entry->key, entry->value);
+			ft_putstr_fd(entry->key, STDOUT_FILENO);
+			ft_putstr_fd("=", STDOUT_FILENO);
+			ft_putstr_fd(entry->value, STDOUT_FILENO);
+			ft_putstr_fd("\n", STDOUT_FILENO);
 		}
 		entry++;
 	}
