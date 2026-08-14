@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/09 10:30:51 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/12 13:29:46 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/08/14 21:40:17 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ static	t_mms	*init_og_struct(void)
 	mms->name = ft_strdup("miniMishell");
 	mms->last_status = 0;
 	mms->umask = 0022;
+	mms->should_exit = 0;
 	if (!mms->env || !mms->alias || !mms->cmd_path || !mms->sa || !mms->name)
 	{
 		free_og_struct(mms);
@@ -91,7 +92,10 @@ static int	handle_input(char *result, t_mms *mms)
 		mms->current_ast = head;
 		mms->last_status = executor(mms, head);
 		free_ast_values(head);
+		mms->current_ast = NULL;
 	}
+	if (mms->should_exit)
+		return (0);
 	return (1);
 }
 
@@ -108,6 +112,7 @@ static int	process_input(t_mms *mms)
 int	main(int ac, char **av, char **envp)
 {
 	t_mms	*mms;
+	int		exit_status;
 
 	(void)ac;
 	(void)av;
@@ -126,6 +131,10 @@ int	main(int ac, char **av, char **envp)
 		if (!process_input(mms))
 			break ;
 	}
+	exit_status = mms->should_exit ? mms->exit_status : mms->last_status; //ternaire interdit
+	close(mms->tty_fd);
 	free_og_struct(mms);
-	return (0);
+	close(STDIN_FILENO);
+	close(STDOUT_FILENO);
+	return (exit_status);
 }
