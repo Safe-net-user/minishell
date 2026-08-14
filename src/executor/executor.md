@@ -172,4 +172,14 @@ test 53, 54
 test 171, 172
 
 ~
-Ctrl + C et apres echo $?
+
+
+exit rerheu doit pas exit et doit return 2
+apres ctrlC echo $? doit afficher 130
+'' '' '' et ''"" doit afficher minishell: : command not found
+ctrlC dans heredoc : pb affichage
+<< limiter | cmd doit d'abord ouvrir un heredoc et ensuite executer cmd quand le limiter ferme le heredoc
+  (alors que ton minishell fait l'inverse + le heredoc deconne)
+
+
+valgrind --track-fds=yes --leak-check=full --show-leak-kinds=all --suppressions=readline.supp ./minishell
