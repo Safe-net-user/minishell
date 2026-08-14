@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/24 23:36:26 by gaspard           #+#    #+#             */
-/*   Updated: 2026/07/25 03:37:08 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/08/14 21:42:10 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,14 +19,6 @@
 #include <stdlib.h>
 #include "ft_io.h"
 #include <unistd.h>
-
-static void	exit_shell(t_mms *mms, int status)
-{
-	ft_putstr_fd("exit\n", STDOUT_FILENO);
-	free_ast_values(mms->current_ast);
-	free_og_struct(mms);
-	exit(status);
-}
 
 static int	is_valid_arg(char *str)
 {
@@ -47,6 +39,13 @@ static int	is_valid_arg(char *str)
 	return (1);
 }
 
+static void	request_exit(t_mms *mms, int status)
+{
+	ft_putstr_fd("exit\n", STDOUT_FILENO);
+	mms->should_exit = 1;
+	mms->exit_status = status;
+}
+
 t_builts_val	builtin_exit(t_mms *mms, char **args)
 {
 	if (!mms || !args)
@@ -61,9 +60,10 @@ t_builts_val	builtin_exit(t_mms *mms, char **args)
 		return (BUI_TOO_MANY_ARGS);
 	}
 	if (!args[1])
-		exit_shell(mms, mms->last_status);
-	if (!is_valid_arg(args[1]))
-		exit_shell(mms, 255);
-	exit_shell(mms, ft_atoi(args[1]) % 256);
+		request_exit(mms, mms->last_status);
+	else if (!is_valid_arg(args[1]))
+		request_exit(mms, 255); //2 pas 255 enfin je crois
+	else
+		request_exit(mms, ft_atoi(args[1]) % 256);
 	return (BUI_SUCCESS);
 }
