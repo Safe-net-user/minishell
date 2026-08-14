@@ -6,7 +6,7 @@
 #    By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/05/18 23:16:53 by gd-hallu          #+#    #+#              #
-#    Updated: 2026/08/12 14:12:10 by fiaudfiz         ###   ########.fr        #
+#    Updated: 2026/08/13 19:49:05 by fiaudfiz         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -39,7 +39,7 @@ REPL			:= repl
 UTILS			:= utils
 ENV				:= env
 EXPANDER		:= expander
-EXECUTOR		:= executor_old
+EXECUTOR		:= executor
 
 # ---------------------- LIB --------------------- #
 LIBFT			:= libft.a
