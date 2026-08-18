@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expander.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/24 16:00:53 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/12 12:48:34 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/08/18 22:41:45 by gd-hallu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,5 +56,12 @@ t_exp		*init_expander(t_mms *mms);
 void		reset_expander(t_exp *exp, char *str);
 void		init_lut(t_exp_variant_fn *lut);
 t_exp		*init_expander(t_mms *mms);
+t_val_exp	expand_word_failed(t_exp *exp);
+void 	empty_token(t_tk *tk, t_tk **tk_ref);
+t_val_exp	new_value_failed(t_exp *exp);
+void	unlink_token(t_tk **tk_ref);
+t_val_exp	end_expand_one(t_exp *exp);
+void		free_fill(t_tk *tk, char *str);
+
 
 #endif
