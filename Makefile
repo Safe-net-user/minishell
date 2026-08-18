@@ -6,7 +6,7 @@
 #    By: miouali <miouali@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/05/18 23:16:53 by gd-hallu          #+#    #+#              #
-#    Updated: 2026/08/18 13:20:28 by miouali          ###   ########.fr        #
+#    Updated: 2026/08/18 13:27:09 by miouali          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -61,7 +61,7 @@ endif
 
 # --------------------- FLAGS --------------------- #
 ifeq ($(MODE),release)
-	W_FLAGS			:= -Wall -Wextra -Werror	
+	W_FLAGS			:= -Wall -Wextra -Werror -Wno-unused-result
 else
 	ifeq ($(COMPILER), clang)
 		W_FLAGS			:= 	-Wall -Werror -Wextra -Wvla -Wmisleading-indentation -Wshadow -Wnull-dereference -fshort-enums
