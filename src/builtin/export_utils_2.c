@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export_utils_2.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/24 23:49:07 by gaspard           #+#    #+#             */
-/*   Updated: 2026/08/13 11:08:26 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/08/18 13:46:44 by gd-hallu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ int	alone_key_job(t_mms *mms, char *buffer_key)
 
 	entry = get_env(mms->env, buffer_key);
 	if (!entry)
-		return (!add_env(mms->env, buffer_key, NULL, EXPORTED));
+		return (add_env(mms->env, buffer_key, NULL, EXPORTED));
 	entry->flags |= EXPORTED;
 	return (0);
 }

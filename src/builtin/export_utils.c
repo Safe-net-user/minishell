@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gaspard <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/24 23:28:26 by gaspard           #+#    #+#             */
-/*   Updated: 2026/07/24 23:31:29 by gaspard          ###   ########.fr       */
+/*   Updated: 2026/08/18 13:08:18 by gd-hallu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,27 @@
 #include <stddef.h>
 #include "env.h"
 #include "ft_strings.h"
+#include <stdio.h>
 
 int	is_validname(char *str)
 {
+	size_t	i;
+	char	c;
+	
+	i = 1;
 	if (!str)
 		return (0);
-	if (ft_isalpha(str[0]) || str[0] == '_')
+	if (!ft_isalpha(str[0]) && str[0] != '_')
 		return (1);
-	return (0);
+	while (str[i] && str[i] != '=')
+	{
+		c = str[i];
+		if (ft_isalpha(c) || c == '_' || ft_isdigit(c))
+			i++;
+		else
+			return (0);
+	}
+	return (1);
 }
 
 void	ht_to_arr(t_env *env, t_env_entry *arr)
