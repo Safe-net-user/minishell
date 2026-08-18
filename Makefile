@@ -6,7 +6,7 @@
 #    By: miouali <miouali@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/05/18 23:16:53 by gd-hallu          #+#    #+#              #
-#    Updated: 2026/08/18 12:54:32 by miouali          ###   ########.fr        #
+#    Updated: 2026/08/18 12:56:17 by miouali          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -51,9 +51,11 @@ MODE			?= release
 COMPILER_SH		:= $(shell $(CC) --version)
 
 # ------------------- COMPILER -------------------- #
-ifeq ($(findstring clang, $(COMPILER_SH)), clang)
+COMPILER_SH_LOWER := $(shell echo $(COMPILER_SH) | tr A-Z a-z)
+
+ifeq ($(findstring clang, $(COMPILER_SH_LOWER)), clang)
 	COMPILER		:= clang
-else ifeq ($(findstring GCC, $(COMPILER_SH)), GCC)
+else ifeq ($(findstring gcc, $(COMPILER_SH_LOWER)), gcc)
 	COMPILER		:= gcc
 else
 $(error Your device require clang or gcc to run the program)
