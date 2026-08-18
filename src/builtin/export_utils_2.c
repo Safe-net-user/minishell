@@ -6,7 +6,7 @@
 /*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/24 23:49:07 by gaspard           #+#    #+#             */
-/*   Updated: 2026/08/18 13:46:44 by gd-hallu         ###   ########.fr       */
+/*   Updated: 2026/08/18 14:46:47 by gd-hallu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,8 +89,8 @@ too long\n", STDERR_FILENO);
 	dst[*i] = '\0';
 	if (!is_validname(dst))
 	{
-		ft_putstr_fd("miniMishell: export: invalid \
-identifier\n", STDERR_FILENO);
+		ft_putstr_fd("miniMishell: export: not \
+a valid identifier\n", STDERR_FILENO);
 		return (1);
 	}
 	return (0);

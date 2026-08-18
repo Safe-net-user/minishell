@@ -6,7 +6,7 @@
 /*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/24 23:36:26 by gaspard           #+#    #+#             */
-/*   Updated: 2026/08/18 12:36:31 by gd-hallu         ###   ########.fr       */
+/*   Updated: 2026/08/18 14:47:38 by gd-hallu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,10 @@ t_builts_val	builtin_exit(t_mms *mms, char **args)
 	if (!args[1])
 		request_exit(mms, mms->last_status);
 	else if (!is_valid_arg(args[1]))
+	{
+		ft_putstr_fd("miniMishell: exit: numeric argument required\n", STDERR_FILENO);
 		request_exit(mms, 2);
+	}
 	else
 		request_exit(mms, ft_atoi(args[1]) % 256);
 	return (BUI_SUCCESS);

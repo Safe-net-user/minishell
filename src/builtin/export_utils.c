@@ -6,7 +6,7 @@
 /*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/24 23:28:26 by gaspard           #+#    #+#             */
-/*   Updated: 2026/08/18 13:08:18 by gd-hallu         ###   ########.fr       */
+/*   Updated: 2026/08/18 14:42:16 by gd-hallu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ int	is_validname(char *str)
 	if (!str)
 		return (0);
 	if (!ft_isalpha(str[0]) && str[0] != '_')
-		return (1);
+		return (0);
 	while (str[i] && str[i] != '=')
 	{
 		c = str[i];
