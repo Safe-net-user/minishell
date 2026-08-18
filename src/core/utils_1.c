@@ -6,12 +6,20 @@
 /*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/17 11:37:49 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/18 14:07:22 by miouali          ###   ########.fr       */
+/*   Updated: 2026/08/18 14:08:55 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "executor.h"
+
+int	get_exit_status(t_mms *mms)
+{
+	if (mms->should_exit)
+		return (mms->exit_status);
+	return (mms->last_status);
+}
+
 
 void	run_parser_and_exec(t_mms *mms)
 {
