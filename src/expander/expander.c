@@ -6,7 +6,7 @@
 /*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/25 01:27:50 by gaspard           #+#    #+#             */
-/*   Updated: 2026/08/18 17:43:40 by gd-hallu         ###   ########.fr       */
+/*   Updated: 2026/08/18 22:48:09 by gd-hallu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ static t_val_exp	expand_word(t_exp *exp, t_exp_variant_fn *lut)
 ** pointer sur le token suivant (ou NULL). Met a jour prev/next
 ** des voisins pour garder la liste coherente.
 */
-static void	unlink_token(t_tk **tk_ref)
+void	unlink_token(t_tk **tk_ref)
 {
 	t_tk	*tk;
 	t_tk	*next;
