@@ -6,7 +6,7 @@
 #    By: miouali <miouali@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/05/18 23:16:53 by gd-hallu          #+#    #+#              #
-#    Updated: 2026/08/18 13:11:31 by miouali          ###   ########.fr        #
+#    Updated: 2026/08/18 13:20:28 by miouali          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -149,7 +149,7 @@ all: $(NAME)
 -include $(DEPENDENCE)
 
 $(LIBFT):
-	make -C $(LIBFT_D) CC_VERSION="GCC"
+	make -C $(LIBFT_D) CC_VERSION="GCC" W_FLAGS="-Wall -Werror -Wextra -Wno-error=unused-result"
 	
 $(NAME): $(LIBFT) $(OBJECTS)
 	@$(CC) $(W_FLAGS) $(CFLAGS) $(OBJECTS) -L$(LIBFT_D) -lft -lreadline -I$(HDR) -I$(LIBFT_D)/include -o $(NAME)
