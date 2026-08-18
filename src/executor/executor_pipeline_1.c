@@ -3,16 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   executor_pipeline_1.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 17:49:46 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/24 19:52:08 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/08/18 22:19:15 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "executor.h"
 #include <unistd.h>
 #include <sys/wait.h>
+#include <errno.h>
 
 static void	pipeline_child(t_mms *mms, t_pipeline *pipeline, int i)
 {
@@ -84,6 +85,8 @@ static int	wait_pipeline(t_pipeline *pipeline)
 	{
 		if (waitpid(pipeline->pids[i], &status, 0) == -1)
 		{
+			if (errno == EINTR)
+            	continue ;
 			perror("minishell");
 			return (1);
 		}
@@ -97,23 +100,6 @@ static int	wait_pipeline(t_pipeline *pipeline)
 		return (128 + WTERMSIG(last_status));
 	return (1);
 }
-
-/**
- * @brief Creates and executes the processes of a command pipeline.
- *
- * Creates the required pipes and child processes for each command except the
- * last one, connects each command's standard input to the previous pipe and
- * its standard output to the next pipe, then executes the last command with
- * the remaining input descriptor and the standard output.
- *
- * @param mms      Pointer to the main minishell structure.
- * @param node     AST node representing the root of the pipeline.
- * @param pipeline Pipeline execution context containing the commands, file
- *                 descriptors, and process identifiers.
- *
- * @return 1 if a pipe or fork operation fails, otherwise the exit status of
- *         the last command in the pipeline.
- */
 
 int	execute_pipeline(t_mms *mms, t_ast *node, t_pipeline *pipeline)
 {

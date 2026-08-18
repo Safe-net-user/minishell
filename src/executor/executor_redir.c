@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor_redir.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 16:55:06 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/13 12:09:47 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/08/18 22:52:27 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,19 +34,6 @@ static int	expand_redir_file(t_mms *mms, t_tk *op)
 	return (0);
 }
 
-/**
- * @brief Redirects standard input from a file.
- *
- * Opens the input file specified by the redirection and replaces the current
- * standard input file descriptor with the opened file.
- *
- * @param[in] mms   Pointer to the minishell main structure.
- * @param[in] redir Input redirection containing the file path.
- *
- * @return 0 on success, 1 if the file cannot be opened or standard input
- *         cannot be redirected.
- */
-
 int	redirection_in(t_mms *mms, t_tk *redir)
 {
 	int	fd_in;
@@ -67,21 +54,6 @@ int	redirection_in(t_mms *mms, t_tk *redir)
 	close(fd_in);
 	return (0);
 }
-
-/**
- * @brief Redirects standard output to a file.
- *
- * Opens the output file in append mode for the `>>` operator or truncation mode
- * for the `>` operator, then replaces the current standard output file
- * descriptor with the opened file.
- *
- * @param[in] mms   Pointer to the minishell main structure.
- * @param[in] redir Output redirection containing 
- * the file path and redirection type.
- *
- * @return 0 on success, 1 if the file cannot be opened or standard output
- *         cannot be redirected.
- */
 
 int	redirection_out(t_mms *mms, t_tk *op)
 {
