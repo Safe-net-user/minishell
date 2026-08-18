@@ -6,7 +6,7 @@
 /*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/24 17:19:57 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/18 11:27:45 by miouali          ###   ########.fr       */
+/*   Updated: 2026/08/18 14:11:48 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,14 +54,3 @@ void	run_loop(t_mms *mms)
 	}
 }
 
-int	cleanup_and_exit(t_mms *mms)
-{
-	int	exit_status;
-
-	exit_status = get_exit_status(mms);
-	close(mms->tty_fd);
-	free_og_struct(mms);
-	close(STDIN_FILENO);
-	close(STDOUT_FILENO);
-	return (exit_status);
-}
