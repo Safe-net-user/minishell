@@ -6,7 +6,7 @@
 /*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/09 10:30:51 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/18 14:03:27 by miouali          ###   ########.fr       */
+/*   Updated: 2026/08/18 14:10:06 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ static int	handle_input(char *result, t_mms *mms)
 	return (1);
 }
 
-static int	process_input(t_mms *mms)
+int	process_input(t_mms *mms)
 {
 	char	*result;
 
