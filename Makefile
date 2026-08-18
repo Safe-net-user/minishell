@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+         #
+#    By: miouali <miouali@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/05/18 23:16:53 by gd-hallu          #+#    #+#              #
-#    Updated: 2026/08/13 19:49:05 by fiaudfiz         ###   ########.fr        #
+#    Updated: 2026/08/18 13:27:09 by miouali          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -51,26 +51,24 @@ MODE			?= release
 COMPILER_SH		:= $(shell $(CC) --version)
 
 # ------------------- COMPILER -------------------- #
-ifeq ($(findstring clang, $(COMPILER_SH)), clang)
+COMPILER_SH_LOWER := $(shell echo "$(COMPILER_SH)" | tr A-Z a-z)
+
+ifeq ($(findstring clang, $(COMPILER_SH_LOWER)), clang)
 	COMPILER		:= clang
-else ifeq ($(findstring GCC, $(COMPILER_SH)), GCC)
-	COMPILER		:= gcc
 else
-	@echo "Your device require clang or gcc to run the program"
-	@exit 1
+	COMPILER		:= gcc
 endif
 
 # --------------------- FLAGS --------------------- #
 ifeq ($(MODE),release)
-	W_FLAGS			:= -Wall -Wextra -Werror	
+	W_FLAGS			:= -Wall -Wextra -Werror -Wno-unused-result
 else
 	ifeq ($(COMPILER), clang)
 		W_FLAGS			:= 	-Wall -Werror -Wextra -Wvla -Wmisleading-indentation -Wshadow -Wnull-dereference -fshort-enums
 	else ifeq ($(COMPILER), gcc)
 		W_FLAGS			:= 	-Wall -Werror -Wextra -Wvla -Wmisleading-indentation -Wstrict-aliasing=3 -Wduplicated-cond -Wstringop-overflow -Wshadow -Wnull-dereference -Warray-bounds -Wrestrict
 	else
-		@echo "Your device require clang or gcc to run the program"
-		@exit 1
+$(error Your device require clang or gcc to run the program)
 	endif
 endif
 
@@ -151,7 +149,7 @@ all: $(NAME)
 -include $(DEPENDENCE)
 
 $(LIBFT):
-	make -C $(LIBFT_D)
+	make -C $(LIBFT_D) CC_VERSION="GCC" W_FLAGS="-Wall -Werror -Wextra -Wno-error=unused-result"
 	
 $(NAME): $(LIBFT) $(OBJECTS)
 	@$(CC) $(W_FLAGS) $(CFLAGS) $(OBJECTS) -L$(LIBFT_D) -lft -lreadline -I$(HDR) -I$(LIBFT_D)/include -o $(NAME)

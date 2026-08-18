@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_0.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/24 17:19:57 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/17 11:38:16 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/08/18 11:27:45 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,10 +20,10 @@ char	*read_line(void)
 {
 	char	*line;
 
-	if (isatty(STDIN_FILENO))
+	//if (isatty(STDIN_FILENO))
 		line = readline("miniMishell$: ");
-	else
-		line = readline("");
+	//else
+		//line = readline("");
 	return (line);
 }
 

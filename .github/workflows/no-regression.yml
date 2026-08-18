@@ -1,0 +1,87 @@
+name: minishell-no-regression
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout with full history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: recursive
+
+      - name: Install build deps
+        timeout-minutes: 3
+        run: sudo apt-get update && sudo apt-get install -y build-essential libreadline-dev
+
+      # --- Run tester on the CURRENT commit ---
+      - name: Build current code
+        run: make
+
+      - name: Clone tester into current workspace
+        run: git clone https://github.com/LucasKuhn/minishell_tester.git minishell_tester
+
+      - name: Run tester on current code
+        run: |
+          cd minishell_tester
+          chmod +x tester
+          ./tester 2>&1 | tee /tmp/current_output.log || true
+
+      - name: Extract current score
+        id: current
+        run: |
+          score=$(grep -oE '[0-9]+/[0-9]+' /tmp/current_output.log | tail -1)
+          passed=$(echo "$score" | cut -d/ -f1)
+          total=$(echo "$score" | cut -d/ -f2)
+          echo "passed=$passed" >> "$GITHUB_OUTPUT"
+          echo "total=$total" >> "$GITHUB_OUTPUT"
+          echo "Résultat sur ce commit : $passed/$total"
+
+      # --- Run tester on the BASE branch (main), for comparison ---
+      - name: Checkout base branch into a separate worktree
+        run: |
+          git fetch origin main
+          git worktree add /tmp/base_code origin/main
+          cd /tmp/base_code
+          git config --global url."https://github.com/".insteadOf "git@github.com:"
+          git submodule update --init --recursive
+
+      - name: Build base code
+        run: |
+          cd /tmp/base_code
+          make
+
+      - name: Clone tester into base worktree
+        run: git clone https://github.com/LucasKuhn/minishell_tester.git /tmp/base_code/minishell_tester
+
+      - name: Run tester on base code
+        run: |
+          cd /tmp/base_code/minishell_tester
+          chmod +x tester
+          ./tester 2>&1 | tee /tmp/base_output.log || true
+
+      - name: Extract base score
+        id: base
+        run: |
+          score=$(grep -oE '[0-9]+/[0-9]+' /tmp/base_output.log | tail -1)
+          passed=$(echo "$score" | cut -d/ -f1)
+          echo "passed=$passed" >> "$GITHUB_OUTPUT"
+          echo "Résultat sur main : $score"
+
+      # --- Compare ---
+      - name: Compare and fail on regression
+        run: |
+          current=${{ steps.current.outputs.passed }}
+          base=${{ steps.base.outputs.passed }}
+          echo "main: $base tests réussis | ce commit: $current tests réussis"
+          if [ "$current" -lt "$base" ]; then
+            echo "❌ Régression détectée : $((base - current)) test(s) en moins qu'avant"
+            exit 1
+          fi
+          echo "✅ Pas de régression ($current >= $base)"
