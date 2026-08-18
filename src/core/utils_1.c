@@ -3,24 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   utils_1.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/17 11:37:49 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/18 14:02:06 by miouali          ###   ########.fr       */
+/*   Updated: 2026/08/18 14:07:22 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "executor.h"
 
-int	get_exit_status(t_mms *mms)
-{
-	if (mms->should_exit)
-		return (mms->exit_status);
-	return (mms->last_status);
-}
-
-int	run_pipeline(t_mms *mms)
+void	run_parser_and_exec(t_mms *mms)
 {
 	t_ast	*head;
 
@@ -32,7 +25,4 @@ int	run_pipeline(t_mms *mms)
 		free_ast_values(head);
 		mms->current_ast = NULL;
 	}
-	if (mms->should_exit)
-		return (0);
-	return (1);
 }

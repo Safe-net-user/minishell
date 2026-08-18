@@ -6,7 +6,7 @@
 /*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/09 15:49:14 by gd-hallu          #+#    #+#             */
-/*   Updated: 2026/08/18 14:01:03 by miouali          ###   ########.fr       */
+/*   Updated: 2026/08/18 14:05:35 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,7 @@ int		cleanup_and_exit(t_mms *mms);
 void	stack_reset(t_stack_alloc *sa);
 bool	is_blank(const char *s);
 char	*read_line(void);
+void	run_parser_and_exec(t_mms *mms);
 
 extern int	g_signal;
 

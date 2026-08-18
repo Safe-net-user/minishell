@@ -6,7 +6,7 @@
 #    By: miouali <miouali@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/05/18 23:16:53 by gd-hallu          #+#    #+#              #
-#    Updated: 2026/08/18 13:27:09 by miouali          ###   ########.fr        #
+#    Updated: 2026/08/18 14:04:59 by miouali          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -87,7 +87,8 @@ endif
 SOURCES 			:= \
 $(SRC)/$(CORE)/main.c \
 $(SRC)/$(CORE)/free.c \
-$(SRC)/$(CORE)/utils.c \
+$(SRC)/$(CORE)/utils_0.c \
+$(SRC)/$(CORE)/utils_1.c \
 $(SRC)/$(CORE)/signaux.c \
 $(SRC)/$(ENV)/ht_env.c \
 $(SRC)/$(ENV)/converter.c \
