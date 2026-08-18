@@ -49,6 +49,7 @@ jobs:
           git fetch origin main
           git worktree add /tmp/base_code origin/main
           cd /tmp/base_code
+          git config --global url."https://github.com/".insteadOf "git@github.com:"
           git submodule update --init --recursive
 
       - name: Build base code
