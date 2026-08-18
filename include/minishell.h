@@ -6,7 +6,7 @@
 /*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/09 15:49:14 by gd-hallu          #+#    #+#             */
-/*   Updated: 2026/08/18 14:10:17 by miouali          ###   ########.fr       */
+/*   Updated: 2026/08/18 14:10:58 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,7 @@ bool	is_blank(const char *s);
 char	*read_line(void);
 void	run_parser_and_exec(t_mms *mms);
 int	process_input(t_mms *mms);
+int	get_exit_status(t_mms *mms);
 
 extern int	g_signal;
 
