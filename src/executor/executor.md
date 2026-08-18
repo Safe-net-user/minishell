@@ -171,7 +171,6 @@ test 136-140, 144
 test 53, 54
 test 171, 172
 
-exit rerheu doit pas exit et doit return 2
 apres ctrlC echo $? doit afficher 130
 '' '' '' et ''"" doit afficher minishell: : command not found
 ctrlC dans heredoc : pb affichage
