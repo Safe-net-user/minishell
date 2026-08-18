@@ -6,7 +6,7 @@
 #    By: miouali <miouali@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/05/18 23:16:53 by gd-hallu          #+#    #+#              #
-#    Updated: 2026/08/18 12:56:17 by miouali          ###   ########.fr        #
+#    Updated: 2026/08/18 12:57:24 by miouali          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -51,7 +51,7 @@ MODE			?= release
 COMPILER_SH		:= $(shell $(CC) --version)
 
 # ------------------- COMPILER -------------------- #
-COMPILER_SH_LOWER := $(shell echo $(COMPILER_SH) | tr A-Z a-z)
+COMPILER_SH_LOWER := $(shell echo "$(COMPILER_SH)" | tr A-Z a-z)
 
 ifeq ($(findstring clang, $(COMPILER_SH_LOWER)), clang)
 	COMPILER		:= clang
