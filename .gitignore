@@ -7,3 +7,4 @@
 *.s
 .DS_Store
 minishell_tester/
+.last_score
