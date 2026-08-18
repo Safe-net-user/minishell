@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/09 10:30:51 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/14 21:40:17 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/08/18 14:00:24 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,6 @@
 
 /**
  * A noter que si HOME est change, alors la ht des commandes doit etre videe.
- * Penser a revenir sur cette taille car on risque largement de cache miss.
- * (n x sizeof(type))
- * Penser aux conditions si une allocation rate.
  */
 static	t_mms	*init_og_struct(void)
 {
@@ -43,7 +40,7 @@ static	t_mms	*init_og_struct(void)
 	mms->cmd_path = init_hash_table(INIT_SIZE_HT);
 	mms->sa = init_stack_allocator(INIT_SIZE_SA);
 	if (mms->sa)
-		ft_bzero(mms->sa->buffer, INIT_SIZE_SA); // zero-init sans toucher au submodule
+		ft_bzero(mms->sa->buffer, INIT_SIZE_SA);
 	mms->cwd = getcwd(NULL, 0);
 	mms->name = ft_strdup("miniMishell");
 	mms->last_status = 0;
@@ -112,7 +109,6 @@ static int	process_input(t_mms *mms)
 int	main(int ac, char **av, char **envp)
 {
 	t_mms	*mms;
-	int		exit_status;
 
 	(void)ac;
 	(void)av;
@@ -131,10 +127,5 @@ int	main(int ac, char **av, char **envp)
 		if (!process_input(mms))
 			break ;
 	}
-	exit_status = mms->should_exit ? mms->exit_status : mms->last_status; //ternaire interdit
-	close(mms->tty_fd);
-	free_og_struct(mms);
-	close(STDIN_FILENO);
-	close(STDOUT_FILENO);
-	return (exit_status);
+	return (cleanup_and_exit(mms));
 }

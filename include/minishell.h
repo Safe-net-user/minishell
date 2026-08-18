@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/09 15:49:14 by gd-hallu          #+#    #+#             */
-/*   Updated: 2026/08/14 15:08:57 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/08/18 14:01:03 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,8 @@ void	set_signaux_interactif(void);
 void	free_og_struct(t_mms *mms);
 void	free_stack_allocator(t_stack_alloc *sa);
 void	free_ast_values(t_ast *node);
+int		cleanup_and_exit(t_mms *mms);
+
 void	stack_reset(t_stack_alloc *sa);
 bool	is_blank(const char *s);
 char	*read_line(void);

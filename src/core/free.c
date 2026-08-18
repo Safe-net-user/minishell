@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   free.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/11 14:43:40 by gd-hallu          #+#    #+#             */
-/*   Updated: 2026/08/12 11:57:52 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/08/18 14:01:48 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include <unistd.h>
 
 void	stack_reset(t_stack_alloc *sa)
 {
@@ -65,4 +66,19 @@ void	free_og_struct(t_mms *mms)
 	free(mms->cwd);
 	free(mms->name);
 	free(mms);
+}
+
+int	cleanup_and_exit(t_mms *mms)
+{
+	int	exit_status;
+
+	if (mms->should_exit)
+		exit_status = mms->exit_status;
+	else
+		exit_status = mms->last_status;
+	close(mms->tty_fd);
+	free_og_struct(mms);
+	close(STDIN_FILENO);
+	close(STDOUT_FILENO);
+	return (exit_status);
 }
