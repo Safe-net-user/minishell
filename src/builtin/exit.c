@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/24 23:36:26 by gaspard           #+#    #+#             */
-/*   Updated: 2026/08/14 21:42:10 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/08/18 12:36:31 by gd-hallu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,19 +50,19 @@ t_builts_val	builtin_exit(t_mms *mms, char **args)
 {
 	if (!mms || !args)
 	{
-		ft_putstr_fd("minishell: exit: internal error\n", STDERR_FILENO);
+		ft_putstr_fd("miniMishell: exit: internal error\n", STDERR_FILENO);
 		return (BUI_ERROR);
 	}
 	if (args[1] && args[2])
 	{
-		ft_putstr_fd("minishell: exit: too many arguments\n",
+		ft_putstr_fd("miniMishell: exit: too many arguments\n",
 			STDERR_FILENO);
 		return (BUI_TOO_MANY_ARGS);
 	}
 	if (!args[1])
 		request_exit(mms, mms->last_status);
 	else if (!is_valid_arg(args[1]))
-		request_exit(mms, 255); //2 pas 255 enfin je crois
+		request_exit(mms, 2);
 	else
 		request_exit(mms, ft_atoi(args[1]) % 256);
 	return (BUI_SUCCESS);

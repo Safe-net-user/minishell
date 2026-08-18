@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/28 12:07:56 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/24 23:33:53 by gaspard          ###   ########.fr       */
+/*   Updated: 2026/08/18 13:49:19 by gd-hallu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ t_builts_val	builtin_cd(t_env *env, char **argv)
 		return (BUI_ERROR);
 	if (argv[1] && argv[2])
 		return (ft_putstr_fd("miniMishell: cd: too many arguments\n", \
-STDERR_FILENO), BUI_ERROR);
+STDERR_FILENO), BUI_TOO_MANY_ARGS);
 	old_pwd = getcwd(NULL, 0);
 	if (!old_pwd)
 		return (perror("miniMishell: cd"), BUI_ERROR);
