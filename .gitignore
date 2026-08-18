@@ -6,3 +6,4 @@
 ./asm
 *.s
 .DS_Store
+minishell_tester/
