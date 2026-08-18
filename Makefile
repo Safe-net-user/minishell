@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+         #
+#    By: miouali <miouali@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/05/18 23:16:53 by gd-hallu          #+#    #+#              #
-#    Updated: 2026/08/13 19:49:05 by fiaudfiz         ###   ########.fr        #
+#    Updated: 2026/08/18 12:54:32 by miouali          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -56,8 +56,7 @@ ifeq ($(findstring clang, $(COMPILER_SH)), clang)
 else ifeq ($(findstring GCC, $(COMPILER_SH)), GCC)
 	COMPILER		:= gcc
 else
-	@echo "Your device require clang or gcc to run the program"
-	@exit 1
+$(error Your device require clang or gcc to run the program)
 endif
 
 # --------------------- FLAGS --------------------- #
@@ -69,8 +68,7 @@ else
 	else ifeq ($(COMPILER), gcc)
 		W_FLAGS			:= 	-Wall -Werror -Wextra -Wvla -Wmisleading-indentation -Wstrict-aliasing=3 -Wduplicated-cond -Wstringop-overflow -Wshadow -Wnull-dereference -Warray-bounds -Wrestrict
 	else
-		@echo "Your device require clang or gcc to run the program"
-		@exit 1
+$(error Your device require clang or gcc to run the program)
 	endif
 endif
 
