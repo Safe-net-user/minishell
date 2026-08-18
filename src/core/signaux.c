@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signaux.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/11 21:18:50 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/13 19:05:11 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/08/18 13:22:44 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,8 @@ int	g_signal = 0;
 static void	handle_sigint(int signum)
 {
 	(void)signum;
-	write(STDOUT_FILENO, "\n", 1);
+	if (write(STDOUT_FILENO, "\n", 1) == -1)
+		return;
 	rl_on_new_line();
 	rl_replace_line("", 0);
 	rl_redisplay();
