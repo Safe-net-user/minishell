@@ -3,36 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   expand_redir.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/17 12:03:28 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/17 12:03:31 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/08/18 17:12:00 by gd-hallu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "expander.h"
-
-/*
-** Detache *tk_ref de sa liste chainee et met a jour tk_ref pour
-** pointer sur le token suivant (ou NULL). Met a jour prev/next
-** des voisins pour garder la liste coherente.
-*/
-void	unlink_token(t_tk **tk_ref)
-{
-	t_tk	*tk;
-	t_tk	*next;
-	t_tk	*prev;
-
-	tk = *tk_ref;
-	next = tk->next;
-	prev = tk->prev;
-	if (prev)
-		prev->next = next;
-	if (next)
-		next->prev = prev;
-	*tk_ref = next;
-}
 
 static bool	is_redir_operator(t_type_tk type)
 {

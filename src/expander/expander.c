@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expander.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/25 01:27:50 by gaspard           #+#    #+#             */
-/*   Updated: 2026/08/12 12:49:02 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/08/18 17:43:40 by gd-hallu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,10 +62,6 @@ static bool	is_redir_operator(t_type_tk type)
 		|| type == TOK_CLOBBER);
 }
 
-/*
-** Expand un seul token en place. Si le resultat est vide, le token
-** est retire de la liste (tk_ref pointe alors sur le suivant).
-*/
 t_val_exp	expand_one(t_mms *mms, t_tk **tk_ref)
 {
 	t_exp				*exp;
@@ -90,7 +86,9 @@ t_val_exp	expand_one(t_mms *mms, t_tk **tk_ref)
 	if (!exp->sb->str[0])
 	{
 		free(tk->value);
-		unlink_token(tk_ref);
+		tk->value = '\0';
+		if (!(tk->flags & TOKF_SQUOTE) && (!(tk->flags & TOKF_DQUOTE) && tk->flags & TOKF_EXPANSION))
+			unlink_token(tk_ref);
 	}
 	else
 	{

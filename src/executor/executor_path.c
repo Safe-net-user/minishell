@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor_path.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 16:56:45 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/11 16:49:37 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/08/18 18:21:45 by gd-hallu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,6 +108,8 @@ char	*find_path(t_mms *mms, t_ast *node, t_executor *exec)
 	t_env_entry	*entry;
 
 	(void)exec;
+	if (!node->tokens->value)
+		return (NULL);
 	entry = get_env(mms->env, "PATH");
 	if (!entry)
 		return (NULL);

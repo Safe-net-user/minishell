@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor_command.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 16:53:07 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/14 15:10:22 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/08/18 19:02:00 by gd-hallu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,11 @@ int	execute(t_mms *mms, t_ast *node, t_executor *exec)
 	char		**envp;
 	struct stat	st;
 
+	if (!node->tokens->value)
+	{
+		print_cmd_not_found(node->tokens->value);
+		exit(127);
+	}
 	cmd_tab = tks_to_cmd_tab(mms, node->tokens);
 	if (!cmd_tab)
 	{
@@ -81,6 +86,11 @@ static void	execute_child(t_mms *mms, t_ast *node)
 	status = redirection(mms, node);
 	if (status != 0)
 		exit(status);
+	if (!node->tokens->value)
+	{
+		print_cmd_not_found(node->tokens->value);
+		exit(127);
+	}
 	if (path_relative(node))
 		exec.cmd_path = node->tokens->value;
 	else

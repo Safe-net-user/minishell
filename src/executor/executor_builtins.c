@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor_builtins.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/09 17:20:34 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/11 16:43:25 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/08/18 18:10:03 by gd-hallu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ int	exec_builtin(t_mms *mms, t_ast *node)
 
 int	builtin(t_ast *node)
 {
-	if (!node->tokens)
+	if (!node->tokens || !node->tokens->value)
 		return (0);
 	if (ft_strcmp(node->tokens->value, "echo") == 0
 		|| ft_strcmp(node->tokens->value, "cd") == 0
