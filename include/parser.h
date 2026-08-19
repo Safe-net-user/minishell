@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/16 10:27:34 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/13 12:33:30 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/08/19 01:00:36 by gd-hallu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,10 +35,7 @@ typedef struct s_ast
 	struct s_ast	*left;
 	struct s_ast	*right;
 	t_tk			*redirect;
-	union
-	{
-		t_tk	*tokens; 
-	};
+	t_tk			*tokens;
 }	t_ast;
 
 t_tk		*next_token(t_tk *cur);

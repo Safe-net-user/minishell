@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor_heredoc.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 16:55:56 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/13 11:16:31 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/08/19 02:12:40 by gd-hallu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 #include "ft_io.h"
 #include "expander.h"
 
+/*
 static void	restore_canonical_tty(int fd)
 {
 	struct termios	term;
@@ -30,7 +31,7 @@ static void	restore_canonical_tty(int fd)
 	term.c_lflag |= ICANON | ECHO;
 	tcsetattr(fd, TCSANOW, &term);
 }
-
+*/
 static char	*expand_hd_line(t_mms *mms, char *line)
 {
 	t_tk	tmp;
@@ -42,14 +43,13 @@ static char	*expand_hd_line(t_mms *mms, char *line)
 	tmp.flags = 0;
 	tmp.next = NULL;
 	tmp.prev = NULL;
+	tmp.heredoc_content = NULL;
 	tk_ptr = &tmp;
 	if (expand_one(mms, &tk_ptr) != EXP_SUCCESS)
 		return (NULL);
-	if (!tk_ptr)
+	if (!tk_ptr || !tk_ptr->value)
 		return (ft_strdup(""));
-	result = tk_ptr->value;
-	if (!result)
-		return (ft_strdup(""));
+	result = ft_strdup(tk_ptr->value);
 	return (result);
 }
 
@@ -112,7 +112,7 @@ int	execute_here_doc(t_mms *mms, int *fd_here_doc, char *lim_nl, bool expand)
 	return (0);
 }
 
-static int	init_here_doc(t_tk *redir, int *fd_here_doc, char **lim_nl)
+/*static int	init_here_doc(t_tk *redir, int *fd_here_doc, char **lim_nl)
 {
 	if (pipe(fd_here_doc) == -1)
 	{
@@ -129,8 +129,8 @@ static int	init_here_doc(t_tk *redir, int *fd_here_doc, char **lim_nl)
 	}
 	return (0);
 }
-
-static int	fill_here_doc(t_mms *mms, int *fd_here_doc,
+*/
+/*static int	fill_here_doc(t_mms *mms, int *fd_here_doc,
 		char *lim_nl, bool expand)
 {
 	int	res;
@@ -146,9 +146,9 @@ static int	fill_here_doc(t_mms *mms, int *fd_here_doc,
 			break ;
 	}
 	return (0);
-}
+}*/
 
-static void	here_doc_child(t_mms *mms, int *fd_here_doc,
+/*static void	here_doc_child(t_mms *mms, int *fd_here_doc,
 		char *lim_nl, bool expand)
 {
 	int	status;
@@ -162,7 +162,7 @@ static void	here_doc_child(t_mms *mms, int *fd_here_doc,
 	close(fd_here_doc[1]);
 	exit(status);
 }
-
+*/
 /**
  * @brief Reads and stores here-document input into a pipe.
  *
@@ -186,7 +186,7 @@ static void	here_doc_child(t_mms *mms, int *fd_here_doc,
 	return (false);
 }
 
-static int	check_hd_status(t_mms *mms, int status, int fd_read)
+/*static int	check_hd_status(t_mms *mms, int status, int fd_read)
 {
 	if (WIFEXITED(status) && WEXITSTATUS(status) == 130)
 	{
@@ -202,36 +202,85 @@ static int	check_hd_status(t_mms *mms, int status, int fd_read)
 	}
 	return (0);
 }
-
-int	here_doc(t_mms *mms, t_tk *redir)
+*/
+char	*here_doc(t_mms *mms, t_tk *redir)
 {
-	int		fd_here_doc[2];
+	char	*content;
 	char	*lim_nl;
-	pid_t	pid;
-	int		status;
+	char	*line;
+	char	*tmp;
 	bool	expand;
+	int		interrupted;
 
-	if (init_here_doc(redir, fd_here_doc, &lim_nl) == -1)
-		return (-1);
-	expand = !is_delim_quoted(redir);
-	pid = fork();
-	if (pid == -1)
+	lim_nl = ft_strdup(redir->value);
+	if (!lim_nl)
+		return (NULL);
+
+	content = ft_strdup("");
+	if (!content)
 	{
-		perror("minishell");
 		free(lim_nl);
-		close(fd_here_doc[0]);
-		close(fd_here_doc[1]);
-		return (-1);
+		return (NULL);
 	}
-	if (pid == 0)
-		here_doc_child(mms, fd_here_doc, lim_nl, expand);
-	close(fd_here_doc[1]);
+
+	expand = !is_delim_quoted(redir);
+
+	while (1)
+	{
+		write(STDOUT_FILENO, "> ", 2);
+
+		line = heredoc_gnl(mms->tty_fd, &interrupted);
+
+		if (interrupted)
+		{
+			free(line);
+			free(content);
+			free(lim_nl);
+			mms->last_status = 130;
+			return (NULL);
+		}
+
+		if (!line)
+		{
+			ft_putstr_fd(
+				"minishell: warning: here-document delimited "
+				"by end-of-file\n",
+				STDERR_FILENO);
+			break ;
+		}
+
+		if (line_matches_delim(line, lim_nl))
+		{
+			free(line);
+			break ;
+		}
+
+		if (expand)
+		{
+			tmp = expand_hd_line(mms, line);
+			line = tmp;
+
+			if (!line)
+			{
+				free(content);
+				free(lim_nl);
+				return (NULL);
+			}
+		}
+
+		tmp = hd_strjoin_free(content, line);
+		free(line);
+
+		if (!tmp)
+		{
+			free(lim_nl);
+			return (NULL);
+		}
+
+		content = tmp;
+	}
+
 	free(lim_nl);
-	signal(SIGINT, SIG_IGN);
-	signal(SIGQUIT, SIG_IGN);
-	waitpid(pid, &status, 0);
-	set_signaux_interactif();
-	if (check_hd_status(mms, status, fd_here_doc[0]) == -2)
-		return (-2);
-	return (fd_here_doc[0]);
+	heredoc_gnl_reset();
+	return (content);
 }

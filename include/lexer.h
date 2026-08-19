@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
+/*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/11 16:49:01 by gd-hallu          #+#    #+#             */
-/*   Updated: 2026/08/18 22:52:52 by miouali          ###   ########.fr       */
+/*   Updated: 2026/08/19 01:12:30 by gd-hallu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,7 @@ typedef struct s_tk
 	t_type_tk	type_tk;
 	struct s_tk		*next;
 	struct s_tk		*prev;
+	char	*heredoc_content;
 }	t_tk;
 
 typedef struct s_lx

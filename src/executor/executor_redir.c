@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor_redir.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
+/*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 16:55:06 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/18 22:52:27 by miouali          ###   ########.fr       */
+/*   Updated: 2026/08/19 01:23:59 by gd-hallu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,24 +81,40 @@ int	redirection_out(t_mms *mms, t_tk *op)
 	return (0);
 }
 
-static int	redirection_heredoc(t_mms *mms, t_tk *redir)
+static int	redirection_heredoc(t_tk *op)
 {
-	int	fd_heredoc;
+	int		fd[2];
+	ssize_t	len;
 
-	fd_heredoc = here_doc(mms, redir);
-	if (fd_heredoc == -2)
-		return (130);
-	if (fd_heredoc == -1)
-		return (1);
-	if (dup2(fd_heredoc, STDIN_FILENO) == -1)
+	if (pipe(fd) == -1)
 	{
 		perror("minishell");
-		close(fd_heredoc);
 		return (1);
 	}
-	close(fd_heredoc);
+
+	len = write(fd[1], op->heredoc_content,
+			ft_strlen(op->heredoc_content));
+	if (len == -1)
+	{
+		perror("minishell");
+		close(fd[0]);
+		close(fd[1]);
+		return (1);
+	}
+
+	close(fd[1]);
+
+	if (dup2(fd[0], STDIN_FILENO) == -1)
+	{
+		perror("minishell");
+		close(fd[0]);
+		return (1);
+	}
+
+	close(fd[0]);
 	return (0);
 }
+
 
 /**
  * @brief Applies all redirections associated with an AST node.
@@ -130,7 +146,7 @@ int	redirection(t_mms *mms, t_ast *node)
 				return (1);
 		}
 		if (op->type_tk == TOK_DLESS)
-			status = redirection_heredoc(mms, op->next);
+			status = redirection_heredoc(op);
 		else if (op->type_tk == TOK_LESS)
 			status = redirection_in(mms, op->next);
 		else

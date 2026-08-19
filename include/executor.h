@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
+/*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/11 11:23:14 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/18 22:19:42 by miouali          ###   ########.fr       */
+/*   Updated: 2026/08/19 01:17:33 by gd-hallu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ void	print_error(char *msg);
 void	print_cmd_not_found(char *cmd);
 void	print_exec_error(char *path, char *msg);
 
-int		here_doc(t_mms *mms, t_tk *redir);
+char	*here_doc(t_mms *mms, t_tk *redir);
 
 char	*find_path(t_mms *mms, t_ast *node, t_executor *exec);
 int		path_relative(t_ast *node);
