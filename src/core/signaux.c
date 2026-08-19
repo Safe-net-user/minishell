@@ -23,13 +23,12 @@ static void	handle_sigint(int signum)
 {
 	(void)signum;
 	if (write(STDOUT_FILENO, "\n", 1) == -1)
-		return;
+		return ;
 	rl_on_new_line();
 	rl_replace_line("", 0);
 	rl_redisplay();
 	g_signal = SIGINT;
 }
-
 
 void	set_signaux_interactif(void)
 {
@@ -57,10 +56,8 @@ void	set_signaux_heredoc(void)
 
 	sigemptyset(&sa.sa_mask);
 	sa.sa_flags = 0;
-
 	sa.sa_handler = handle_sigint_heredoc;
 	sigaction(SIGINT, &sa, NULL);
-
 	sa.sa_handler = SIG_IGN;
 	sigaction(SIGQUIT, &sa, NULL);
 }

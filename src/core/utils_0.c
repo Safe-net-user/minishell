@@ -53,4 +53,3 @@ void	run_loop(t_mms *mms)
 			break ;
 	}
 }
-

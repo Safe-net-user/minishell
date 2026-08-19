@@ -20,7 +20,6 @@ int	get_exit_status(t_mms *mms)
 	return (mms->last_status);
 }
 
-
 void	run_parser_and_exec(t_mms *mms)
 {
 	t_ast	*head;
