@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor_pipeline_1.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
+/*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 17:49:46 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/18 22:19:15 by miouali          ###   ########.fr       */
+/*   Updated: 2026/08/19 15:24:45 by gd-hallu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,13 +32,13 @@ static int	create_pipeline_process(t_mms *mms, t_pipeline *pipeline, int i)
 {
 	if (pipe(pipeline->fd) == -1)
 	{
-		perror("minishell");
+		perror("miniMishell");
 		return (1);
 	}
 	pipeline->pids[i] = fork();
 	if (pipeline->pids[i] == -1)
 	{
-		perror("minishell");
+		perror("miniMishell");
 		close(pipeline->fd[0]);
 		close(pipeline->fd[1]);
 		return (1);
@@ -60,7 +60,7 @@ static int	create_last_process(t_mms *mms, t_pipeline *pipeline)
 	pipeline->pids[i] = fork();
 	if (pipeline->pids[i] == -1)
 	{
-		perror("minishell");
+		perror("miniMishell");
 		if (pipeline->fd_prev != -1)
 			close(pipeline->fd_prev);
 		return (1);
@@ -87,7 +87,7 @@ static int	wait_pipeline(t_pipeline *pipeline)
 		{
 			if (errno == EINTR)
             	continue ;
-			perror("minishell");
+			perror("miniMishell");
 			return (1);
 		}
 		if (i == pipeline->nb_cmd - 1)

@@ -6,7 +6,7 @@
 /*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 16:55:06 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/19 01:23:59 by gd-hallu         ###   ########.fr       */
+/*   Updated: 2026/08/19 15:25:17 by gd-hallu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,12 +42,12 @@ int	redirection_in(t_mms *mms, t_tk *redir)
 	fd_in = open(redir->value, O_RDONLY);
 	if (fd_in == -1)
 	{
-		perror("minishell");
+		perror("miniMishell");
 		return (1);
 	}
 	if (dup2(fd_in, STDIN_FILENO) == -1)
 	{
-		perror("minishell");
+		perror("miniMishell");
 		close(fd_in);
 		return (1);
 	}
@@ -68,12 +68,12 @@ int	redirection_out(t_mms *mms, t_tk *op)
 		fd_out = open(file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (fd_out == -1)
 	{
-		perror("minishell");
+		perror("miniMishell");
 		return (1);
 	}
 	if (dup2(fd_out, STDOUT_FILENO) == -1)
 	{
-		perror("minishell");
+		perror("miniMishell");
 		close(fd_out);
 		return (1);
 	}
@@ -88,7 +88,7 @@ static int	redirection_heredoc(t_tk *op)
 
 	if (pipe(fd) == -1)
 	{
-		perror("minishell");
+		perror("miniMishell");
 		return (1);
 	}
 
@@ -96,7 +96,7 @@ static int	redirection_heredoc(t_tk *op)
 			ft_strlen(op->heredoc_content));
 	if (len == -1)
 	{
-		perror("minishell");
+		perror("miniMishell");
 		close(fd[0]);
 		close(fd[1]);
 		return (1);
@@ -106,7 +106,7 @@ static int	redirection_heredoc(t_tk *op)
 
 	if (dup2(fd[0], STDIN_FILENO) == -1)
 	{
-		perror("minishell");
+		perror("miniMishell");
 		close(fd[0]);
 		return (1);
 	}

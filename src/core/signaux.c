@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signaux.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
+/*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/11 21:18:50 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/18 13:22:44 by miouali          ###   ########.fr       */
+/*   Updated: 2026/08/19 16:16:56 by gd-hallu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ static void	handle_sigint(int signum)
 	g_signal = SIGINT;
 }
 
+
 void	set_signaux_interactif(void)
 {
 	struct sigaction	sa;
@@ -39,6 +40,27 @@ void	set_signaux_interactif(void)
 	sa.sa_handler = handle_sigint;
 	sa.sa_flags = 0;
 	sigaction(SIGINT, &sa, NULL);
+	sa.sa_handler = SIG_IGN;
+	sigaction(SIGQUIT, &sa, NULL);
+}
+
+static void	handle_sigint_heredoc(int signum)
+{
+	(void)signum;
+	g_signal = SIGINT;
+	write(STDOUT_FILENO, "\n", 1);
+}
+
+void	set_signaux_heredoc(void)
+{
+	struct sigaction	sa;
+
+	sigemptyset(&sa.sa_mask);
+	sa.sa_flags = 0;
+
+	sa.sa_handler = handle_sigint_heredoc;
+	sigaction(SIGINT, &sa, NULL);
+
 	sa.sa_handler = SIG_IGN;
 	sigaction(SIGQUIT, &sa, NULL);
 }

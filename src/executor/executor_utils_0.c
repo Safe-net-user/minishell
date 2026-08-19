@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor_utils_0.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 17:47:54 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/13 10:33:16 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/08/19 15:25:25 by gd-hallu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ int	save_std_fd(t_saved_fd *saved)
 	saved->out = dup(STDOUT_FILENO);
 	if (saved->in == -1 || saved->out == -1)
 	{
-		perror("minishell");
+		perror("miniMishell");
 		if (saved->in != -1)
 			close(saved->in);
 		if (saved->out != -1)

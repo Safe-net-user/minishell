@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor_command_pipe.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
+/*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 17:45:31 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/18 22:51:29 by miouali          ###   ########.fr       */
+/*   Updated: 2026/08/19 15:23:19 by gd-hallu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,12 +19,12 @@ static int	setup_pipe_fds(int fd_in, int fd_out)
 {
 	if (dup2(fd_in, STDIN_FILENO) == -1)
 	{
-		perror("minishell");
+		perror("miniMishell");
 		return (1);
 	}
 	if (dup2(fd_out, STDOUT_FILENO) == -1)
 	{
-		perror("minishell");
+		perror("miniMishell");
 		return (1);
 	}
 	if (fd_in != STDIN_FILENO)

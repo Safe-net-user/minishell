@@ -6,7 +6,7 @@
 /*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 16:55:56 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/19 02:12:40 by gd-hallu         ###   ########.fr       */
+/*   Updated: 2026/08/19 16:15:55 by gd-hallu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,116 +54,6 @@ static char	*expand_hd_line(t_mms *mms, char *line)
 }
 
 /**
- * @brief Reads a line from standard input and writes it to the
- *        here-document pipe.
- *
- * Prompts the user for input, reads a line from standard input, and compares it
- * with the here-document delimiter.If the delimiter is reached or an end-of-file
- * is encountered, the function stops reading.
- *
- * @param[in]  fd_here_doc File descriptors of the here-document pipe.
- * @param[in]  lim_nl      Delimiter marking the end of the here-document.
- *
- * @return 1 if the delimiter is reached or EOF is encountered,
- *         0 otherwise, -1 if the write to the pipe fails.
- */
-
-int	execute_here_doc(t_mms *mms, int *fd_here_doc, char *lim_nl, bool expand)
-{
-	char	*line;
-	char	*out;
-	int		interrupted;
-
-	write(STDOUT_FILENO, "> ", 2);
-	line = heredoc_gnl(mms->tty_fd, &interrupted);
-	if (interrupted)
-	{
-		free(line);
-		return (-2);
-	}
-	if (!line)
-	{
-		ft_putstr_fd("minishell: warning: here-document delimited "
-			"by end-of-file\n", STDERR_FILENO);
-		return (1);
-	}
-	if (line_matches_delim(line, lim_nl))
-	{
-		free(line);
-		return (1);
-	}
-	if (expand)
-	{
-		out = expand_hd_line(mms, line);
-		if (!out || write(fd_here_doc[1], out, ft_strlen(out)) == -1)
-		{
-			free(out);
-			return (-1);
-		}
-		free(out);
-		return (0);
-	}
-	if (write(fd_here_doc[1], line, ft_strlen(line)) == -1)
-	{
-		free(line);
-		return (-1);
-	}
-	free(line);
-	return (0);
-}
-
-/*static int	init_here_doc(t_tk *redir, int *fd_here_doc, char **lim_nl)
-{
-	if (pipe(fd_here_doc) == -1)
-	{
-		perror("minishell");
-		return (-1);
-	}
-	*lim_nl = ft_strdup(redir->value);
-	if (!*lim_nl)
-	{
-		print_error("memory allocation failed");
-		close(fd_here_doc[0]);
-		close(fd_here_doc[1]);
-		return (-1);
-	}
-	return (0);
-}
-*/
-/*static int	fill_here_doc(t_mms *mms, int *fd_here_doc,
-		char *lim_nl, bool expand)
-{
-	int	res;
-
-	while (1)
-	{
-		res = execute_here_doc(mms, fd_here_doc, lim_nl, expand);
-		if (res == -2)
-			return (130);
-		if (res == -1)
-			return (1);
-		if (res == 1)
-			break ;
-	}
-	return (0);
-}*/
-
-/*static void	here_doc_child(t_mms *mms, int *fd_here_doc,
-		char *lim_nl, bool expand)
-{
-	int	status;
-
-	close(fd_here_doc[0]);
-	signal(SIGINT, SIG_DFL);
-	restore_canonical_tty(mms->tty_fd);
-	status = fill_here_doc(mms, fd_here_doc, lim_nl, expand);
-	heredoc_gnl_reset();
-	free(lim_nl);
-	close(fd_here_doc[1]);
-	exit(status);
-}
-*/
-/**
  * @brief Reads and stores here-document input into a pipe.
  *
  * Creates a pipe and continuously reads lines from standard input
@@ -186,23 +76,6 @@ int	execute_here_doc(t_mms *mms, int *fd_here_doc, char *lim_nl, bool expand)
 	return (false);
 }
 
-/*static int	check_hd_status(t_mms *mms, int status, int fd_read)
-{
-	if (WIFEXITED(status) && WEXITSTATUS(status) == 130)
-	{
-		mms->last_status = 130;
-		close(fd_read);
-		return (-2);
-	}
-	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
-	{
-		mms->last_status = 130;
-		close(fd_read);
-		return (-2);
-	}
-	return (0);
-}
-*/
 char	*here_doc(t_mms *mms, t_tk *redir)
 {
 	char	*content;
@@ -212,14 +85,20 @@ char	*here_doc(t_mms *mms, t_tk *redir)
 	bool	expand;
 	int		interrupted;
 
+	set_signaux_heredoc();
+
 	lim_nl = ft_strdup(redir->value);
 	if (!lim_nl)
+	{
+		set_signaux_interactif();
 		return (NULL);
+	}
 
 	content = ft_strdup("");
 	if (!content)
 	{
 		free(lim_nl);
+		set_signaux_interactif();
 		return (NULL);
 	}
 
@@ -236,16 +115,17 @@ char	*here_doc(t_mms *mms, t_tk *redir)
 			free(line);
 			free(content);
 			free(lim_nl);
+			heredoc_gnl_reset();
 			mms->last_status = 130;
+			set_signaux_interactif();
 			return (NULL);
 		}
 
 		if (!line)
 		{
 			ft_putstr_fd(
-				"minishell: warning: here-document delimited "
-				"by end-of-file\n",
-				STDERR_FILENO);
+				"miniMishell: warning: here-document delimited "
+				"by end-of-file\n", STDERR_FILENO);
 			break ;
 		}
 
@@ -258,29 +138,33 @@ char	*here_doc(t_mms *mms, t_tk *redir)
 		if (expand)
 		{
 			tmp = expand_hd_line(mms, line);
+			free(line);
 			line = tmp;
-
 			if (!line)
 			{
 				free(content);
 				free(lim_nl);
+				heredoc_gnl_reset();
+				set_signaux_interactif();
 				return (NULL);
 			}
 		}
 
 		tmp = hd_strjoin_free(content, line);
 		free(line);
-
 		if (!tmp)
 		{
+			free(content);
 			free(lim_nl);
+			heredoc_gnl_reset();
+			set_signaux_interactif();
 			return (NULL);
 		}
-
 		content = tmp;
 	}
 
 	free(lim_nl);
 	heredoc_gnl_reset();
+	set_signaux_interactif();
 	return (content);
 }

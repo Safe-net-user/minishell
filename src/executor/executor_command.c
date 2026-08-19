@@ -6,7 +6,7 @@
 /*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 16:53:07 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/18 19:02:00 by gd-hallu         ###   ########.fr       */
+/*   Updated: 2026/08/19 15:23:37 by gd-hallu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,7 +113,7 @@ static int	wait_child(pid_t pid)
 	{
 		if (errno == EINTR)
 			return (wait_child(pid));
-		perror("minishell");
+		perror("miniMishell");
 		return (1);
 	}
 	if (WIFEXITED(status))
@@ -155,7 +155,7 @@ int	execute_cmd(t_mms *mms, t_ast *node)
 	exec.pid = fork();
 	if (exec.pid == -1)
 	{
-		perror("minishell");
+		perror("miniMishell");
 		return (1);
 	}
 	if (exec.pid == 0)

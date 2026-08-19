@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
+/*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/09 10:30:51 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/18 14:10:06 by miouali          ###   ########.fr       */
+/*   Updated: 2026/08/19 15:53:25 by gd-hallu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,6 @@
 #include "parser.h"
 #include "executor.h"
 
-/**
- * A noter que si HOME est change, alors la ht des commandes doit etre videe.
- */
 static	t_mms	*init_og_struct(void)
 {
 	t_mms	*mms;
