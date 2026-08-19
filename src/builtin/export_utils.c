@@ -20,7 +20,7 @@ int	is_validname(char *str)
 {
 	size_t	i;
 	char	c;
-	
+
 	i = 1;
 	if (!str)
 		return (0);

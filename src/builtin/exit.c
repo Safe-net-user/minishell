@@ -64,7 +64,8 @@ t_builts_val	builtin_exit(t_mms *mms, char **args)
 	else if (!is_valid_arg(args[1]))
 	{
 		ft_putstr_fd("exit\n", STDOUT_FILENO);
-		ft_putstr_fd("miniMishell: exit: numeric argument required\n", STDERR_FILENO);
+		ft_putstr_fd("miniMishell: exit: numeric argument required\n",
+			STDERR_FILENO);
 		return (2);
 	}
 	else

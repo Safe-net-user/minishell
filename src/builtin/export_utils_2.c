@@ -31,7 +31,6 @@ static void	print_one_export(t_env_entry *curr)
 		ft_putstr_fd("\n", STDOUT_FILENO);
 }
 
-
 int	print_exported_var(t_env *env)
 {
 	t_env_entry	*arr;
