@@ -43,7 +43,6 @@ int	count_tokens(t_tk *token)
 	return (count);
 }
 
-//peut etre ajouter prev pour expander donc ici on consomme 2 tokens pour verifier que on a bien un file apres un operator
 bool	parse_redirection(t_mms *mms, t_tk **token, t_ast *node)
 {
 	t_tk	*new_op;
@@ -53,39 +52,31 @@ bool	parse_redirection(t_mms *mms, t_tk **token, t_ast *node)
 	char	*content;
 
 	cursor = *token;
-
 	new_op = stack_alloc(mms->sa, sizeof(t_tk));
 	if (!new_op)
 		return (false);
-
 	new_op->type_tk = cursor->type_tk;
 	new_op->flags = cursor->flags;
 	new_op->value = cursor->value;
 	new_op->heredoc_content = NULL;
 	new_op->next = NULL;
 	new_op->prev = NULL;
-
 	cursor = cursor->next;
 	if (!cursor)
 		return (parser_error(mms, cursor), false);
-
 	if (cursor->type_tk != TOK_WORD
 		&& cursor->type_tk != TOK_DELIMITER)
 		return (parser_error(mms, cursor), false);
-
 	new_file = stack_alloc(mms->sa, sizeof(t_tk));
 	if (!new_file)
 		return (false);
-
 	new_file->type_tk = cursor->type_tk;
 	new_file->flags = cursor->flags;
 	new_file->value = cursor->value;
 	new_file->heredoc_content = NULL;
 	new_file->next = NULL;
 	new_file->prev = new_op;
-
 	new_op->next = new_file;
-
 	if (new_op->type_tk == TOK_DLESS)
 	{
 		content = here_doc(mms, new_file);
@@ -98,7 +89,6 @@ bool	parse_redirection(t_mms *mms, t_tk **token, t_ast *node)
 		}
 		new_op->heredoc_content = content;
 	}
-
 	if (!node->redirect)
 		node->redirect = new_op;
 	else
@@ -109,7 +99,6 @@ bool	parse_redirection(t_mms *mms, t_tk **token, t_ast *node)
 		cur->next = new_op;
 		new_op->prev = cur;
 	}
-
 	*token = cursor->next;
 	return (true);
 }

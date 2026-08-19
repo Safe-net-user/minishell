@@ -15,11 +15,11 @@
 #include <unistd.h>
 #include "ft_strings.h"
 
-t_tk *link_tokens(t_tk *token)
+t_tk	*link_tokens(t_tk *token)
 {
-	t_tk *temp_next;
-	t_tk *temp_prev;
-	t_tk *head;
+	t_tk	*temp_next;
+	t_tk	*temp_prev;
+	t_tk	*head;
 
 	head = token;
 	temp_prev = NULL;
@@ -35,17 +35,6 @@ t_tk *link_tokens(t_tk *token)
 	token->next = NULL;
 	return (head);
 }
-
-/**
- * @brief Print a parser syntax error.
- *
- * Displays an error message compatible with the shell syntax error format.
- * If the unexpected token is the end of the input stream, "newline" is
- * printed instead.
- *
- * @param mms Main minishell structure.
- * @param tok Unexpected token that caused the syntax error.
- */
 
 void	parser_error(t_mms *mms, t_tk *tok)
 {
