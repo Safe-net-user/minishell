@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_command.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 14:51:42 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/19 01:22:47 by gd-hallu         ###   ########.fr       */
+/*   Updated: 2026/08/19 20:44:16 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,9 @@ bool	parse_redirection(t_mms *mms, t_tk **token, t_ast *node)
 	if (cursor->type_tk != TOK_WORD
 		&& cursor->type_tk != TOK_DELIMITER)
 		return (parser_error(mms, cursor), false);
+
+
+		
 	new_file = stack_alloc(mms->sa, sizeof(t_tk));
 	if (!new_file)
 		return (false);
