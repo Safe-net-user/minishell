@@ -816,3 +816,5 @@ Lors de l’exécution :
 - https://pauillac.inria.fr/~remy/poly/system/camlunix/index.html
 
 A voir la partie env d’un minishell ps1 HOME etc determiner si notre shell est interactif (tty) ui il l’est sinon il execute qu’une cmd
+
+caca
