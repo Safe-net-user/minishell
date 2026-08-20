@@ -55,27 +55,27 @@ struct s_mms
 
 /* Signals */
 
-void    set_signaux_interactif(void);
-void    set_signaux_heredoc(void);
+void	set_signaux_interactif(void);
+void	set_signaux_heredoc(void);
 
 /* Free functions */
 
-void    free_og_struct(t_mms *mms);
-void    free_stack_allocator(t_stack_alloc *sa);
-void    free_ast_values(t_ast *node);
-int     cleanup_and_exit(t_mms *mms);
-void    stack_reset(t_stack_alloc *sa);
+void	free_og_struct(t_mms *mms);
+void	free_stack_allocator(t_stack_alloc *sa);
+void	free_ast_values(t_ast *node);
+int		cleanup_and_exit(t_mms *mms);
+void	stack_reset(t_stack_alloc *sa);
 
 /* Input */
 
-bool    is_blank(const char *s);
-char    *read_line(void);
-int     process_input(t_mms *mms);
+bool	is_blank(const char *s);
+char	*read_line(void);
+int		process_input(t_mms *mms);
 
 /* Parser and executor */
 
-void    run_parser_and_exec(t_mms *mms);
-int     get_exit_status(t_mms *mms);
+void	run_parser_and_exec(t_mms *mms);
+int		get_exit_status(t_mms *mms);
 
 extern int	g_signal;
 

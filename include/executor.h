@@ -42,41 +42,41 @@ typedef struct s_saved_fd
 
 /* Executor */
 
-int     executor(t_mms *mms, t_ast *head);
-int     save_std_fd(t_saved_fd *saved);
-void    restore_std_fd(t_saved_fd *saved);
-int     builtin(t_ast *node);
-int     exec_builtin(t_mms *mms, t_ast *node);
-int     execute_cmd(t_mms *mms, t_ast *node);
-int     exec_command(char *cmd_path, char **cmd_tab, char **envp);
-int     execute(t_mms *mms, t_ast *node, t_executor *exec);
+int		executor(t_mms *mms, t_ast *head);
+int		save_std_fd(t_saved_fd *saved);
+void	restore_std_fd(t_saved_fd *saved);
+int		builtin(t_ast *node);
+int		exec_builtin(t_mms *mms, t_ast *node);
+int		execute_cmd(t_mms *mms, t_ast *node);
+int		exec_command(char *cmd_path, char **cmd_tab, char **envp);
+int		execute(t_mms *mms, t_ast *node, t_executor *exec);
 
 /* Pipeline */
 
-int     execute_cmd_pipe(t_mms *mms, t_ast *cmd, int fd_in, int fd_out);
-int     execute_pipeline(t_mms *mms, t_ast *node, t_pipeline *pipeline);
-int     pipeline(t_mms *mms, t_ast *node);
+int		execute_cmd_pipe(t_mms *mms, t_ast *cmd, int fd_in, int fd_out);
+int		execute_pipeline(t_mms *mms, t_ast *node, t_pipeline *pipeline);
+int		pipeline(t_mms *mms, t_ast *node);
 
 /* Command */
 
-char    **tks_to_cmd_tab(t_mms *mms, t_tk *tokens);
-char    **hash_table_to_envp(t_ht *ht);
+char	**tks_to_cmd_tab(t_mms *mms, t_tk *tokens);
+char	**hash_table_to_envp(t_ht *ht);
 
 /* Errors */
 
-void    print_error(char *msg);
-void    print_cmd_not_found(char *cmd);
-void    print_exec_error(char *path, char *msg);
+void	print_error(char *msg);
+void	print_cmd_not_found(char *cmd);
+void	print_exec_error(char *path, char *msg);
 
 /* Path */
 
-char    *find_path(t_mms *mms, t_ast *node, t_executor *exec);
-int     path_relative(t_ast *node);
-char    *get_cmd_path_child(t_mms *mms, t_ast *node, t_executor *exec);
+char	*find_path(t_mms *mms, t_ast *node, t_executor *exec);
+int		path_relative(t_ast *node);
+char	*get_cmd_path_child(t_mms *mms, t_ast *node, t_executor *exec);
 
 /* Redirection */
 
-int     execute_redir_only(t_mms *mms, t_ast *node);
-int     redirection(t_mms *mms, t_ast *node);
+int		execute_redir_only(t_mms *mms, t_ast *node);
+int		redirection(t_mms *mms, t_ast *node);
 
 #endif

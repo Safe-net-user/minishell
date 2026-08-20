@@ -58,10 +58,11 @@ void		reset_expander(t_exp *exp, char *str);
 void		init_lut(t_exp_variant_fn *lut);
 t_exp		*init_expander(t_mms *mms);
 t_val_exp	expand_word_failed(t_exp *exp);
-void 	empty_token(t_tk *tk, t_tk **tk_ref);
+void		empty_token(t_tk *tk, t_tk **tk_ref);
 t_val_exp	new_value_failed(t_exp *exp);
-void	unlink_token(t_tk **tk_ref);
+void		unlink_token(t_tk **tk_ref);
 t_val_exp	end_expand_one(t_exp *exp);
 void		free_fill(t_tk *tk, char *str);
-void	unlink_token(t_tk **tk_ref);
+void		unlink_token(t_tk **tk_ref);
+
 #endif

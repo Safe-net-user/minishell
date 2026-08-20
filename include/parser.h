@@ -55,31 +55,31 @@ typedef struct s_ast
 
 /* Token */
 
-t_tk        *next_token(t_tk *cur);
-int         count_tokens(t_tk *token);
-bool        is_command_token(t_type_tk type);
-char        *token_to_string(t_type_tk type);
+t_tk		*next_token(t_tk *cur);
+int			count_tokens(t_tk *token);
+bool		is_command_token(t_type_tk type);
+char		*token_to_string(t_type_tk type);
 
 /* AST */
 
-void        init_cmd_node(t_ast *node);
-void        add_redirect(t_ast *node, t_tk *new_op);
+void		init_cmd_node(t_ast *node);
+void		add_redirect(t_ast *node, t_tk *new_op);
 
 /* Parser */
 
-t_ast       *parser(t_mms *mms);
-t_ast       *parse_command(t_mms *mms, t_tk **token);
-t_ast       *parse_pipe(t_mms *mms, t_tk **token);
-t_ast       *parse_or_and(t_mms *mms, t_tk **token);
+t_ast		*parser(t_mms *mms);
+t_ast		*parse_command(t_mms *mms, t_tk **token);
+t_ast		*parse_pipe(t_mms *mms, t_tk **token);
+t_ast		*parse_or_and(t_mms *mms, t_tk **token);
 
 /* Redirection */
 
-bool        parse_redirection(t_mms *mms, t_tk **token, t_ast *node);
-bool        parse_heredoc(t_mms *mms, t_tk *op, t_tk *file);
-t_tk        *new_redir_token(t_mms *mms, t_tk *src);
+bool		parse_redirection(t_mms *mms, t_tk **token, t_ast *node);
+bool		parse_heredoc(t_mms *mms, t_tk *op, t_tk *file);
+t_tk		*new_redir_token(t_mms *mms, t_tk *src);
 
 /* Error */
 
-void        parser_error(t_mms *mms, t_tk *tok);
+void		parser_error(t_mms *mms, t_tk *tok);
 
 #endif
