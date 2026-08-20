@@ -6,10 +6,9 @@
 /*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/18 22:27:21 by gd-hallu          #+#    #+#             */
-/*   Updated: 2026/08/18 22:41:41 by gd-hallu         ###   ########.fr       */
+/*   Updated: 2026/08/20 23:49:22 by gd-hallu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #include "minishell.h"
 #include "expander.h"
@@ -24,11 +23,13 @@ t_val_exp	expand_word_failed(t_exp *exp)
 	free(exp);
 	return (EXP_ERROR);
 }
-void    empty_token(t_tk *tk, t_tk **tk_ref)
+
+void	empty_token(t_tk *tk, t_tk **tk_ref)
 {
 	free(tk->value);
 	tk->value = '\0';
-	if (!(tk->flags & TOKF_SQUOTE) && (!(tk->flags & TOKF_DQUOTE) && tk->flags & TOKF_EXPANSION))
+	if (!(tk->flags & TOKF_SQUOTE) && (!(tk->flags & TOKF_DQUOTE) \
+&& tk->flags & TOKF_EXPANSION))
 		unlink_token(tk_ref);
 }
 

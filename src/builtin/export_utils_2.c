@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export_utils_2.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
+/*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/24 23:49:07 by gaspard           #+#    #+#             */
-/*   Updated: 2026/08/20 23:37:44 by miouali          ###   ########.fr       */
+/*   Updated: 2026/08/20 23:55:56 by gd-hallu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,8 +45,7 @@ int	print_exported_var(t_env *env)
 		print_one_export(curr);
 		curr++;
 	}
-	free(arr);
-	return (0);
+	return (free(arr), 0);
 }
 
 int	alone_key_job(t_mms *mms, char *buffer_key)

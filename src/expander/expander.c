@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expander.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
+/*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/25 01:27:50 by gaspard           #+#    #+#             */
-/*   Updated: 2026/08/20 16:03:03 by miouali          ###   ########.fr       */
+/*   Updated: 2026/08/20 23:58:02 by gd-hallu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,22 +53,6 @@ static t_val_exp	expand_word(t_exp *exp, t_exp_variant_fn *lut)
 	return (EXP_SUCCESS);
 }
 
-void	unlink_token(t_tk **tk_ref)
-{
-	t_tk	*tk;
-	t_tk	*next;
-	t_tk	*prev;
-
-	tk = *tk_ref;
-	next = tk->next;
-	prev = tk->prev;
-	if (prev)
-		prev->next = next;
-	if (next)
-		next->prev = prev;
-	*tk_ref = next;
-}
-
 static bool	is_redir_operator(t_type_tk type)
 {
 	return (type == TOK_LESS || type == TOK_GREAT
@@ -78,51 +62,11 @@ static bool	is_redir_operator(t_type_tk type)
 		|| type == TOK_CLOBBER);
 }
 
-t_val_exp	expand_one(t_mms *mms, t_tk **tk_ref)
-{
-	t_exp				*exp;
-	t_exp_variant_fn	lut[3];
-	t_tk				*tk;
-	char				*new_value;
-
-	tk = *tk_ref;
-	if (!tk->value)
-		return (EXP_SUCCESS);
-	exp = init_expander(mms);
-	if (!exp)
-		return (EXP_ERROR);
-	init_lut(lut);
-	reset_expander(exp, tk->value);
-	if (expand_word(exp, lut) != EXP_SUCCESS)
-	{
-		free_sb(exp->sb);
-		free(exp);
-		return (EXP_ERROR);
-	}
-	if (!exp->sb->str[0])
-	{
-		free(tk->value);
-		tk->value = '\0';
-		if (!(tk->flags & TOKF_SQUOTE) && (!(tk->flags & TOKF_DQUOTE) && tk->flags & TOKF_EXPANSION))
-			unlink_token(tk_ref);
-	}
-	else
-	{
-		new_value = ft_strdup(exp->sb->str);
-		if (!new_value)
-		{
-			free_sb(exp->sb);
-			free(exp);
-			return (EXP_ERROR);
-		}
-		free(tk->value);
-		tk->value = new_value;
-	}
-	free_sb(exp->sb);
-	free(exp);
-	return (EXP_SUCCESS);
-}
-
+/*
+** Parcourt et expand tous les tokens TOK_WORD / TOK_DELIMITER de la
+** liste. head est l'adresse du pointeur de tete (ex: &node->tokens)
+** pour repercuter une eventuelle suppression du premier token.
+*/
 t_val_exp	expand_tokens(t_mms *mms, t_tk **head)
 {
 	t_tk	*cur;
@@ -145,30 +89,45 @@ t_val_exp	expand_tokens(t_mms *mms, t_tk **head)
 	return (EXP_SUCCESS);
 }
 
+static t_val_exp	expand_redirection(t_mms *mms, t_tk **op_ref)
+{
+	t_tk	**file_ref;
+
+	if (!*op_ref || !is_redir_operator((*op_ref)->type_tk)
+		|| !(*op_ref)->next)
+		return (EXP_SUCCESS);
+	if ((*op_ref)->type_tk == TOK_DLESS
+		|| (*op_ref)->type_tk == TOK_DLESSDASH)
+	{
+		*op_ref = (*op_ref)->next->next;
+		return (EXP_SUCCESS);
+	}
+	file_ref = &(*op_ref)->next;
+	if (expand_one(mms, file_ref) != EXP_SUCCESS)
+		return (EXP_ERROR);
+	if (*file_ref)
+		*op_ref = (*file_ref)->next;
+	else
+		*op_ref = NULL;
+	return (EXP_SUCCESS);
+}
+
+/*
+** Parcourt la liste operateur/fichier de node->redirect.
+** Saute l'expansion du delimiteur pour << et <<- (jamais expanse).
+** head est l'adresse du pointeur de tete (ex: &node->redirect).
+*/
 t_val_exp	expand_redirections(t_mms *mms, t_tk **head)
 {
 	t_tk	*op;
-	t_tk	**file_ref;
 
 	if (!mms || !head || !*head)
 		return (EXP_SUCCESS);
 	op = *head;
 	while (op)
 	{
-		if (!is_redir_operator(op->type_tk) || !op->next)
-		{
-			op = op->next;
-			continue ;
-		}
-		if (op->type_tk == TOK_DLESS || op->type_tk == TOK_DLESSDASH)
-		{
-			op = op->next->next;
-			continue ;
-		}
-		file_ref = &op->next;
-		if (expand_one(mms, file_ref) != EXP_SUCCESS)
+		if (expand_redirection(mms, &op) != EXP_SUCCESS)
 			return (EXP_ERROR);
-		op = *file_ref ? (*file_ref)->next : NULL;
 	}
 	return (EXP_SUCCESS);
 }
