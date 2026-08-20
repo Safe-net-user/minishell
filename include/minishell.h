@@ -6,7 +6,7 @@
 /*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/09 15:49:14 by gd-hallu          #+#    #+#             */
-/*   Updated: 2026/08/20 16:12:36 by miouali          ###   ########.fr       */
+/*   Updated: 2026/08/20 16:37:47 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,22 +52,30 @@ struct s_mms
 	int				exit_status;
 	int				last_status;
 };
-void	set_signaux_interactif(void);
-void	set_signaux_heredoc(void);
 
+/* Signals */
+
+void    set_signaux_interactif(void);
+void    set_signaux_heredoc(void);
 
 /* Free functions */
-void	free_og_struct(t_mms *mms);
-void	free_stack_allocator(t_stack_alloc *sa);
-void	free_ast_values(t_ast *node);
-int		cleanup_and_exit(t_mms *mms);
 
-void	stack_reset(t_stack_alloc *sa);
-bool	is_blank(const char *s);
-char	*read_line(void);
-void	run_parser_and_exec(t_mms *mms);
-int	process_input(t_mms *mms);
-int	get_exit_status(t_mms *mms);
+void    free_og_struct(t_mms *mms);
+void    free_stack_allocator(t_stack_alloc *sa);
+void    free_ast_values(t_ast *node);
+int     cleanup_and_exit(t_mms *mms);
+void    stack_reset(t_stack_alloc *sa);
+
+/* Input */
+
+bool    is_blank(const char *s);
+char    *read_line(void);
+int     process_input(t_mms *mms);
+
+/* Parser and executor */
+
+void    run_parser_and_exec(t_mms *mms);
+int     get_exit_status(t_mms *mms);
 
 extern int	g_signal;
 

@@ -6,7 +6,7 @@
 /*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/16 10:27:34 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/20 16:11:49 by miouali          ###   ########.fr       */
+/*   Updated: 2026/08/20 16:35:12 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,22 +53,33 @@ typedef struct s_ast
 	struct s_ast	*right;
 }	t_ast;
 
-t_tk		*next_token(t_tk *cur);
-int			count_tokens(t_tk *token);
-bool		is_command_token(t_type_tk type);
-void		init_cmd_node(t_ast *node);
+/* Token */
 
-char		*token_to_string(t_type_tk type);
-void		parser_error(t_mms *mms, t_tk *tok);
+t_tk        *next_token(t_tk *cur);
+int         count_tokens(t_tk *token);
+bool        is_command_token(t_type_tk type);
+char        *token_to_string(t_type_tk type);
 
-bool		parse_redirection(t_mms *mms, t_tk **token, t_ast *node);
-t_ast		*parse_command(t_mms *mms, t_tk **token);
-t_ast		*parse_pipe(t_mms *mms, t_tk **token);
-t_ast		*parse_or_and(t_mms *mms, t_tk **token);
-void		add_redirect(t_ast *node, t_tk *new_op);
-bool		parse_heredoc(t_mms *mms, t_tk *op, t_tk *file);
-t_tk		*new_redir_token(t_mms *mms, t_tk *src);
+/* AST */
 
-t_ast		*parser(t_mms *mms);
+void        init_cmd_node(t_ast *node);
+void        add_redirect(t_ast *node, t_tk *new_op);
+
+/* Parser */
+
+t_ast       *parser(t_mms *mms);
+t_ast       *parse_command(t_mms *mms, t_tk **token);
+t_ast       *parse_pipe(t_mms *mms, t_tk **token);
+t_ast       *parse_or_and(t_mms *mms, t_tk **token);
+
+/* Redirection */
+
+bool        parse_redirection(t_mms *mms, t_tk **token, t_ast *node);
+bool        parse_heredoc(t_mms *mms, t_tk *op, t_tk *file);
+t_tk        *new_redir_token(t_mms *mms, t_tk *src);
+
+/* Error */
+
+void        parser_error(t_mms *mms, t_tk *tok);
 
 #endif

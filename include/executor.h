@@ -6,7 +6,7 @@
 /*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/11 11:23:14 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/20 16:13:52 by miouali          ###   ########.fr       */
+/*   Updated: 2026/08/20 16:33:41 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,35 +40,43 @@ typedef struct s_saved_fd
 	int	out;
 }	t_saved_fd;
 
-int		executor(t_mms *mms, t_ast *head);
-int	save_std_fd(t_saved_fd *saved);
-void	restore_std_fd(t_saved_fd *saved);
+/* Executor */
 
-int		builtin(t_ast *node);
-int		exec_builtin(t_mms *mms, t_ast *node);
+int     executor(t_mms *mms, t_ast *head);
+int     save_std_fd(t_saved_fd *saved);
+void    restore_std_fd(t_saved_fd *saved);
+int     builtin(t_ast *node);
+int     exec_builtin(t_mms *mms, t_ast *node);
+int     execute_cmd(t_mms *mms, t_ast *node);
+int     exec_command(char *cmd_path, char **cmd_tab, char **envp);
+int     execute(t_mms *mms, t_ast *node, t_executor *exec);
 
-int		execute_cmd(t_mms *mms, t_ast *node);
-int		execute_cmd_pipe(t_mms *mms, t_ast *cmd, int fd_in, int fd_out);
-char	**tks_to_cmd_tab(t_mms *mms, t_tk *tokens);
-int		execute(t_mms *mms, t_ast *node, t_executor *exec);
+/* Pipeline */
 
-void	print_error(char *msg);
-void	print_cmd_not_found(char *cmd);
-void	print_exec_error(char *path, char *msg);
+int     execute_cmd_pipe(t_mms *mms, t_ast *cmd, int fd_in, int fd_out);
+int     execute_pipeline(t_mms *mms, t_ast *node, t_pipeline *pipeline);
+int     pipeline(t_mms *mms, t_ast *node);
 
-char	*find_path(t_mms *mms, t_ast *node, t_executor *exec);
-int		path_relative(t_ast *node);
-char 	*get_cmd_path_child(t_mms *mms, t_ast *node, t_executor *exec);
+/* Command */
 
-int		pipeline(t_mms *mms, t_ast *node);
-int		execute_pipeline(t_mms *mms, t_ast *node, t_pipeline *pipeline);
+char    **tks_to_cmd_tab(t_mms *mms, t_tk *tokens);
+char    **hash_table_to_envp(t_ht *ht);
 
-int		redirection(t_mms *mms, t_ast *node);
+/* Errors */
 
-char	**hash_table_to_envp(t_ht *ht);
+void    print_error(char *msg);
+void    print_cmd_not_found(char *cmd);
+void    print_exec_error(char *path, char *msg);
 
-int		execute_redir_only(t_mms *mms, t_ast *node);
+/* Path */
 
-int		exec_command(char *cmd_path, char **cmd_tab, char **envp);
+char    *find_path(t_mms *mms, t_ast *node, t_executor *exec);
+int     path_relative(t_ast *node);
+char    *get_cmd_path_child(t_mms *mms, t_ast *node, t_executor *exec);
+
+/* Redirection */
+
+int     execute_redir_only(t_mms *mms, t_ast *node);
+int     redirection(t_mms *mms, t_ast *node);
 
 #endif

@@ -6,7 +6,7 @@
 #    By: miouali <miouali@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/05/18 23:16:53 by gd-hallu          #+#    #+#              #
-#    Updated: 2026/08/20 15:04:25 by miouali          ###   ########.fr        #
+#    Updated: 2026/08/20 18:10:27 by miouali          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,6 +20,14 @@ CC				:= cc
 MKDIRP			:= mkdir -p
 RMRF			:= rm -rf
 RMF				:= rm -f
+DEF_COLOR 		= \033[0;39m
+CYAN    		= \033[0;96m
+GREEN 			= \033[0;92m
+PURPLE  		= \033[0;95m
+YELLOW  		= \033[0;93m
+RED     		= \033[0;91m
+RESET   		= \033[0m
+
 
 # ------------------- DIRECTORIES ----------------- #
 HDR				:= include
@@ -150,10 +158,18 @@ all: $(NAME)
 -include $(DEPENDENCE)
 
 $(LIBFT):
-	make -C $(LIBFT_D) CC_VERSION="GCC" W_FLAGS="-Wall -Werror -Wextra -Wno-error=unused-result"
+	@make -s -C $(LIBFT_D) CC_VERSION="GCC" W_FLAGS="-Wall -Werror -Wextra -Wno-error=unused-result"
 	
-$(NAME): $(LIBFT) $(OBJECTS)
-	@$(CC) $(W_FLAGS) $(CFLAGS) $(OBJECTS) -L$(LIBFT_D) -lft -lreadline -I$(HDR) -I$(LIBFT_D)/include -o $(NAME)
+$(NAME): $(LIBFT) $(OBJECTS)                                                                                                                                                                   
+		@printf "\n$(CYAN)░▒▓██████████████▓▒░░▒▓█▓▒░▒▓███████▓▒░░▒▓█▓▒░▒▓██████████████▓▒░░▒▓█▓▒░░▒▓███████▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓████████▓▒░▒▓█▓▒░      ░▒▓█▓▒░       \n" 
+		@printf "░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░      ░▒▓█▓▒░        \n" 
+		@printf "░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░      ░▒▓█▓▒░        \n" 
+		@printf "░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓██████▓▒░░▒▓████████▓▒░▒▓██████▓▒░ ░▒▓█▓▒░      ░▒▓█▓▒░        \n" 
+		@printf "░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░      ░▒▓█▓▒░       \n" 
+		@printf "░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░      ░▒▓█▓▒░        \n" 
+		@printf "░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░▒▓███████▓▒░░▒▓█▓▒░░▒▓█▓▒░▒▓████████▓▒░▒▓████████▓▒░▒▓████████▓▒░ $(DEF_COLOR)\n" 
+		@$(CC) $(W_FLAGS) $(CFLAGS) $(OBJECTS) -L$(LIBFT_D) -lft -lreadline -I$(HDR) -I$(LIBFT_D)/include -o $(NAME)
+		@printf "\n\n$(GREEN) Minishell is ready to be used !$(DEF_COLOR)\n"
 
 $(OBJ)/%.o: $(SRC)/%.c
 	@mkdir -p $(dir $@)
@@ -168,15 +184,16 @@ $(ASM)/%.s: $(SRC)/%.c
 	
 # ------------------ CLEAN UP RULES --------------- #
 clean:
-	$(RMRF) $(OBJ)
-	$(RMRF) $(ASM)
-	make clean -C $(LIBFT_D)
+	@$(RMRF) $(OBJ)
+	@$(RMRF) $(ASM)
+	@make clean -s -C $(LIBFT_D)
+	@printf "$(PURPLE) Objects cleaned!$(DEF_COLOR)\n"
 	
 fclean: clean
-	$(RMF) $(NAME)
-	make fclean -C $(LIBFT_D)
+	@$(RMF) $(NAME)
+	@make fclean -s -C $(LIBFT_D)
+	@printf "$(PURPLE) $(NAME) deleted!$(DEF_COLOR)\n"
 
 re: fclean all
-	make re -C $(LIBFT_D)
 
 .PHONY: all f_asm re fclean clean
