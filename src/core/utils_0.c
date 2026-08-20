@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_0.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/24 17:19:57 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/19 15:59:13 by gd-hallu         ###   ########.fr       */
+/*   Updated: 2026/08/20 14:41:54 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,4 +52,10 @@ void	run_loop(t_mms *mms)
 		if (!process_input(mms))
 			break ;
 	}
+}
+
+void	stack_reset(t_stack_alloc *sa)
+{
+	sa->up = sa->buffer;
+	sa->curr = NULL;
 }

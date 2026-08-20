@@ -6,47 +6,35 @@
 /*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/11 14:43:40 by gd-hallu          #+#    #+#             */
-/*   Updated: 2026/08/20 13:44:22 by miouali          ###   ########.fr       */
+/*   Updated: 2026/08/20 14:42:08 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include <unistd.h>
 
-void	stack_reset(t_stack_alloc *sa)
+static void	free_tokens_values(t_tk *tok)
 {
-	sa->up = sa->buffer;
-	sa->curr = NULL;
+	while (tok)
+	{
+		free(tok->value);
+		free(tok->heredoc_content);
+		tok = tok->next;
+	}
 }
 
 void	free_ast_values(t_ast *node)
 {
-	t_tk	*tok;
-
 	if (!node)
 		return ;
 	if (node->type == NODE_CMD)
 	{
-		tok = node->tokens;
-		while (tok)
-		{
-			free(tok->value);
-			free(tok->heredoc_content);
-			tok = tok->next;
-		}
-		tok = node->redirect;
-		while (tok)
-		{
-			free(tok->value);
-			free(tok->heredoc_content);
-			tok = tok->next;
-		}
+		free_tokens_values(node->tokens);
+		free_tokens_values(node->redirect);
+		return ;
 	}
-	else
-	{
-		free_ast_values(node->left);
-		free_ast_values(node->right);
-	}
+	free_ast_values(node->left);
+	free_ast_values(node->right);
 }
 
 void	free_stack_allocator(t_stack_alloc *sa)
