@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expander.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
+/*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/24 16:00:53 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/20 16:14:33 by miouali          ###   ########.fr       */
+/*   Updated: 2026/08/20 23:54:48 by gd-hallu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ typedef struct s_exp
 
 typedef t_val_exp	(*t_exp_variant_fn)(t_exp *);
 
+t_val_exp	expand_one(t_mms *mms, t_tk **tk_ref);
 t_val_exp	expand_tokens(t_mms *mms, t_tk **head);
 t_val_exp	expand_redirections(t_mms *mms, t_tk **head);
 t_val_exp	expand_one(t_mms *mms, t_tk **tk_ref);
@@ -62,6 +63,5 @@ t_val_exp	new_value_failed(t_exp *exp);
 void	unlink_token(t_tk **tk_ref);
 t_val_exp	end_expand_one(t_exp *exp);
 void		free_fill(t_tk *tk, char *str);
-
-
+void	unlink_token(t_tk **tk_ref);
 #endif
