@@ -6,7 +6,7 @@
 #    By: miouali <miouali@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/05/18 23:16:53 by gd-hallu          #+#    #+#              #
-#    Updated: 2026/08/20 18:10:27 by miouali          ###   ########.fr        #
+#    Updated: 2026/08/20 23:40:54 by miouali          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -138,6 +138,7 @@ $(SRC)/$(BUILTIN)/exit.c \
 $(SRC)/$(BUILTIN)/export.c \
 $(SRC)/$(BUILTIN)/export_utils.c \
 $(SRC)/$(BUILTIN)/export_utils_2.c \
+$(SRC)/$(BUILTIN)/export_utils_3.c \
 $(SRC)/$(BUILTIN)/pwd.c \
 $(SRC)/$(BUILTIN)/unset.c \
 $(SRC)/$(HEREDOC)/heredoc.c \

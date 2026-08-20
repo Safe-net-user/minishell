@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/24 15:59:19 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/24 23:52:15 by gaspard          ###   ########.fr       */
+/*   Updated: 2026/08/20 23:39:36 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,5 +50,7 @@ int				print_exported_var(t_env *env);
 int				alone_key_job(t_mms *mms, char *buffer_key);
 t_builts_val	copy_key(char *dst, char *src, size_t *i);
 t_builts_val	copy_value(char *dst, char *src, size_t *i);
+t_env_entry		*build_sorted_arr(t_env *env);
+int				export_internal_error(t_env_entry *arr);
 
 #endif

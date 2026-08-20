@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export_utils_2.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/24 23:49:07 by gaspard           #+#    #+#             */
-/*   Updated: 2026/08/18 14:46:47 by gd-hallu         ###   ########.fr       */
+/*   Updated: 2026/08/20 23:37:44 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,21 +36,9 @@ int	print_exported_var(t_env *env)
 	t_env_entry	*arr;
 	t_env_entry	*curr;
 
-	arr = malloc(sizeof(*arr) * (env->entries + 1));
+	arr = build_sorted_arr(env);
 	if (!arr)
-	{
-		ft_putstr_fd("miniMishell: export: internal error\n",
-			STDERR_FILENO);
-		return (1);
-	}
-	ht_to_arr(env, arr);
-	if (!sort_arr(arr))
-	{
-		free(arr);
-		ft_putstr_fd("miniMishell: export: internal error\n",
-			STDERR_FILENO);
-		return (1);
-	}
+		return (export_internal_error(NULL));
 	curr = arr;
 	while (curr->key)
 	{
