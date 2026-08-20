@@ -37,7 +37,7 @@ static char	*entry_to_envp(t_entry *entry)
 
 static int	add_envp_entry(char **envp, size_t *j, t_entry *entry)
 {
-	if (!entry->key || entry->key == (char *)DELETED)
+	if (!entry->key || entry->key == (char *)((void *)-1))
 		return (0);
 	envp[*j] = entry_to_envp(entry);
 	if (!envp[*j])
