@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expander_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gaspard <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/25 01:32:57 by gaspard           #+#    #+#             */
-/*   Updated: 2026/07/25 01:33:45 by gaspard          ###   ########.fr       */
+/*   Updated: 2026/08/20 23:48:13 by gd-hallu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,4 +56,25 @@ void	reset_expander(t_exp *exp, char *str)
 	exp->index = 0;
 	exp->state = ST_EXP_NORMAL;
 	clear_sb(exp->sb);
+}
+
+/*
+** Detache *tk_ref de sa liste chainee et met a jour tk_ref pour
+** pointer sur le token suivant (ou NULL). Met a jour prev/next
+** des voisins pour garder la liste coherente.
+*/
+void	unlink_token(t_tk **tk_ref)
+{
+	t_tk	*tk;
+	t_tk	*next;
+	t_tk	*prev;
+
+	tk = *tk_ref;
+	next = tk->next;
+	prev = tk->prev;
+	if (prev)
+		prev->next = next;
+	if (next)
+		next->prev = prev;
+	*tk_ref = next;
 }
