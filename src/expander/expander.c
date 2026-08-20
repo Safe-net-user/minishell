@@ -6,7 +6,7 @@
 /*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/25 01:27:50 by gaspard           #+#    #+#             */
-/*   Updated: 2026/08/18 22:48:09 by gd-hallu         ###   ########.fr       */
+/*   Updated: 2026/08/20 13:15:30 by gd-hallu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,8 @@ t_val_exp	expand_one(t_mms *mms, t_tk **tk_ref)
 	{
 		free(tk->value);
 		tk->value = '\0';
-		if (!(tk->flags & TOKF_SQUOTE) && (!(tk->flags & TOKF_DQUOTE) && tk->flags & TOKF_EXPANSION))
+		if (!(tk->flags & TOKF_SQUOTE) && (!(tk->flags & TOKF_DQUOTE) \
+&& tk->flags & TOKF_EXPANSION))
 			unlink_token(tk_ref);
 	}
 	else
@@ -162,7 +163,10 @@ t_val_exp	expand_redirections(t_mms *mms, t_tk **head)
 		file_ref = &op->next;
 		if (expand_one(mms, file_ref) != EXP_SUCCESS)
 			return (EXP_ERROR);
-		op = *file_ref ? (*file_ref)->next : NULL;
+		if (*file_ref)
+			op = (*file_ref)->next;
+		else
+			op = NULL;
 	}
 	return (EXP_SUCCESS);
 }
