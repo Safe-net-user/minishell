@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor_utils_1.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/24 16:24:40 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/24 16:35:15 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/08/20 13:59:40 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,4 +68,17 @@ char	**hash_table_to_envp(t_ht *ht)
 	}
 	envp[j] = NULL;
 	return (envp);
+}
+
+char	*get_cmd_path_child(t_mms *mms, t_ast *node, t_executor *exec)
+{
+	if (path_relative(node))
+		return (node->tokens->value);
+	exec->cmd_path = find_path(mms, node, exec);
+	if (exec->cmd_path == NULL)
+	{
+		print_cmd_not_found(node->tokens->value);
+		exit(127);
+	}
+	return (exec->cmd_path);
 }

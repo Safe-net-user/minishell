@@ -6,7 +6,7 @@
 /*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 16:53:07 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/20 10:53:30 by miouali          ###   ########.fr       */
+/*   Updated: 2026/08/20 13:59:13 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 #include <sys/wait.h>
 #include <sys/stat.h>
 #include <string.h>
-#define _POSIX_C_SOURCE 200809L	
+#define _POSIX_C_SOURCE 200809L
 
 int	execute(t_mms *mms, t_ast *node, t_executor *exec)
 {
@@ -76,17 +76,7 @@ static void	execute_child(t_mms *mms, t_ast *node)
 		print_cmd_not_found(node->tokens->value);
 		exit(127);
 	}
-	if (path_relative(node))
-		exec.cmd_path = node->tokens->value;
-	else
-	{
-		exec.cmd_path = find_path(mms, node, &exec);
-		if (exec.cmd_path == NULL)
-		{
-			print_cmd_not_found(node->tokens->value);
-			exit(127);
-		}
-	}
+	exec.cmd_path = get_cmd_path_child(mms, node, &exec);
 	exit(execute(mms, node, &exec));
 }
 
