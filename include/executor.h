@@ -6,7 +6,7 @@
 /*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/11 11:23:14 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/20 13:58:35 by miouali          ###   ########.fr       */
+/*   Updated: 2026/08/20 14:20:25 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ void	print_cmd_not_found(char *cmd);
 void	print_exec_error(char *path, char *msg);
 
 char	*here_doc(t_mms *mms, t_tk *redir);
+int write_heredoc_content(int fd[2], char *content);
 
 char	*find_path(t_mms *mms, t_ast *node, t_executor *exec);
 int		path_relative(t_ast *node);
