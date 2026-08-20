@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/11 11:23:14 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/19 01:17:33 by gd-hallu         ###   ########.fr       */
+/*   Updated: 2026/08/20 13:58:35 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,7 @@ char	*here_doc(t_mms *mms, t_tk *redir);
 
 char	*find_path(t_mms *mms, t_ast *node, t_executor *exec);
 int		path_relative(t_ast *node);
+char 	*get_cmd_path_child(t_mms *mms, t_ast *node, t_executor *exec);
 
 int		pipeline(t_mms *mms, t_ast *node);
 int		execute_pipeline(t_mms *mms, t_ast *node, t_pipeline *pipeline);
