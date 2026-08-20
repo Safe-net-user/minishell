@@ -3,27 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 16:51:49 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/18 17:50:09 by gd-hallu         ###   ########.fr       */
+/*   Updated: 2026/08/20 10:51:13 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "executor.h"
-
-/**
- * @brief Executes an AST node according to its type.
- *
- * Dispatches the execution of a command, pipeline, logical AND, or logical
- * OR node. Logical operators are evaluated conditionally based on the exit
- * status of the left-hand side expression.
- *
- * @param mms  Pointer to the main minishell structure.
- * @param head Root node of the AST subtree to execute.
- *
- * @return The exit status of the executed command or expression.
- */
 
 int	executor(t_mms *mms, t_ast *head)
 {

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor_redir.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 16:55:06 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/19 15:25:17 by gd-hallu         ###   ########.fr       */
+/*   Updated: 2026/08/20 10:50:47 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,6 @@ static int	redirection_heredoc(t_tk *op)
 		perror("miniMishell");
 		return (1);
 	}
-
 	len = write(fd[1], op->heredoc_content,
 			ft_strlen(op->heredoc_content));
 	if (len == -1)
@@ -101,34 +100,16 @@ static int	redirection_heredoc(t_tk *op)
 		close(fd[1]);
 		return (1);
 	}
-
 	close(fd[1]);
-
 	if (dup2(fd[0], STDIN_FILENO) == -1)
 	{
 		perror("miniMishell");
 		close(fd[0]);
 		return (1);
 	}
-
 	close(fd[0]);
 	return (0);
 }
-
-
-/**
- * @brief Applies all redirections associated with an AST node.
- *
- * Iterates through the list of redirections attached to the node and applies
- * each one according to its type: here-document, input redirection, or output
- * redirection. Stops immediately if a redirection fails.
- *
- * @param[in] mms  Pointer to the minishell main structure.
- * @param[in] node AST node containing the redirections to apply.
- *
- * @return 0 if all redirections are successfully applied, otherwise the error
- *         status returned by the failed redirection.
- */
 
 int	redirection(t_mms *mms, t_ast *node)
 {

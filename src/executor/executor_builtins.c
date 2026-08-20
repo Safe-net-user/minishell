@@ -3,30 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   executor_builtins.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/09 17:20:34 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/18 18:10:03 by gd-hallu         ###   ########.fr       */
+/*   Updated: 2026/08/20 10:51:42 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "executor.h"
 #include "ft_strings.h"
 #include "builtin.h"
-
-//pas oublier de convertir en char **
-
-/**
- * @brief Executes the builtin corresponding to a command.
- *
- * Identifies the builtin command from the first token of the AST node and
- * dispatches its execution to the corresponding builtin function.
- *
- * @param[in] mms  Pointer to the minishell main structure.
- * @param[in] node AST node containing the builtin command and its arguments.
- *
- * @return The exit status returned by the executed builtin.
- */
 
 int	exec_builtin(t_mms *mms, t_ast *node)
 {
@@ -45,17 +31,6 @@ int	exec_builtin(t_mms *mms, t_ast *node)
 	else
 		return (builtin_exit(mms, tks_to_cmd_tab(mms, node->tokens)));
 }
-
-/**
- * @brief Checks whether an AST node represents a builtin command.
- *
- * Compares the first token of the AST node against the list of supported
- * minishell builtin commands.
- *
- * @param[in] node AST node containing the command to check.
- *
- * @return 1 if the command is a builtin, 0 otherwise.
- */
 
 int	builtin(t_ast *node)
 {

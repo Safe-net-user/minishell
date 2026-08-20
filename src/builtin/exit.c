@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/24 23:36:26 by gaspard           #+#    #+#             */
-/*   Updated: 2026/08/18 15:23:39 by gd-hallu         ###   ########.fr       */
+/*   Updated: 2026/08/20 11:10:16 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ t_builts_val	builtin_exit(t_mms *mms, char **args)
 		ft_putstr_fd("exit\n", STDOUT_FILENO);
 		ft_putstr_fd("miniMishell: exit: numeric argument required\n",
 			STDERR_FILENO);
-		return (2);
+		return (2); //il faut quand meme exit
 	}
 	else
 		request_exit(mms, ft_atoi(args[1]) % 256);

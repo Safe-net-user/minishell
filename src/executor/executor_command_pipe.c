@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor_command_pipe.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 17:45:31 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/19 15:23:19 by gd-hallu         ###   ########.fr       */
+/*   Updated: 2026/08/20 10:51:50 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,6 @@ int	execute_cmd_pipe(t_mms *mms, t_ast *cmd, int fd_in, int fd_out)
 	t_executor	exec;
 	int			status;
 
-	//dprintf(2, "cmd tokens value=[%s]\n", cmd->tokens->value);
 	signal(SIGPIPE, SIG_DFL);
 	signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT, SIG_DFL);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor_path.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 16:56:45 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/18 18:21:45 by gd-hallu         ###   ########.fr       */
+/*   Updated: 2026/08/20 10:49:55 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,7 @@
 #include <unistd.h>
 #include "ft_strings.h"
 
-/**
- * @brief Frees a NULL-terminated array of strings produced by ft_split.
- *
- * @param[in] arr NULL-terminated array of strings to free.
- */
+
 
 void	free_path_arr(char **arr)
 {
@@ -35,39 +31,12 @@ void	free_path_arr(char **arr)
 	free(arr);
 }
 
-/**
- * @brief Checks whether a command specifies a path explicitly.
- *
- * Determines whether the command name contains a slash, indicating that the
- * command should be executed using the path provided by the user rather than
- * being searched for in the PATH environment variable.
- *
- * @param node AST node representing the command to inspect.
- *
- * @return 1 if the command contains a slash, otherwise 0.
- */
-
 int	path_relative(t_ast *node)
 {
 	if (ft_strchr(node->tokens->value, '/'))
 		return (1);
 	return (0);
 }
-
-/**
- * @brief Searches for a command executable in the PATH environment variable.
- *
- * Splits the PATH variable into its individual directories and checks each
- * directory for an executable matching the command name. The first valid
- * executable path found is returned.
- *
- * @param mms  Pointer to the main minishell structure containing the
- *             environment data.
- * @param node AST node representing the command to search for.
- * @param exec Execution context associated with the command lookup.
- *
- * @return The full path to the executable if found, otherwise NULL.
- */
 
 static char	*build_path(char *dir, char *cmd)
 {

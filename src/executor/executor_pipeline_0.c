@@ -6,12 +6,11 @@
 /*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 16:58:40 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/18 22:51:55 by miouali          ###   ########.fr       */
+/*   Updated: 2026/08/20 10:50:08 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "executor.h"
-
 
 int	count_cmd_pipeline(t_ast *node)
 {
@@ -38,20 +37,6 @@ void	fill_pipeline_cmds(t_ast *node, t_ast **cmd_list, int *i)
 		(*i)++;
 	}
 }
-
-/**
- * @brief Creates an array containing all commands of a pipeline.
- *
- * Allocates an array of AST node pointers and fills it with the commands
- * extracted from the pipeline AST. The resulting array is NULL-terminated.
- *
- * @param[in] mms     Pointer to the minishell main structure.
- * @param[in] node    Root node of the pipeline AST.
- * @param[in] nb_cmd  Number of commands contained in the pipeline.
- *
- * @return A NULL-terminated array of command nodes on success, NULL if the
- *         allocation fails.
- */
 
 t_ast	**add_cmd_pipeline(t_mms *mms, t_ast *node, int nb_cmd)
 {
