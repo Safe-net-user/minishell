@@ -38,21 +38,6 @@
 #include "ft_stdlib.h"
 #include <stdlib.h>
 
-static t_val_exp	expand_word(t_exp *exp, t_exp_variant_fn *lut)
-{
-	t_val_exp	ret;
-
-	if (!exp || !lut)
-		return (EXP_ERROR);
-	while (exp->str[exp->index])
-	{
-		ret = lut[exp->state](exp);
-		if (ret != EXP_SUCCESS)
-			return (ret);
-	}
-	return (EXP_SUCCESS);
-}
-
 static bool	is_redir_operator(t_type_tk type)
 {
 	return (type == TOK_LESS || type == TOK_GREAT

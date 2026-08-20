@@ -116,6 +116,7 @@ $(SRC)/$(EXPANDER)/expander_squote.c \
 $(SRC)/$(EXPANDER)/expander_expansion.c \
 $(SRC)/$(EXPANDER)/expander_normal.c \
 $(SRC)/$(EXPANDER)/expander_utils.c \
+$(SRC)/$(EXPANDER)/expand_one.c \
 $(SRC)/$(PARSER)/parser.c \
 $(SRC)/$(PARSER)/parser_command.c \
 $(SRC)/$(PARSER)/parser_operator.c \

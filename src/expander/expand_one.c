@@ -17,6 +17,21 @@
 #include "ft_stdlib.h"
 #include <stdlib.h>
 
+static t_val_exp	expand_word(t_exp *exp, t_exp_variant_fn *lut)
+{
+	t_val_exp	ret;
+
+	if (!exp || !lut)
+		return (EXP_ERROR);
+	while (exp->str[exp->index])
+	{
+		ret = lut[exp->state](exp);
+		if (ret != EXP_SUCCESS)
+			return (ret);
+	}
+	return (EXP_SUCCESS);
+}
+
 static void	free_expander(t_exp *exp)
 {
 	if (!exp)
