@@ -3,12 +3,29 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/12 11:33:11 by gd-hallu          #+#    #+#             */
-/*   Updated: 2026/07/25 00:06:27 by gaspard          ###   ########.fr       */
+/*   Updated: 2026/08/20 16:04:08 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+/**
+ * @file lexer.c
+ * @brief Entry point of the lexer — state-machine driven tokenizer.
+ *
+ * `lexer()` runs a 4-state automaton (LX_NORMAL, LX_SQUOTE, LX_DQUOTE,
+ * LX_OPERATOR) over the raw command line, dispatching each character
+ * through a lookup table of per-state handlers until the whole line
+ * is consumed. Each handler advances `lx->index` and emits tokens
+ * into the stack allocator as needed (see `emit_tk()`).
+ *
+ * `lx_end()` handles end-of-input: an unterminated quote at EOF is
+ * reported as a specific error (`LX_SQUOTE_NF`/`LX_DQUOTE_NF`)
+ * rather than silently closed, any pending word is flushed as a
+ * final token, and a TOK_EOF sentinel is always emitted so the
+ * parser has a well-defined end marker to stop on.
+ */
 
 #include "lexer.h"
 #include "minishell.h"

@@ -3,12 +3,27 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/28 12:07:56 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/18 13:49:19 by gd-hallu         ###   ########.fr       */
+/*   Updated: 2026/08/20 16:04:22 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+/**
+ * @file cd.c
+ * @brief `cd` builtin implementation.
+ *
+ * `builtin_cd()` resolves the target directory (`get_cd_target()`):
+ * no argument → $HOME, `-` → $OLDPWD, otherwise the given path.
+ * `chdir()` is applied directly in the shell's own process (never
+ * forked), since a directory change only matters if it persists in
+ * the parent — running it in a child would be a no-op for the shell.
+ *
+ * On success, `update_pwd()` refreshes both $OLDPWD and $PWD in the
+ * environment table so subsequent `cd -` and `$PWD` lookups stay
+ * accurate.
+ */
 
 #include "builtin.h"
 #include "env.h"

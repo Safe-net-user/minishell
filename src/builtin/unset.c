@@ -3,12 +3,26 @@
 /*                                                        :::      ::::::::   */
 /*   unset.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/24 23:38:42 by gaspard           #+#    #+#             */
-/*   Updated: 2026/08/13 11:04:46 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/08/20 16:05:49 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+/**
+ * @file unset.c
+ * @brief `unset` builtin implementation.
+ *
+ * `builtin_unset()` removes each named variable from the environment
+ * table (`del_env()`), skipping (with an error) any variable flagged
+ * READONLY — matching bash's protection of read-only variables.
+ *
+ * As with `export`, unsetting `PATH` specifically triggers
+ * `reset_cmd_path()` to flush the resolved-command-path cache
+ * (`mms->cmd_path`), preventing stale paths from persisting after
+ * `PATH` is removed.
+ */
 
 #include "builtin.h"
 #include "env.h"

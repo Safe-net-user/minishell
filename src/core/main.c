@@ -3,12 +3,29 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/09 10:30:51 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/19 15:53:25 by gd-hallu         ###   ########.fr       */
+/*   Updated: 2026/08/20 16:00:02 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+/**
+ * @file main.c
+ * @brief Entry point of the minishell program.
+ *
+ * Initializes the shell's core structure (environment, alias table,
+ * command path cache, and stack allocator), then enters the main
+ * REPL loop: read a line via readline, tokenize it, parse it into
+ * an AST, and execute it.
+ *
+ * The stack allocator backing tokens and AST nodes is reset at the
+ * start of every loop iteration, so all memory tied to a given
+ * command is implicitly reclaimed before the next one is read.
+ *
+ * The loop exits when readline hits EOF (Ctrl+D) or when a builtin
+ * (e.g. `exit`) sets `mms->should_exit`.
+ */
 
 #include <stdio.h>
 #include <readline/readline.h>

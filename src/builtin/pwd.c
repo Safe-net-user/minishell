@@ -3,12 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   pwd.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/11 11:24:11 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/13 11:14:14 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/08/20 16:05:35 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+/**
+ * @file pwd.c
+ * @brief `pwd` builtin implementation.
+ *
+ * `builtin_pwd()` prints the current working directory via a fresh
+ * `getcwd()` call rather than reading `$PWD` from the environment —
+ * this guarantees the printed path reflects reality even if `$PWD`
+ * is stale or was tampered with by the user.
+ */
 
 #include "builtin.h"
 #include <unistd.h>

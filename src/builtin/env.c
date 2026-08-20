@@ -3,12 +3,24 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/24 23:35:18 by gaspard           #+#    #+#             */
-/*   Updated: 2026/08/13 11:08:57 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/08/20 16:04:55 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+/**
+ * @file env.c
+ * @brief `env` builtin implementation.
+ *
+ * `builtin_env()` takes no arguments (rejecting any as an error, per
+ * the subject's simplified spec — no `env CMD` execution support).
+ * `print_exported_var_env()` walks the environment hash table's
+ * bucket array directly and prints only entries flagged `EXPORTED`
+ * with a non-NULL value, matching what a real `env` shows (unset or
+ * non-exported shell variables are excluded).
+ */
 
 #include "builtin.h"
 #include <stdio.h>

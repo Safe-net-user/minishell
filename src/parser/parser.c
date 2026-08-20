@@ -3,12 +3,29 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 14:51:09 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/13 12:33:42 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/08/20 16:01:10 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+/**
+ * @file parser.c
+ * @brief Entry point of the parser and token-list linking.
+ *
+ * `link_tokens()` walks the raw stack-allocator buffer produced by
+ * the lexer, using `next_token()` (offset arithmetic over `t_header`)
+ * to rebuild a proper doubly-linked list of tokens up to TOK_EOF.
+ *
+ * `parser()` links the tokens and hands them to `parse_or_and()`,
+ * the highest-priority grammar rule, which recursively builds the
+ * final AST.
+ *
+ * `parser_error()` reports POSIX-style syntax errors to stderr and
+ * sets `mms->last_status` to 2, matching bash's convention for
+ * shell syntax errors.
+ */
 
 #include "parser.h"
 #include "minishell.h"
@@ -55,27 +72,6 @@ void	parser_error(t_mms *mms, t_tk *tok)
 	write(2, token, ft_strlen(token));
 	write(2, "'\n", 2);
 }
-
-/**
- * @brief Entry point of the shell parser.
- *
- * Initializes the token iterator from the stack allocator buffer
- * and starts parsing from the highest grammar level.
- *
- * Parsing order:
- *
- *     COMMAND
- *        |
- *      PIPE
- *        |
- *      AND / OR
- *
- * The returned AST represents the complete shell command structure.
- *
- * @param mms Main minishell structure.
- *
- * @return Pointer to the root AST node.
- */
 
 t_ast	*parser(t_mms *mms)
 {

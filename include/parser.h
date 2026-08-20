@@ -6,7 +6,7 @@
 /*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/16 10:27:34 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/20 14:48:24 by miouali          ###   ########.fr       */
+/*   Updated: 2026/08/20 16:11:49 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,15 +27,30 @@ typedef enum e_node_type
 	NODE_REDIR
 }	t_node_type;
 
-//au debut du parser, faire les next et les prev, modifier la struct du parser et la strcut de redirection puis ajoputer << 1 par ex et enfin refaire l'executor avec le .md
+/**
+ * @struct s_ast
+ * @brief Node of the shell's abstract syntax tree.
+ *
+ * `type` determines how the node is interpreted:
+ * - NODE_CMD  → a simple command: `tokens` holds the argument list
+ *               (argv-like linked list) and `redirect` holds any
+ *               redirection operator/file pairs attached to it.
+ * - NODE_PIPE, NODE_AND, NODE_OR → binary operators: `left` and
+ *               `right` point to the two operand subtrees, and
+ *               `tokens`/`redirect` are unused.
+ *
+ * Redirections are attached directly to the command node they apply
+ * to rather than represented as separate AST nodes, since a command
+ * can carry multiple redirections in sequence.
+ */
 
 typedef struct s_ast
 {
+	t_tk			*tokens;
+	t_tk			*redirect;
 	t_node_type		type;
 	struct s_ast	*left;
 	struct s_ast	*right;
-	t_tk			*redirect;
-	t_tk			*tokens;
 }	t_ast;
 
 t_tk		*next_token(t_tk *cur);

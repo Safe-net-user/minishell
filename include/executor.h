@@ -6,7 +6,7 @@
 /*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/11 11:23:14 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/20 15:02:46 by miouali          ###   ########.fr       */
+/*   Updated: 2026/08/20 16:13:52 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,20 +18,20 @@
 
 typedef struct s_executor
 {
+	char	*cmd_path;
 	pid_t	pid;
 	int		fd_in;
 	int		fd_out;
-	char	*cmd_path;
 }	t_executor;
 
 typedef struct s_pipeline
 {
+	t_ast	**cmd_list;
+	pid_t	*pids;
 	int		nb_cmd;
 	int		fd_prev;
 	int		fd_next;
 	int		fd[2];
-	t_ast	**cmd_list;
-	pid_t	*pids;
 }	t_pipeline;
 
 typedef struct s_saved_fd

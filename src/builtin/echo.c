@@ -3,12 +3,24 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/18 13:06:37 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/07/24 23:35:07 by gaspard          ###   ########.fr       */
+/*   Updated: 2026/08/20 16:04:39 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+/**
+ * @file echo.c
+ * @brief `echo` builtin implementation.
+ *
+ * `builtin_echo()` prints its arguments separated by single spaces.
+ * Leading arguments matching `-n`/`-nn`/`-nnn`/... (checked by
+ * `n_option_isvalid()`) suppress the trailing newline, matching
+ * bash's non-POSIX `-n` extension; option parsing stops at the
+ * first argument that isn't a valid `-n` flag, so anything after
+ * that is treated as plain output.
+ */
 
 #include <curses.h>
 #include <stdio.h>

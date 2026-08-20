@@ -3,12 +3,33 @@
 /*                                                        :::      ::::::::   */
 /*   expander.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/25 01:27:50 by gaspard           #+#    #+#             */
-/*   Updated: 2026/08/18 22:48:09 by gd-hallu         ###   ########.fr       */
+/*   Updated: 2026/08/20 16:03:03 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+/**
+ * @file expander.c
+ * @brief Word expansion driver — resolves a token's raw value into
+ *        its final, expanded string.
+ *
+ * `expand_one()` runs a small state-machine automaton (`t_exp`, 3
+ * states: normal/squote/dquote) over a single token's value via
+ * `expand_word()`, dispatching each character through a lookup
+ * table of per-state handlers. If expansion yields an empty,
+ * unquoted result on a token that came from an expansion, the token
+ * is unlinked from its list (`unlink_token()`) — mimicking the shell
+ * behavior where `"$EMPTY"` disappears entirely rather than leaving
+ * a blank argument.
+ *
+ * `expand_tokens()` applies this to every TOK_WORD/TOK_DELIMITER in
+ * a command's argument list, while `expand_redirections()` applies
+ * it only to redirection targets — explicitly skipping the
+ * delimiter of `<<`/`<<-`, which must never be expanded at parse
+ * time.
+ */
 
 #include "minishell.h"
 #include "expander.h"
@@ -32,11 +53,6 @@ static t_val_exp	expand_word(t_exp *exp, t_exp_variant_fn *lut)
 	return (EXP_SUCCESS);
 }
 
-/*
-** Detache *tk_ref de sa liste chainee et met a jour tk_ref pour
-** pointer sur le token suivant (ou NULL). Met a jour prev/next
-** des voisins pour garder la liste coherente.
-*/
 void	unlink_token(t_tk **tk_ref)
 {
 	t_tk	*tk;
@@ -107,11 +123,6 @@ t_val_exp	expand_one(t_mms *mms, t_tk **tk_ref)
 	return (EXP_SUCCESS);
 }
 
-/*
-** Parcourt et expand tous les tokens TOK_WORD / TOK_DELIMITER de la
-** liste. head est l'adresse du pointeur de tete (ex: &node->tokens)
-** pour repercuter une eventuelle suppression du premier token.
-*/
 t_val_exp	expand_tokens(t_mms *mms, t_tk **head)
 {
 	t_tk	*cur;
@@ -134,11 +145,6 @@ t_val_exp	expand_tokens(t_mms *mms, t_tk **head)
 	return (EXP_SUCCESS);
 }
 
-/*
-** Parcourt la liste operateur/fichier de node->redirect.
-** Saute l'expansion du delimiteur pour << et <<- (jamais expanse).
-** head est l'adresse du pointeur de tete (ex: &node->redirect).
-*/
 t_val_exp	expand_redirections(t_mms *mms, t_tk **head)
 {
 	t_tk	*op;

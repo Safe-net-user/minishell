@@ -53,6 +53,44 @@ Une stratégie d’allocation type arena / stack allocator est utilisée afin de
 - réinitialiser rapidement l’état entre deux commandes
 - éviter les fuites sur les structures temporaires (tokens, AST)
 
+#### 2.4.1 Principe du stack allocator
+
+Plutôt que d'allouer et de libérer chaque structure individuellement avec `malloc`/`free`, le shell réserve un seul gros bloc mémoire au démarrage (buffer), puis distribue des morceaux de ce bloc au fur et à mesure des besoins, en avançant simplement un pointeur (up). Il n'y a jamais de free individuel : toute la mémoire allouée pendant une commande est libérée d'un coup, en remettant le pointeur au début du buffer.
+
+```c
+typedef struct s_header
+{
+    size_t  size;
+    size_t  prev_size;
+}   t_header;
+
+typedef struct s_stack_alloc
+{
+    void    *buffer;
+    void    *up;
+    void    *curr;
+    size_t  capacity;
+}   t_stack_alloc;
+```
+- `buffer` : le bloc mémoire réservé une fois pour toutes (via `init_stack_allocator`).
+- `up` : le pointeur "sommet de pile" — l'endroit où la prochaine allocation va s'écrire.
+- `curr` : pointeur vers la dernière allocation effectuée.
+- `capacity` : la taille totale du buffer.
+
+#### 2.4.2 Allocation
+
+Chaque appel à `stack_alloc(sa, size)` :
+- vérifie qu'il reste assez de place dans le buffer,
+- écrit un `t_header` juste avant la zone de données allouée. Ce header contient la taille de l'allocation courante (`size`) et la taille de l'allocation précédente (`prev_size`), ce qui permet de « remonter » la chaîne des allocations,
+- fait avancer up de `sizeof(t_header) + size`,
+- retourne un pointeur vers la zone de données (juste après le header).
+
+Chaque bloc alloué est donc précédé de son header, un peu comme des maillons de chaîne posés côte à côte dans le buffer, ce qui permet ensuite de naviguer d'une allocation à la suivante (voir `next_token` en section 4, qui exploite directement cette disposition mémoire pour parcourir les tokens sans liste chaînée explicite).
+
+#### 2.4.3 Reset
+
+Entre deux commandes, `stack_reset()` ne fait que remettre `up` au début du buffer et `curr` à `NULL` — aucune libération individuelle n'est nécessaire, toute la mémoire de la commande précédente est implicitement réutilisable pour la suivante.
+
 ### 2.5 Cycle d’exécution
 
 Chaque itération du REPL suit le pipeline suivant :
@@ -66,15 +104,20 @@ readline → lexer → parser → executor → free/reset → next input
 
 ## 3. Lexer
 
-Le lexer aura pour rôle de transformer une ligne de commande shell en une suite de tokens exploitables par le parser.
-Nous utiliserons une structure token contenant :
-- un type (`enum token_type`)
-- une valeur textuelle
-- un ensemble de flags décrivant certaines propriétés lexicales (quoted, expandable, globbing, etc.).
+Le lexer transforme une ligne de commande shell en une suite de tokens exploitables par le parser. Chaque token contient un type (t_type_tk), une valeur textuelle, et un ensemble de flags décrivant ses propriétés lexicales (quoted, expansion, tilde, etc.).
 
-Afin de se rapprocher du comportement des shells réels comme GNU Bash, sans reproduire toute la complexité de `parse.y`, nous adopterons une architecture de lexer à états.
-Ces états permettront d’adapter dynamiquement le comportement du lexer selon le contexte courant (quotes, heredoc, substitutions, contexte de mot réservé, etc.), tout en limitant les dépendances directes entre parser et lexer.
-Le lexer reposera également sur un système de string builder permettant de construire efficacement des mots shell composés de segments concaténés (texte brut, portions quotées, expansions, etc.).
+Le lexer repose sur un automate à 4 états :
+
+`LX_NORMAL`
+`LX_SQUOTE`
+`LX_DQUOTE`
+`LX_OPERATOR`
+
+Les contextes secondaires (backtick, arithmétique, commentaire, échappement, tilde, expansion) sont portés par les flags du token (`TOKF_SQUOTE`, `TOKF_DQUOTE`, `TOKF_BACK_TICK`, `TOKF_ARITH`, `TOKF_COMMENT`, `TOKF_ESCAPE`, `TOKF_SPEC_PARAM`, `TOKF_EXPANSION`, `TOKF_TILDE`), et non par des états distincts.
+
+Le lexer s'appuie sur un string builder pour construire efficacement les mots shell composés de segments concaténés (texte brut, portions quotées, expansions, etc.).
+
+Les tokens sont stockés dans une liste doublement chaînée, chacun disposant d'un champ dédié pour porter le contenu résolu d'un here-doc.
 
 ### 3.1 Tokenisation du Shell
 
@@ -108,7 +151,7 @@ Le token:
 
 Si tout est ok, on peut procéder à la substitution.
 
-### 3.3 Here_doc mode
+### 3.3 Structs
 
 ```c
 *lexer.h*
@@ -195,14 +238,16 @@ typedef enum e_return_value {
 } t_return_value;
 ```
 
-### 3.3 Gestion des erreurs
+### 3.4 Gestion des erreurs
 
-Le lexer ne gère que très peu d’erreurs syntaxiques intrinsèques, son rôle étant principalement de transformer le flux de caractères en une suite de tokens.
+Le lexer ne gère que très peu d'erreurs syntaxiques intrinsèques, son rôle étant principalement de transformer le flux de caractères en une suite de tokens.
+
 Les erreurs remontées par le lexer concernent essentiellement :
-- les échecs d’allocation mémoire.
-- les erreurs internes liées aux structures dynamiques (stack, string builder, etc.).
-ainsi que certaines erreurs lexicales locales comme des quotes non fermées.
+- les échecs d'allocation mémoire
+- les erreurs internes liées aux structures dynamiques (stack, string builder, etc.)
+- les quotes non fermées (`LX_SQUOTE_NF`, `LX_DQUOTE_NF`)
 
+Le traitement du here-doc (résolution du contenu, gestion des délimiteurs `<<`/`<<-`) est effectué au niveau du parser, une fois les tokens émis par le lexer.
 La majorité des erreurs utilisateur (syntaxe invalide, opérateurs mal positionnés, structures grammaticales incorrectes, etc.) sont détectées au niveau du parser, qui possède une vision structurelle complète de la commande.
 
 ---
@@ -330,48 +375,41 @@ Le respect des priorités est essentiel car une mauvaise association des opérat
 
 ### 4.6 AST dans le parser
 
-Une fois les tokens analysés selon les règles de grammaire, le parser construit un AST (Abstract Syntax Tree).
-Chaque nœud de l’arbre représente soit :
-- une commande.
-- un opérateur (`|`,` &&`, `||`).
-- une redirection (`>`, `>>`,` <`, `<<`).
-Les feuilles de l’arbre contiennent les commandes simples et leurs arguments, tandis que les nœuds intermédiaires représentent les opérateurs reliant plusieurs commandes.
+Une fois les tokens analysés selon les règles de grammaire, le parser construit un AST (Abstract Syntax Tree). Chaque nœud représente soit une commande, soit un opérateur (`|`, `&&`, `||`).
+
+Contrairement à une redirection représentée comme un nœud séparé dans l'arbre, les redirections sont rattachées directement au nœud de commande (`NODE_CMD`) auquel elles s'appliquent, sous forme de liste chaînée. Un nœud de commande porte ainsi :
+
+- une liste chaînée de ses mots/arguments (`tokens`)
+- une liste chaînée de ses redirections (`redirect`)
 Exemple :
 ```bash
 ls -l | grep minishell > out.txt
 ```
 Peut être représenté sous la forme :
 ```plaintext
-          PIPE
-         /    \
-     ls -l    REDIR_OUT
-                 |
-            grep minishell
+              PIPE
+             /    \
+      CMD(ls -l)   CMD(grep minishell)
+                       redirect: > out.txt
 ```
-Cet arbre permettra ensuite à l'exécuteur de parcourir la commande dans le bon ordre et d’appliquer correctement les pipes et redirections.
+Le here-doc (`<<`, `<<-`) est résolu directement au moment du parsing de la redirection : dès qu'un token `<<` est rencontré, son contenu est lu et attaché au token de l'opérateur avant de poursuivre la construction de l'arbre.
 ```c
 typedef enum e_node_type
 {
     NODE_CMD,
     NODE_PIPE,
     NODE_AND,
-    NODE_OR,
-    NODE_REDIR
-} t_node_type;
+    NODE_OR
+}   t_node_type;
 
 typedef struct s_ast
 {
-    t_node_type type;
-    struct s_ast *left;
-    struct s_ast *right;
-   union u_node
-{
-   t_cmd cmd;
-   t_redir redir;
-   //t_ast *subshell;
-};
-
-} t_ast;
+    t_node_type     type;
+    struct s_ast    *left;
+    struct s_ast    *right;
+    t_tk            *redirect;
+    t_tk            *tokens;
+}   t_ast;
 ```
 
 ---
@@ -749,35 +787,7 @@ Executor(node)
 
 L’executor applique récursivement les règles d’exécution correspondant à chaque type de nœud de l’AST.
 
-### 6.10 Command Hashing
-
-Afin d’éviter de rechercher le chemin d’un exécutable dans le `PATH` à chaque commande, le shell peut utiliser une hash table de commandes.
-Lors de la première exécution d’une commande :
-```bash
-ls
-```
-le shell parcourt les différents dossiers présents dans la variable `PATH` jusqu’à trouver l’exécutable correspondant :
-```bash
-/bin/ls
-```
-Le résultat peut ensuite être stocké dans une table de hachage :
-```
-ls -> /bin/ls
-```
-Lors des exécutions suivantes, le shell peut directement récupérer le chemin enregistré sans re-parcourir l’ensemble du `PATH`.
-Cette optimisation réduit le nombre d’accès filesystem et améliore les performances lors de l’exécution répétée des mêmes commandes.
-
-Et conceptuellement ça s’intègre dans :
-```plaintext
-CMD
-└── PATH resolution
-      ├── hash table lookup
-      └── PATH search fallback
-      	└──  HASH set new value
-```
-
-
-### 6.11 Subshells
+### 6.10 Subshells
 
 Un subshell est un environnement d’exécution isolé créé par le shell afin d’exécuter une partie de l’AST dans un processus distinct.
 

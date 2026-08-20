@@ -6,9 +6,24 @@
 /*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 14:51:42 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/20 14:46:45 by miouali          ###   ########.fr       */
+/*   Updated: 2026/08/20 16:01:17 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+/**
+ * @file parser_command.c
+ * @brief Parsing of simple commands: words and redirections.
+ *
+ * `next_token()` computes the address of the token following `cur`
+ * directly from its stack-allocator header (`size` field), letting
+ * the parser walk the lexer's raw output without an explicit array.
+ *
+ * `parse_command()` consumes consecutive TOK_WORD and redirection
+ * tokens into a single NODE_CMD: words are appended to `node->tokens`
+ * via `add_word()`, and redirections are parsed and appended to
+ * `node->redirect` via `parse_redirection()` (which also resolves
+ * heredocs inline, see `parse_heredoc()`).
+ */
 
 #include "parser.h"
 #include "executor.h"

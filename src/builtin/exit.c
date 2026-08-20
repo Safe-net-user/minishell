@@ -6,9 +6,26 @@
 /*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/24 23:36:26 by gaspard           #+#    #+#             */
-/*   Updated: 2026/08/20 11:23:36 by miouali          ###   ########.fr       */
+/*   Updated: 2026/08/20 16:05:09 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+/**
+ * @file exit.c
+ * @brief `exit` builtin implementation.
+ *
+ * `builtin_exit()` doesn't call libc `exit()` directly — it sets
+ * `mms->should_exit` and `mms->exit_status`, letting the main REPL
+ * loop unwind cleanly (freeing resources via `cleanup_and_exit()`)
+ * instead of terminating mid-command.
+ *
+ * With no argument, the last command's status is reused. With a
+ * numeric argument, the status is taken modulo 256 (POSIX exit codes
+ * are a single byte). A non-numeric argument (`is_valid_arg()`
+ * fails) is a bash-compatible error: the shell still exits, but with
+ * status 2 and an error message, rather than refusing to exit.
+ * More than one argument is rejected and the shell stays open.
+ */
 
 #include "builtin.h"
 #include "ft_strings.h"

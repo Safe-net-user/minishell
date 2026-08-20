@@ -3,12 +3,29 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/11 11:42:49 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/18 13:47:48 by gd-hallu         ###   ########.fr       */
+/*   Updated: 2026/08/20 16:05:23 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+/**
+ * @file export.c
+ * @brief `export` builtin implementation.
+ *
+ * Called with no arguments, `builtin_export()` lists exported
+ * variables (`print_exported_var()`, typically `declare -x` style).
+ * Otherwise it processes each `KEY` or `KEY=value` argument through
+ * `parse_export_arg()`: `assign()` splits the argument at `=`
+ * (`copy_key`/`copy_value`), and a bare `KEY` with no `=` just marks
+ * an existing or new variable as exported without changing its
+ * value (`alone_key_job()`).
+ *
+ * `update_path_env()` invalidates the command-path cache whenever
+ * `PATH` itself is exported/reassigned, so stale resolved paths from
+ * `mms->cmd_path` don't survive a `PATH` change.
+ */
 
 #include "builtin.h"
 #include <stdio.h>

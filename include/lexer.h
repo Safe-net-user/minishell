@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/11 16:49:01 by gd-hallu          #+#    #+#             */
-/*   Updated: 2026/08/19 01:12:30 by gd-hallu         ###   ########.fr       */
+/*   Updated: 2026/08/20 16:14:47 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,15 +81,40 @@ typedef enum e_val_lx
 	LX_BQUOTE_NF,
 }	t_val_lx;
 
+/**
+ * @brief Represents a token in the shell lexer.
+ *
+ * Stores the token value, its type and flags, as well as links
+ * to the previous and next tokens. It also stores heredoc content
+ * when the token is associated with a heredoc.
+ *
+ * @param value Token string value.
+ * @param flags Token flags.
+ * @param type_tk Token type.
+ * @param next Pointer to the next token.
+ * @param prev Pointer to the previous token.
+ * @param heredoc_content Heredoc content associated with the token.
+ */
+
 typedef struct s_tk
 {
-	char		*value;
-	t_flag_tk	flags;
-	t_type_tk	type_tk;
+	char			*value;
 	struct s_tk		*next;
 	struct s_tk		*prev;
-	char	*heredoc_content;
+	char			*heredoc_content;
+	t_flag_tk		flags;
+	t_type_tk		type_tk;
 }	t_tk;
+
+/**
+ * @struct s_lx
+ * @brief Stores the lexer state and its working resources.
+ *
+ * Contains the minishell context, command line being parsed, current
+ * token, string builder and current position in the input. It also
+ * stores the current lexer state and whether the next token must be
+ * interpreted as a heredoc delimiter.
+ */
 
 typedef struct s_lx
 {

@@ -3,12 +3,32 @@
 /*                                                        :::      ::::::::   */
 /*   signaux.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/11 21:18:50 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/19 16:16:56 by gd-hallu         ###   ########.fr       */
+/*   Updated: 2026/08/20 16:00:17 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+/**
+ * @file signaux.c
+ * @brief Signal handling for the shell's interactive and heredoc contexts.
+ *
+ * Two distinct signal configurations are used depending on where the
+ * shell is in its execution:
+ *
+ * - `set_signaux_interactif()`: active while waiting for input at the
+ *   prompt. SIGINT redraws a fresh prompt line instead of killing the
+ *   shell (mimics bash behavior on Ctrl+C); SIGQUIT is ignored.
+ *
+ * - `set_signaux_heredoc()`: active while reading heredoc input.
+ *   SIGINT sets the global flag and lets the heredoc reading loop
+ *   detect and abort itself; SIGQUIT is ignored.
+ *
+ * `g_signal` is the sole global variable, as required by the subject:
+ * it only carries the last received signal number so the rest of the
+ * shell can react to it outside the handler.
+ */
 
 #define _POSIX_C_SOURCE 200809L
 #include <signal.h>

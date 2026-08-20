@@ -3,12 +3,27 @@
 /*                                                        :::      ::::::::   */
 /*   parser_operator.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 14:55:04 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/13 12:35:11 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/08/20 16:01:27 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+/**
+ * @file parser_operator.c
+ * @brief Parsing of pipes and logical operators (&&, ||).
+ *
+ * Implements two levels of the grammar, each left-associative:
+ *
+ *     parse_or_and  → parse_pipe (AND_IF | OR_IF) parse_pipe ...
+ *     parse_pipe    → parse_command (PIPE parse_command)...
+ *
+ * `parse_or_and()` sits above `parse_pipe()` in precedence, so pipes
+ * bind tighter than `&&`/`||`, matching standard shell grammar.
+ * `token_to_string()` provides readable operator names for syntax
+ * error messages.
+ */
 
 #include "parser.h"
 #include "minishell.h"

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand_redir.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/17 12:03:28 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/18 17:12:00 by gd-hallu         ###   ########.fr       */
+/*   Updated: 2026/08/20 16:06:22 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,11 +29,6 @@ static t_tk	*advance_after_expand(t_tk **file_ref)
 	return (NULL);
 }
 
-/*
-** Parcourt la liste operateur/fichier de node->redirect.
-** Saute l'expansion du delimiteur pour << et <<- (jamais expanse).
-** head est l'adresse du pointeur de tete (ex: &node->redirect).
-*/
 t_val_exp	expand_redirections(t_mms *mms, t_tk **head)
 {
 	t_tk	*op;

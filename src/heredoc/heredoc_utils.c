@@ -6,9 +6,29 @@
 /*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/20 14:19:45 by miouali           #+#    #+#             */
-/*   Updated: 2026/08/20 15:03:02 by miouali          ###   ########.fr       */
+/*   Updated: 2026/08/20 16:02:03 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+/**
+ * @file heredoc.c
+ * @brief Here-document (<<) reading and content resolution.
+ *
+ * `here_doc()` is the entry point, called from the parser as soon as
+ * a `<<`/`<<-` token is parsed. It switches to heredoc-specific
+ * signal handling (`set_signaux_heredoc()`), then reads lines from
+ * the controlling terminal (`mms->tty_fd`) via `gnl()` until the
+ * delimiter is matched or EOF is reached.
+ *
+ * Whether each line is variable-expanded depends on whether the
+ * delimiter itself was quoted (`is_delim_quoted()`): an unquoted
+ * delimiter (`<<EOF`) expands `$VAR` in the body, a quoted one
+ * (`<<'EOF'`) does not — matching POSIX heredoc semantics.
+ *
+ * The resolved content is stored on the redirection token itself
+ * (`heredoc_content`) rather than written to a temp file, and is
+ * later fed to the child process through a pipe at execution time.
+ */
 
 #include "heredoc.h"
 #include <unistd.h>

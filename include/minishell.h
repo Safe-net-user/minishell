@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/09 15:49:14 by gd-hallu          #+#    #+#             */
-/*   Updated: 2026/08/19 16:17:33 by gd-hallu         ###   ########.fr       */
+/*   Updated: 2026/08/20 16:12:36 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,16 +43,15 @@ struct s_mms
 	t_ht			*cmd_path;
 	t_ht			*alias;
 	t_stack_alloc	*sa;
+	t_ast			*current_ast;
 	char			*name;
 	char			*cwd;
 	mode_t			umask;
 	int				tty_fd;
-	int		should_exit;
-	int		exit_status;
-	t_ast			*current_ast;
+	int				should_exit;
+	int				exit_status;
 	int				last_status;
 };
-
 void	set_signaux_interactif(void);
 void	set_signaux_heredoc(void);
 
