@@ -6,7 +6,7 @@
 /*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 16:55:06 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/20 10:50:47 by miouali          ###   ########.fr       */
+/*   Updated: 2026/08/20 14:22:59 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,24 +83,15 @@ int	redirection_out(t_mms *mms, t_tk *op)
 
 static int	redirection_heredoc(t_tk *op)
 {
-	int		fd[2];
-	ssize_t	len;
+	int	fd[2];
 
 	if (pipe(fd) == -1)
 	{
 		perror("miniMishell");
 		return (1);
 	}
-	len = write(fd[1], op->heredoc_content,
-			ft_strlen(op->heredoc_content));
-	if (len == -1)
-	{
-		perror("miniMishell");
-		close(fd[0]);
-		close(fd[1]);
+	if (write_heredoc_content(fd, op->heredoc_content))
 		return (1);
-	}
-	close(fd[1]);
 	if (dup2(fd[0], STDIN_FILENO) == -1)
 	{
 		perror("miniMishell");
