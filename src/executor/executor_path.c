@@ -6,15 +6,13 @@
 /*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 16:56:45 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/20 10:49:55 by miouali          ###   ########.fr       */
+/*   Updated: 2026/08/20 13:52:54 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "executor.h"
 #include <unistd.h>
 #include "ft_strings.h"
-
-
 
 void	free_path_arr(char **arr)
 {

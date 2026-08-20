@@ -6,7 +6,7 @@
 /*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 17:49:46 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/19 15:24:45 by gd-hallu         ###   ########.fr       */
+/*   Updated: 2026/08/20 13:53:21 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ static int	wait_pipeline(t_pipeline *pipeline)
 		if (waitpid(pipeline->pids[i], &status, 0) == -1)
 		{
 			if (errno == EINTR)
-            	continue ;
+				continue ;
 			perror("miniMishell");
 			return (1);
 		}
