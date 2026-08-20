@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_command.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 14:51:42 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/19 20:44:16 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/08/20 14:46:45 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,62 +47,23 @@ bool	parse_redirection(t_mms *mms, t_tk **token, t_ast *node)
 {
 	t_tk	*new_op;
 	t_tk	*new_file;
-	t_tk	*cur;
-	t_tk	*cursor;
-	char	*content;
 
-	cursor = *token;
-	new_op = stack_alloc(mms->sa, sizeof(t_tk));
+	new_op = new_redir_token(mms, *token);
 	if (!new_op)
 		return (false);
-	new_op->type_tk = cursor->type_tk;
-	new_op->flags = cursor->flags;
-	new_op->value = cursor->value;
-	new_op->heredoc_content = NULL;
-	new_op->next = NULL;
-	new_op->prev = NULL;
-	cursor = cursor->next;
-	if (!cursor)
-		return (parser_error(mms, cursor), false);
-	if (cursor->type_tk != TOK_WORD
-		&& cursor->type_tk != TOK_DELIMITER)
-		return (parser_error(mms, cursor), false);
-
-
-		
-	new_file = stack_alloc(mms->sa, sizeof(t_tk));
+	*token = (*token)->next;
+	if (!*token || ((*token)->type_tk != TOK_WORD
+			&& (*token)->type_tk != TOK_DELIMITER))
+		return (parser_error(mms, *token), false);
+	new_file = new_redir_token(mms, *token);
 	if (!new_file)
 		return (false);
-	new_file->type_tk = cursor->type_tk;
-	new_file->flags = cursor->flags;
-	new_file->value = cursor->value;
-	new_file->heredoc_content = NULL;
-	new_file->next = NULL;
 	new_file->prev = new_op;
 	new_op->next = new_file;
-	if (new_op->type_tk == TOK_DLESS)
-	{
-		content = here_doc(mms, new_file);
-		if (!content)
-		{
-			if (mms->last_status == 130)
-				return (false);
-			mms->last_status = 1;
-			return (false);
-		}
-		new_op->heredoc_content = content;
-	}
-	if (!node->redirect)
-		node->redirect = new_op;
-	else
-	{
-		cur = node->redirect;
-		while (cur->next)
-			cur = cur->next;
-		cur->next = new_op;
-		new_op->prev = cur;
-	}
-	*token = cursor->next;
+	if (!parse_heredoc(mms, new_op, new_file))
+		return (false);
+	add_redirect(node, new_op);
+	*token = (*token)->next;
 	return (true);
 }
 

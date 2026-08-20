@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/16 10:27:34 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/19 01:00:36 by gd-hallu         ###   ########.fr       */
+/*   Updated: 2026/08/20 14:48:24 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,9 @@ bool		parse_redirection(t_mms *mms, t_tk **token, t_ast *node);
 t_ast		*parse_command(t_mms *mms, t_tk **token);
 t_ast		*parse_pipe(t_mms *mms, t_tk **token);
 t_ast		*parse_or_and(t_mms *mms, t_tk **token);
+void		add_redirect(t_ast *node, t_tk *new_op);
+bool		parse_heredoc(t_mms *mms, t_tk *op, t_tk *file);
+t_tk		*new_redir_token(t_mms *mms, t_tk *src);
 
 t_ast		*parser(t_mms *mms);
 
