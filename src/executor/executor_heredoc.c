@@ -6,7 +6,7 @@
 /*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 16:55:56 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/20 13:40:47 by miouali          ###   ########.fr       */
+/*   Updated: 2026/08/20 14:08:41 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ static char	*expand_hd_line(t_mms *mms, char *line)
 	return (result);
 }
 
- static bool	is_delim_quoted(t_tk *redir)
+static bool	is_delim_quoted(t_tk *redir)
 {
 	if (redir->flags & TOKF_SQUOTE)
 		return (true);
@@ -77,7 +77,6 @@ char	*here_doc(t_mms *mms, t_tk *redir)
 	while (1)
 	{
 		write(STDOUT_FILENO, "> ", 2);
-
 		line = gnl(mms->tty_fd, &interrupted);
 		if (interrupted)
 		{
