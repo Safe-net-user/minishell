@@ -6,7 +6,7 @@
 /*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/11 14:43:40 by gd-hallu          #+#    #+#             */
-/*   Updated: 2026/08/18 14:01:48 by miouali          ###   ########.fr       */
+/*   Updated: 2026/08/20 13:44:22 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,12 +31,14 @@ void	free_ast_values(t_ast *node)
 		while (tok)
 		{
 			free(tok->value);
+			free(tok->heredoc_content);
 			tok = tok->next;
 		}
 		tok = node->redirect;
 		while (tok)
 		{
 			free(tok->value);
+			free(tok->heredoc_content);
 			tok = tok->next;
 		}
 	}

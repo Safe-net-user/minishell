@@ -6,7 +6,7 @@
 /*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 16:55:56 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/20 10:49:33 by miouali          ###   ########.fr       */
+/*   Updated: 2026/08/20 13:40:47 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,10 @@
 #include "ft_strings.h"
 #include "signal.h"
 #include "sys/wait.h"
-#include "heredoc.h"
 #include <termios.h>
 #include "ft_io.h"
 #include "expander.h"
+#include "gnl.h"
 
 static char	*expand_hd_line(t_mms *mms, char *line)
 {
@@ -37,7 +37,7 @@ static char	*expand_hd_line(t_mms *mms, char *line)
 		return (NULL);
 	if (!tk_ptr || !tk_ptr->value)
 		return (ft_strdup(""));
-	result = ft_strdup(tk_ptr->value);
+	result = tk_ptr->value;
 	return (result);
 }
 
@@ -78,13 +78,13 @@ char	*here_doc(t_mms *mms, t_tk *redir)
 	{
 		write(STDOUT_FILENO, "> ", 2);
 
-		line = heredoc_gnl(mms->tty_fd, &interrupted);
+		line = gnl(mms->tty_fd, &interrupted);
 		if (interrupted)
 		{
 			free(line);
 			free(content);
 			free(lim_nl);
-			heredoc_gnl_reset();
+			gnl_reset();
 			mms->last_status = 130;
 			set_signaux_interactif();
 			return (NULL);
@@ -104,31 +104,30 @@ char	*here_doc(t_mms *mms, t_tk *redir)
 		if (expand)
 		{
 			tmp = expand_hd_line(mms, line);
-			free(line);
 			line = tmp;
 			if (!line)
 			{
 				free(content);
 				free(lim_nl);
-				heredoc_gnl_reset();
+				gnl_reset();
 				set_signaux_interactif();
 				return (NULL);
 			}
 		}
-		tmp = hd_strjoin_free(content, line);
+		tmp = ft_strjoin_free(content, line);
 		free(line);
 		if (!tmp)
 		{
 			free(content);
 			free(lim_nl);
-			heredoc_gnl_reset();
+			gnl_reset();
 			set_signaux_interactif();
 			return (NULL);
 		}
 		content = tmp;
 	}
 	free(lim_nl);
-	heredoc_gnl_reset();
+	gnl_reset();
 	set_signaux_interactif();
 	return (content);
 }
