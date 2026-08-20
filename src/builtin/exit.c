@@ -6,7 +6,7 @@
 /*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/24 23:36:26 by gaspard           #+#    #+#             */
-/*   Updated: 2026/08/20 11:10:16 by miouali          ###   ########.fr       */
+/*   Updated: 2026/08/20 11:23:36 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,10 +63,10 @@ t_builts_val	builtin_exit(t_mms *mms, char **args)
 		request_exit(mms, mms->last_status);
 	else if (!is_valid_arg(args[1]))
 	{
-		ft_putstr_fd("exit\n", STDOUT_FILENO);
+		request_exit(mms, 2);
 		ft_putstr_fd("miniMishell: exit: numeric argument required\n",
 			STDERR_FILENO);
-		return (2); //il faut quand meme exit
+		return (2);
 	}
 	else
 		request_exit(mms, ft_atoi(args[1]) % 256);
