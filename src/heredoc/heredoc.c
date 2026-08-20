@@ -1,21 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   executor_heredoc.c                                 :+:      :+:    :+:   */
+/*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 16:55:56 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/20 14:37:18 by miouali          ###   ########.fr       */
+/*   Updated: 2026/08/20 15:05:20 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "executor.h"
+#include "heredoc.h"
 #include <unistd.h>
 #include "ft_strings.h"
-#include "signal.h"
-#include "sys/wait.h"
-#include <termios.h>
 #include "ft_io.h"
 #include "expander.h"
 #include "gnl.h"

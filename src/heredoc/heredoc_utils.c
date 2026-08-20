@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   executor_heredoc_utils.c                           :+:      :+:    :+:   */
+/*   heredoc_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/20 14:19:45 by miouali           #+#    #+#             */
-/*   Updated: 2026/08/20 14:36:52 by miouali          ###   ########.fr       */
+/*   Updated: 2026/08/20 15:03:02 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "executor.h"
+#include "heredoc.h"
 #include <unistd.h>
 #include "ft_strings.h"
 #include "gnl.h"

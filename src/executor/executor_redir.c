@@ -6,7 +6,7 @@
 /*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 16:55:06 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/20 14:22:59 by miouali          ###   ########.fr       */
+/*   Updated: 2026/08/20 15:04:51 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include <unistd.h>
 #include "expander.h"
 #include "ft_strings.h"
+#include "heredoc.h"
 
 static int	expand_redir_file(t_mms *mms, t_tk *op)
 {

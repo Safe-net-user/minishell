@@ -6,13 +6,13 @@
 /*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 14:55:25 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/20 14:49:32 by miouali          ###   ########.fr       */
+/*   Updated: 2026/08/20 15:04:06 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
 #include "minishell.h"
-#include "executor.h"
+#include "heredoc.h"
 
 bool	is_command_token(t_type_tk type)
 {

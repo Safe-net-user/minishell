@@ -6,7 +6,7 @@
 /*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/11 11:23:14 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/20 14:34:33 by miouali          ###   ########.fr       */
+/*   Updated: 2026/08/20 15:02:46 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,16 +55,6 @@ int		execute(t_mms *mms, t_ast *node, t_executor *exec);
 void	print_error(char *msg);
 void	print_cmd_not_found(char *cmd);
 void	print_exec_error(char *path, char *msg);
-
-char	*here_doc(t_mms *mms, t_tk *redir);
-int write_heredoc_content(int fd[2], char *content);
-void	hd_cleanup(char *content, char *lim_nl);
-char	*hd_handle_line(t_mms *mms, char *line, bool expand);
-int	hd_process_line(t_mms *mms, char **content, char *line,
-		bool expand);
-char	*hd_interrupted(t_mms *mms, char *line, char *content,
-		char *lim_nl);
-char	*expand_hd_line(t_mms *mms, char *line);
 
 char	*find_path(t_mms *mms, t_ast *node, t_executor *exec);
 int		path_relative(t_ast *node);

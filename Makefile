@@ -6,7 +6,7 @@
 #    By: miouali <miouali@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/05/18 23:16:53 by gd-hallu          #+#    #+#              #
-#    Updated: 2026/08/20 14:21:08 by miouali          ###   ########.fr        #
+#    Updated: 2026/08/20 15:04:25 by miouali          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -40,6 +40,7 @@ UTILS			:= utils
 ENV				:= env
 EXPANDER		:= expander
 EXECUTOR		:= executor
+HEREDOC			:= heredoc
 
 # ---------------------- LIB --------------------- #
 LIBFT			:= libft.a
@@ -116,8 +117,6 @@ $(SRC)/$(EXECUTOR)/executor_builtins.c \
 $(SRC)/$(EXECUTOR)/executor_command_pipe.c \
 $(SRC)/$(EXECUTOR)/executor_command.c \
 $(SRC)/$(EXECUTOR)/executor_errors.c \
-$(SRC)/$(EXECUTOR)/executor_heredoc.c \
-$(SRC)/$(EXECUTOR)/executor_heredoc_utils.c \
 $(SRC)/$(EXECUTOR)/executor_path.c \
 $(SRC)/$(EXECUTOR)/executor_pipeline_0.c \
 $(SRC)/$(EXECUTOR)/executor_pipeline_1.c \
@@ -133,6 +132,8 @@ $(SRC)/$(BUILTIN)/export_utils.c \
 $(SRC)/$(BUILTIN)/export_utils_2.c \
 $(SRC)/$(BUILTIN)/pwd.c \
 $(SRC)/$(BUILTIN)/unset.c \
+$(SRC)/$(HEREDOC)/heredoc.c \
+$(SRC)/$(HEREDOC)/heredoc_utils.c
 
 # -------------------- OBJECTS -------------------- #
 OBJECTS 			:= $(patsubst $(SRC)/%.c, $(OBJ)/%.o, $(SOURCES))
