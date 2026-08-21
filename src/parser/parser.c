@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 14:51:09 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/21 01:13:29 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/08/21 17:00:32 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ static void	free_native_token_values(t_tk *first)
 	t_tk	*tok;
 
 	tok = first;
-	while (tok)
+	while (tok && tok->type_tk != TOK_EOF)
 	{
 		free(tok->value);
 		tok = tok->next;

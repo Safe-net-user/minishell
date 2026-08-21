@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor_path.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
+/*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 16:56:45 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/20 13:52:54 by miouali          ###   ########.fr       */
+/*   Updated: 2026/08/21 16:34:04 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,15 @@ char	*find_path(t_mms *mms, t_ast *node, t_executor *exec)
 		return (NULL);
 	entry = get_env(mms->env, "PATH");
 	if (!entry)
+	{
+		path = ft_split(".", ':');
+		if (!path)
+			return (NULL);
+		result = search_path(path, node->tokens->value);
+		free_path_arr(path);
+		return (result);
+	}
+	if (!entry->value || !entry->value[0])
 		return (NULL);
 	path = ft_split(entry->value, ':');
 	if (!path || !path[0])
