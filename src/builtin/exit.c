@@ -80,7 +80,7 @@ t_builts_val	builtin_exit(t_mms *mms, char **args)
 		request_exit(mms, mms->last_status);
 	else if (!is_valid_arg(args[1]))
 	{
-		request_exit(mms, 2);
+		ft_putstr_fd("exit\n", STDOUT_FILENO);
 		ft_putstr_fd("miniMishell: exit: numeric argument required\n",
 			STDERR_FILENO);
 		return (2);
