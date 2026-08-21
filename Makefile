@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: miouali <miouali@student.42.fr>            +#+  +:+       +#+         #
+#    By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/05/18 23:16:53 by gd-hallu          #+#    #+#              #
-#    Updated: 2026/08/20 23:40:54 by miouali          ###   ########.fr        #
+#    Updated: 2026/08/21 16:20:41 by fiaudfiz         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -51,7 +51,7 @@ EXECUTOR		:= executor
 HEREDOC			:= heredoc
 
 # ---------------------- LIB --------------------- #
-LIBFT			:= libft.a
+LIBFT			:= $(LIBFT_D)/libft.a
 
 # ---------------------- MODE -------------------- #
 MODE			?= release
@@ -198,4 +198,4 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all f_asm re fclean clean
+.PHONY: all f_asm re fclean clean re debug
