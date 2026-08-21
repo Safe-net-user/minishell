@@ -10,21 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-/**
- * @file cd.c
- * @brief `cd` builtin implementation.
- *
- * `builtin_cd()` resolves the target directory (`get_cd_target()`):
- * no argument → $HOME, `-` → $OLDPWD, otherwise the given path.
- * `chdir()` is applied directly in the shell's own process (never
- * forked), since a directory change only matters if it persists in
- * the parent — running it in a child would be a no-op for the shell.
- *
- * On success, `update_pwd()` refreshes both $OLDPWD and $PWD in the
- * environment table so subsequent `cd -` and `$PWD` lookups stay
- * accurate.
- */
-
 #include "builtin.h"
 #include "env.h"
 #include "ft_strings.h"
@@ -33,81 +18,67 @@
 #include <stdio.h>
 #include <unistd.h>
 
-static int	update_entry(t_env *env, char *key, char *value)
+t_builts_val    internal_error(void)
 {
-	t_env_entry	*entry;
-
-	entry = get_env(env, key);
-	if (entry)
-	{
-		free(entry->value);
-		entry->value = value;
-	}
-	else
-	{
-		add_env(env, key, value, EXPORTED);
-		free(value);
-	}
-	return (BUI_SUCCESS);
+    ft_putstr_fd("miniMishell: cd: internal error\n", STDERR_FILENO);
+    return (BUI_ERROR);
 }
 
-static int	update_pwd(t_env *env, char *old_pwd)
+t_builts_val    variable_not_set_error(void)
 {
-	char	*new_pwd;
-
-	new_pwd = getcwd(NULL, 0);
-	if (!new_pwd)
-		return (BUI_ERROR);
-	update_entry(env, "OLDPWD", old_pwd);
-	update_entry(env, "PWD", new_pwd);
-	return (BUI_SUCCESS);
+    ft_putstr_fd("miniMishell: cd: variable not set\n", STDERR_FILENO);
+    return (BUI_ERROR);
 }
 
-static char	*get_cd_target(t_env *env, char **argv, char *old_pwd)
+t_builts_val    too_many_args_error(void)
 {
-	t_env_entry	*entry;
+    ft_putstr_fd("miniMishell: cd: too many arguments", STDERR_FILENO);
+    return (BUI_TOO_MANY_ARGS);
+}
+t_builts_val    cd_home(t_mms *mms)
+{
+    t_en_entry  *entry;
 
-	if (!argv[1] || !argv[1][0])
-		entry = get_env(env, "HOME");
-	else if (!ft_strcmp(argv[1], "-"))
-		entry = get_env(env, "OLDPWD");
-	else
-		return (argv[1]);
-	if (!entry || !entry->value)
-	{
-		free(old_pwd);
-		ft_putstr_fd("miniMishell: cd: variable not set\n", STDERR_FILENO);
-		return (NULL);
-	}
-	return (entry->value);
+    entry = get_env(mms->env, "HOME");
+    if (!entry || !entry->str)
+        return (variable_not_set_error());
+    if (chdir(entry->str) < 0)
+    {
+        perror("miniMishell: cd");
+        return (BUI_ERROR);
+    }
+    mms->cwd = entry->str;
+    return (BUI_SUCCESS);
 }
 
-static int	do_cd(t_env *env, char *path, char *old_pwd)
+t_builts_val    cd(t_mms *mms, char *path)
 {
-	if (chdir(path))
-	{
-		free(old_pwd);
-		perror("miniMishell: cd");
-		return (BUI_ERROR);
-	}
-	return (update_pwd(env, old_pwd));
+    t_env_entry *entry;
+    char        *old_pwd;
+
+    old_pwd = getcwd(NULL, 0);
+    if (!old_pwd)
+    {
+        ft_strjoin(mms->cwd, path);
+        if (chdir(mms->cwd) < 0)
+        {
+            perror("miniMishell: cd");
+            add_env(mms->env, OLDPWD, mms->cwd);
+            return (BUI_ERROR);
+        }
+        return (BUI_SUCCESS);
+    }
+    add_env(mms->env, OLD_PWD, old_pwd);
 }
 
-t_builts_val	builtin_cd(t_env *env, char **argv)
+t_builts_val    builtin_cd(t_mms *mms, char **av)
 {
-	char	*old_pwd;
-	char	*path;
+    if (!mms || !mms->env || !av)
+        return (internal_error());
+    if (av[2])
+        return (too_many_args_error());
+    if (!av[1])
+        return (cd_home(mms));
+    return (cd(mms, av[1]));
 
-	if (!env || !argv)
-		return (BUI_ERROR);
-	if (argv[1] && argv[2])
-		return (ft_putstr_fd("miniMishell: cd: too many arguments\n", \
-STDERR_FILENO), BUI_TOO_MANY_ARGS);
-	old_pwd = getcwd(NULL, 0);
-	if (!old_pwd)
-		return (perror("miniMishell: cd"), BUI_ERROR);
-	path = get_cd_target(env, argv, old_pwd);
-	if (!path)
-		return (BUI_ERROR);
-	return (do_cd(env, path, old_pwd));
 }
