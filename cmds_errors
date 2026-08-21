@@ -7,14 +7,12 @@ cat < /tmp/a | grep hello | tr a-z A-Z | cat > /tmp/b
 printf "%s\n" "$USER" '$USER' "$HOME" '$HOME' | cat | cat
 echo "aaa"'bbb'"ccc"'ddd'"eee" | cat | wc -c
 echo hello > /tmp/a > /tmp/b > /tmp/c
-cat < /tmp/a > /tmp/b 2>/tmp/c | cat ////// pas la meme sortie
 printf "hello world\n" | cat | cat | cat | cat | cat | cat | cat | cat | cat | wc -c
-echo "$USER" | cat | grep "$USER" | cat | cat | tr a-z A-Z | cat | wc -c // segfaul
+echo "$USER" | cat | grep "$USER" | cat | cat | tr a-z A-Z | cat | wc -c
 echo hello | nonexistent_command | cat | cat | wc -c
 nonexistent_command | cat | nonexistent_command | cat | wc -c
 echo "$USER" | nonexistent_command | grep hello | cat
 echo "$USER $HOME" | grep "$USER" | cat > /tmp/a
-printf "%s\n" "$USER" "$HOME" "$PWD" | grep "$USER" | tr a-z A-Z | cat > /tmp/a 2>/tmp/b
 
 
 cat << EOF, si apres execution complete, si je veux la commande d'avant avec readline, il n'y a que cat << EOF qui apparait
@@ -227,26 +225,6 @@ Direct leak of 7 byte(s) in 1 object(s) allocated from:
 
 SUMMARY: AddressSanitizer: 147 byte(s) leaked in 15 allocation(s).
 
-Ici : miniMishell$: nonexistent_command 2>/tmp/a
-      miniMishell: nonexistent_command: command not found
-      miniMishell$:
-Le message d'erreur ne devrait pas apparaitre.
-
-pareil pour ca :
-nonexistent_command 2>/tmp/a | cat
-echo hello | nonexistent_command 2>/tmp/a | cat
-nonexistent_command > /tmp/a 2>/tmp/b
-
-minimishell : miniMishell$: nonexistent_command | cat 2>/tmp/a | wc -l
-              miniMishell: nonexistent_command: command not found
-              cat: 2: Aucun fichier ou dossier de ce nom
-              0
-              miniMishell$:
-bash posix : bash-5.3$ nonexistent_command | cat 2>/tmp/a | wc -l
-             bash: nonexistent_command: commande introuvable
-             0
-
-
 Mauvais ici car hello doit apparaitre avant:
 miniMishell$: nonexistent_command | cat << EOF | cat
 > hello
@@ -273,14 +251,3 @@ gaspard@fedora:~/Documents/42/milestone_3/minishell$
 
 cat | exit
 exit|cat
-
-
-
-miniMishell$: nonexistent_command < /tmp/a | cat > /tmp/b | nonexistent_command 2>/tmp/c
-miniMishell: nonexistent_command: command not found
-miniMishell: nonexistent_command: command not found
-miniMishell$:
-
-gaspard@fedora:~/Documents/42/milestone_3/minishell$ nonexistent_command < /tmp/a | cat > /tmp/b | nonexistent_command 2>/tmp/c
-bash: nonexistent_command: commande non trouvée...
-gaspard@fedora:~/Documents/42/milestone_3/minishell$ 
