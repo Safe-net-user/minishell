@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor_pipeline_1.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 17:49:46 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/20 13:53:21 by miouali          ###   ########.fr       */
+/*   Updated: 2026/08/21 15:29:36 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,9 @@ static void	pipeline_child(t_mms *mms, t_pipeline *pipeline, int i)
 
 static int	create_pipeline_process(t_mms *mms, t_pipeline *pipeline, int i)
 {
+	int	old_fd_prev;
+
+	old_fd_prev = pipeline->fd_prev;
 	if (pipe(pipeline->fd) == -1)
 	{
 		perror("miniMishell");
@@ -44,10 +47,13 @@ static int	create_pipeline_process(t_mms *mms, t_pipeline *pipeline, int i)
 		return (1);
 	}
 	if (pipeline->pids[i] == 0)
+	{
+		pipeline->fd_prev = old_fd_prev;
 		pipeline_child(mms, pipeline, i);
+	}
 	close(pipeline->fd[1]);
-	if (pipeline->fd_prev != -1)
-		close(pipeline->fd_prev);
+	if (old_fd_prev != -1)
+		close(old_fd_prev);
 	pipeline->fd_prev = pipeline->fd[0];
 	return (0);
 }

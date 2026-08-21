@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor_command.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
+/*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 16:53:07 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/20 13:59:13 by miouali          ###   ########.fr       */
+/*   Updated: 2026/08/21 15:29:16 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,8 @@ static int	execute_builtin(t_mms *mms, t_ast *node)
 	t_saved_fd	saved;
 	int			status;
 
+	if (!node->redirect)
+		return (exec_builtin(mms, node));
 	if (!save_std_fd(&saved))
 		return (1);
 	status = redirection(mms, node);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor_command_pipe.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
+/*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 17:45:31 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/20 10:51:50 by miouali          ###   ########.fr       */
+/*   Updated: 2026/08/21 15:28:52 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,12 @@ int	execute_cmd_pipe(t_mms *mms, t_ast *cmd, int fd_in, int fd_out)
 	if (!cmd->tokens)
 		return (0);
 	if (builtin(cmd))
-		return (exec_builtin(mms, cmd));
+	{
+		status = exec_builtin(mms, cmd);
+		if (mms->should_exit)
+			return (mms->exit_status);
+		return (status);
+	}
 	status = get_cmd_path(mms, cmd, &exec);
 	if (status != 0)
 		return (status);
