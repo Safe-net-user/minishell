@@ -6,7 +6,7 @@
 /*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 16:55:56 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/20 15:05:20 by miouali          ###   ########.fr       */
+/*   Updated: 2026/08/22 14:29:53 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,30 +61,47 @@ static int	hd_got_delim_or_eof(char *line, char *lim_nl)
 	return (0);
 }
 
-static char	*hd_read_loop(t_mms *mms, char *lim_nl, bool expand)
+static void hd_append_history(t_mms *mms, char *line)
 {
-	char	*content;
-	char	*line;
-	int		interrupted;
+    char    *tmp;
 
-	content = ft_strdup("");
-	if (!content)
-		return (NULL);
-	while (1)
-	{
-		write(STDOUT_FILENO, "> ", 2);
-		line = gnl(mms->tty_fd, &interrupted);
-		if (interrupted)
-			return (hd_interrupted(mms, line, content, lim_nl));
-		if (hd_got_delim_or_eof(line, lim_nl))
-			break ;
-		if (hd_process_line(mms, &content, line, expand))
-		{
-			hd_cleanup(content, lim_nl);
-			return (NULL);
-		}
-	}
-	return (content);
+    if (!mms->history_buffer)
+        return ;
+    tmp = ft_strjoin_free(mms->history_buffer, "\n");
+    if (!tmp)
+    {
+        mms->history_buffer = NULL; //quand meme ajouter a l'historique
+        return ;
+    }
+    mms->history_buffer = ft_strjoin_free(tmp, line);
+}
+
+static char *hd_read_loop(t_mms *mms, char *lim_nl, bool expand)
+{
+    char    *content;
+    char    *line;
+    int     interrupted;
+
+    content = ft_strdup("");
+    if (!content)
+        return (NULL);
+    while (1)
+    {
+        write(STDOUT_FILENO, "> ", 2);
+        line = gnl(mms->tty_fd, &interrupted);
+        if (interrupted)
+            return (hd_interrupted(mms, line, content, lim_nl));
+        if (line)
+            hd_append_history(mms, line);
+        if (hd_got_delim_or_eof(line, lim_nl))
+            break ;
+        if (hd_process_line(mms, &content, line, expand))
+        {
+            hd_cleanup(content, lim_nl);
+            return (NULL);
+        }
+    }
+    return (content);
 }
 
 char	*here_doc(t_mms *mms, t_tk *redir)

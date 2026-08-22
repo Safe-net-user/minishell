@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_0.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/24 17:19:57 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/20 23:56:03 by gd-hallu         ###   ########.fr       */
+/*   Updated: 2026/08/22 14:26:15 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,15 +16,17 @@
 #include <readline/readline.h>
 #include <signal.h>
 
-char	*read_line(void)
+char *read_line(void)
 {
-	char	*line;
+    char *line;
 
-	if (isatty(STDIN_FILENO))
-		line = readline("miniMishell$: ");
-	else
-		line = readline("");
-	return (line);
+    if (isatty(STDIN_FILENO))
+        line = readline("miniMishell$: ");
+    else
+        line = readline("");
+    if (!line)
+        write(2, "DEBUG: readline returned NULL\n", 31);
+    return (line);
 }
 
 int	ft_isspace(int c)

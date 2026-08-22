@@ -6,7 +6,7 @@
 /*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/09 15:49:14 by gd-hallu          #+#    #+#             */
-/*   Updated: 2026/08/20 16:37:47 by miouali          ###   ########.fr       */
+/*   Updated: 2026/08/22 14:11:10 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ struct s_mms
 	t_ast			*current_ast;
 	char			*name;
 	char			*cwd;
+	char			*history_buffer;
 	mode_t			umask;
 	int				tty_fd;
 	int				should_exit;

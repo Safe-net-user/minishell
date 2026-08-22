@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/09 10:30:51 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/21 16:54:58 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/08/22 17:07:49 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ static	t_mms	*init_og_struct(void)
 	mms->alias = init_hash_table(INIT_SIZE_HT);
 	mms->cmd_path = init_hash_table(INIT_SIZE_HT);
 	mms->sa = init_stack_allocator(INIT_SIZE_SA);
+	mms->history_buffer = NULL;
 	if (mms->sa)
 		ft_bzero(mms->sa->buffer, INIT_SIZE_SA);
 	mms->cwd = getcwd(NULL, 0);
@@ -79,36 +80,51 @@ static int	set_og_struct(t_mms *mms, char **envp)
 	return (1);
 }
 
-static int	handle_input(char *result, t_mms *mms)
+static void commit_pending_history(t_mms *mms)
 {
-	if (*result)
-		add_history(result);
-	if (is_blank(result))
-	{
-		free(result);
-		return (1);
-	}
-	if (lexer(result, mms) != LX_SUCCESS)
-	{
-		mms->last_status = 2;
-		free(result);
-		return (1);
-	}
-	free(result);
-	run_parser_and_exec(mms);
-	if (mms->should_exit)
-		return (0);
-	return (1);
+    if (mms->history_buffer)
+    {
+        add_history(mms->history_buffer);
+        free(mms->history_buffer);
+        mms->history_buffer = NULL;
+    }
 }
 
-int	process_input(t_mms *mms)
+static int handle_input(char *result, t_mms *mms)
 {
-	char	*result;
+    if (*result)
+        mms->history_buffer = ft_strdup(result);
+    else
+        mms->history_buffer = NULL;
+    if (is_blank(result))
+    {
+        free(result);
+        commit_pending_history(mms);
+        return (1);
+    }
+    if (lexer(result, mms) != LX_SUCCESS)
+    {
+        mms->last_status = 2;
+        free(result);
+        commit_pending_history(mms);
+        return (1);
+    }
+    free(result);
+    run_parser_and_exec(mms);
+    commit_pending_history(mms);
+    if (mms->should_exit)
+        return (0);
+    return (1);
+}
 
-	result = read_line();
-	if (!result)
-		return (0);
-	return (handle_input(result, mms));
+int process_input(t_mms *mms)
+{
+    char *result;
+
+    result = read_line();
+    if (!result)
+        return (0);
+    return (handle_input(result, mms));
 }
 
 int	main(int ac, char **av, char **envp)
