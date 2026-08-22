@@ -18,7 +18,8 @@ static void	free_tokens_values(t_tk *tok)
 	while (tok)
 	{
 		free(tok->value);
-		free(tok->heredoc_content);
+		if (tok->type_tk == TOK_DLESS && tok->heredoc_content)
+			free(tok->heredoc_content);
 		tok = tok->next;
 	}
 }

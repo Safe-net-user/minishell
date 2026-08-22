@@ -1,0 +1,253 @@
+echo hello | nonexistent_command | cat | cat | wc -l
+printf 'hello\n' | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat | wc -l
+printf '%s\n' "hello    world" 'hello    world' "hello"'    '"world"
+echo hello | cat | cat | cat | tr a-z A-Z | wc -c
+printf "hello\nworld\n" | cat | grep hello | cat | tr a-z A-Z > /tmp/test
+cat < /tmp/a | grep hello | tr a-z A-Z | cat > /tmp/b
+printf "%s\n" "$USER" '$USER' "$HOME" '$HOME' | cat | cat
+echo "aaa"'bbb'"ccc"'ddd'"eee" | cat | wc -c
+echo hello > /tmp/a > /tmp/b > /tmp/c
+printf "hello world\n" | cat | cat | cat | cat | cat | cat | cat | cat | cat | wc -c
+echo "$USER" | cat | grep "$USER" | cat | cat | tr a-z A-Z | cat | wc -c
+echo hello | nonexistent_command | cat | cat | wc -c
+nonexistent_command | cat | nonexistent_command | cat | wc -c
+echo "$USER" | nonexistent_command | grep hello | cat
+echo "$USER $HOME" | grep "$USER" | cat > /tmp/a
+
+
+cat << EOF, si apres execution complete, si je veux la commande d'avant avec readline, il n'y a que cat << EOF qui apparait
+Si 'EOF', on est censé pouvoir arreter le here doc avec juste EOF
+miniMishell$: printf "ignored\n" | cat << EOF | wc -l
+> hello
+> world
+> EOF
+2 <------ le resultat aurait du etre 3
+
+~/D/4/m/minishell ❯❯❯ ./minishell
+miniMishell$: cat << EOF
+> hello
+> world
+> EOF
+hello
+world
+miniMishell$: cat << EOF
+> hallo         world
+> EOF
+hallo         world
+miniMishell$: cat << 'EOF'
+> $USER
+> $HOME
+> $PWD
+> EOF
+> 'EOF'
+$USER
+$HOME
+$PWD
+EOF
+miniMishell$: cat << EOF
+> $USER
+> $HOME
+> $PWD
+> EOF
+gaspard
+/home/gaspard
+/home/gaspard/Documents/42/milestone_3/minishell
+miniMishell$: cat << EOF | cat
+> hello
+> world
+> EOF
+hello
+world
+miniMishell$: cat << EOF | grep hello | cat
+> hello
+> world
+> hello world
+> EOF
+hello
+hello world
+miniMishell$: cat << EOF | tr a-z A-Z | cat | wc -c
+> hello
+> world
+> EOF
+12
+miniMishell$: printf "ignored\n" | cat << EOF | wc -l
+> hello
+> world
+> EOF
+2
+miniMishell$: cat << EOF << EOF2
+> first
+> EOF
+> second
+> EOF2
+>
+>
+> ^C
+miniMishell$: cat << EOF << EOF2
+> first
+> EOF
+> second
+> EOF2
+second
+miniMishell$: miniMishell$: printf "ignored\n" | cat << EOF | wc -l
+> hello
+> world
+> EOF
+2
+>
+>
+> ^C
+miniMishell$: miniMishell$: printf "ignored\n" | cat << EOF | wc -l
+> hello
+> world
+> EOF
+2
+>
+>
+> ^C
+miniMishell$: cat << EOF << EOF2
+> first
+> EOF
+> second
+> EOF2
+second
+miniMishell$: cat << EOF | cat << EOF2 | wc -l
+> hello
+> EOF
+> world
+> EOF2
+1
+miniMishell$: cat << EOF > /tmp/a
+> hello
+> world
+> EOF
+miniMishell$: cat << EOF >> /tmp/a
+> third
+> EOF
+miniMishell$: cat < /tmp/a << EOF
+> hello
+> EOF
+hello
+miniMishell$: cat << EOF < /tmp/a
+> hello
+> EOF
+hello
+world
+third
+third
+miniMishell$: echo hello > /tmp/a > /tmp/b > /tmp/c
+miniMishell$: echo hello >> /tmp/a >> /tmp/b
+miniMishell$: cat < /tmp/a < /tmp/b
+hello
+hello
+miniMishell$: cat < /tmp/a > /tmp/b > /tmp/c
+miniMishell$: cat > /tmp/a > /tmp/b > /tmp/c
+miniMishell$: cat > /tmp/a > /tmp/b > /tmp/c
+grger
+miniMishell$: echo hello > /tmp/a | cat
+
+=================================================================
+==75842==ERROR: LeakSanitizer: detected memory leaks
+
+Direct leak of 70 byte(s) in 9 object(s) allocated from:
+    #0 0x7f6f53ae6f4b in malloc (/lib64/libasan.so.8+0xe6f4b) (BuildId: d7d37a712ed67f505b486de13595e3f6cc124ee8)
+    #1 0x000000419302 in ft_strdup src/strings/ft_strdup.c:23
+    #2 0x000000407c2a in emit_tk src/lexer/lx_utils_0.c:33
+    #3 0x000000405c90 in lx_space src/lexer/lx_normal.c:41
+    #4 0x000000405c90 in lx_normal src/lexer/lx_normal.c:64
+    #5 0x000000404ed2 in lexer src/lexer/lexer.c:83
+    #6 0x00000040087a in handle_input src/core/main.c:91
+    #7 0x00000040087a in process_input src/core/main.c:111
+    #8 0x000000400fcb in main src/core/main.c:132
+    #9 0x7f6f530105b4 in __libc_start_call_main (/lib64/libc.so.6+0x35b4) (BuildId: 88c03969b4319fc0140734fe863825ec4a1cdb0d)
+    #10 0x7f6f53010667 in __libc_start_main@@GLIBC_2.34 (/lib64/libc.so.6+0x3667) (BuildId: 88c03969b4319fc0140734fe863825ec4a1cdb0d)
+    #11 0x000000400754 in _start (/home/gaspard/Documents/42/milestone_3/minishell/minishell+0x400754) (BuildId: b0fb414104df05d38e53cf5ae4bf00f3a9339d26)
+
+Direct leak of 7 byte(s) in 1 object(s) allocated from:
+    #0 0x7f6f53ae6f4b in malloc (/lib64/libasan.so.8+0xe6f4b) (BuildId: d7d37a712ed67f505b486de13595e3f6cc124ee8)
+    #1 0x00000041c2cd in ft_strjoin_free src/io/gnl/gnl_utils.c:38
+    #2 0x0000004188a3 in hd_process_line src/heredoc/heredoc_utils.c:78
+    #3 0x000000418455 in hd_read_loop src/heredoc/heredoc.c:81
+    #4 0x000000418455 in here_doc src/heredoc/heredoc.c:104
+    #5 0x00000040df8a in parse_heredoc src/parser/parser_utils.c:58
+    #6 0x00000040c459 in parse_redirection src/parser/parser_command.c:78
+    #7 0x00000040cb71 in parse_command src/parser/parser_command.c:129
+    #8 0x00000040d0ee in parse_pipe src/parser/parser_operator.c:57
+    #9 0x00000040d528 in parse_or_and src/parser/parser_operator.c:83
+    #10 0x00000040bd0c in parser src/parser/parser.c:94
+    #11 0x000000401c28 in run_parser_and_exec src/core/utils_1.c:27
+    #12 0x000000400892 in handle_input src/core/main.c:98
+    #13 0x000000400892 in process_input src/core/main.c:111
+    #14 0x000000400fcb in main src/core/main.c:132
+    #15 0x7f6f530105b4 in __libc_start_call_main (/lib64/libc.so.6+0x35b4) (BuildId: 88c03969b4319fc0140734fe863825ec4a1cdb0d)
+    #16 0x7f6f53010667 in __libc_start_main@@GLIBC_2.34 (/lib64/libc.so.6+0x3667) (BuildId: 88c03969b4319fc0140734fe863825ec4a1cdb0d)
+    #17 0x000000400754 in _start (/home/gaspard/Documents/42/milestone_3/minishell/minishell+0x400754) (BuildId: b0fb414104df05d38e53cf5ae4bf00f3a9339d26)
+
+SUMMARY: AddressSanitizer: 77 byte(s) leaked in 10 allocation(s).
+
+QUAND ON EXIT SUITE A CA :
+=================================================================
+==74071==ERROR: LeakSanitizer: detected memory leaks
+
+Direct leak of 140 byte(s) in 14 object(s) allocated from:
+    #0 0x7f6f53ae6f4b in malloc (/lib64/libasan.so.8+0xe6f4b) (BuildId: d7d37a712ed67f505b486de13595e3f6cc124ee8)
+    #1 0x000000419302 in ft_strdup src/strings/ft_strdup.c:23
+    #2 0x000000407c2a in emit_tk src/lexer/lx_utils_0.c:33
+    #3 0x000000405c90 in lx_space src/lexer/lx_normal.c:41
+    #4 0x000000405c90 in lx_normal src/lexer/lx_normal.c:64
+    #5 0x000000404ed2 in lexer src/lexer/lexer.c:83
+    #6 0x00000040087a in handle_input src/core/main.c:91
+    #7 0x00000040087a in process_input src/core/main.c:111
+    #8 0x000000400fcb in main src/core/main.c:132
+    #9 0x7f6f530105b4 in __libc_start_call_main (/lib64/libc.so.6+0x35b4) (BuildId: 88c03969b4319fc0140734fe863825ec4a1cdb0d)
+    #10 0x7f6f53010667 in __libc_start_main@@GLIBC_2.34 (/lib64/libc.so.6+0x3667) (BuildId: 88c03969b4319fc0140734fe863825ec4a1cdb0d)
+    #11 0x000000400754 in _start (/home/gaspard/Documents/42/milestone_3/minishell/minishell+0x400754) (BuildId: b0fb414104df05d38e53cf5ae4bf00f3a9339d26)
+
+Direct leak of 7 byte(s) in 1 object(s) allocated from:
+    #0 0x7f6f53ae6f4b in malloc (/lib64/libasan.so.8+0xe6f4b) (BuildId: d7d37a712ed67f505b486de13595e3f6cc124ee8)
+    #1 0x00000041c2cd in ft_strjoin_free src/io/gnl/gnl_utils.c:38
+    #2 0x0000004188a3 in hd_process_line src/heredoc/heredoc_utils.c:78
+    #3 0x000000418455 in hd_read_loop src/heredoc/heredoc.c:81
+    #4 0x000000418455 in here_doc src/heredoc/heredoc.c:104
+    #5 0x00000040df8a in parse_heredoc src/parser/parser_utils.c:58
+    #6 0x00000040c459 in parse_redirection src/parser/parser_command.c:78
+    #7 0x00000040cb71 in parse_command src/parser/parser_command.c:129
+    #8 0x00000040d0ee in parse_pipe src/parser/parser_operator.c:57
+    #9 0x00000040d528 in parse_or_and src/parser/parser_operator.c:83
+    #10 0x00000040bd0c in parser src/parser/parser.c:94
+    #11 0x000000401c28 in run_parser_and_exec src/core/utils_1.c:27
+    #12 0x000000400892 in handle_input src/core/main.c:98
+    #13 0x000000400892 in process_input src/core/main.c:111
+    #14 0x000000400fcb in main src/core/main.c:132
+    #15 0x7f6f530105b4 in __libc_start_call_main (/lib64/libc.so.6+0x35b4) (BuildId: 88c03969b4319fc0140734fe863825ec4a1cdb0d)
+    #16 0x7f6f53010667 in __libc_start_main@@GLIBC_2.34 (/lib64/libc.so.6+0x3667) (BuildId: 88c03969b4319fc0140734fe863825ec4a1cdb0d)
+    #17 0x000000400754 in _start (/home/gaspard/Documents/42/milestone_3/minishell/minishell+0x400754) (BuildId: b0fb414104df05d38e53cf5ae4bf00f3a9339d26)
+
+SUMMARY: AddressSanitizer: 147 byte(s) leaked in 15 allocation(s).
+
+Mauvais ici car hello doit apparaitre avant:
+miniMishell$: nonexistent_command | cat << EOF | cat
+> hello
+> EOF
+miniMishell: nonexistent_command: command not found
+hello
+miniMishell$:
+gaspard@fedora:~/Documents/42/milestone_3/minishell$ nonexistent_command | cat << EOF | cat
+> hello
+> EOF
+
+hello
+bash: nonexistent_command: commande non trouvée...
+gaspard@fedora:~/Documents/42/milestone_3/minishell$
+
+
+BUILTIN exit
+miniMishell$: exit | cat
+exit
+miniMishell$:
+
+gaspard@fedora:~/Documents/42/milestone_3/minishell$ exit | cat
+gaspard@fedora:~/Documents/42/milestone_3/minishell$
+
+cat | exit
+exit|cat

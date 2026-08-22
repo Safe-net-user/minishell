@@ -35,6 +35,7 @@ int	emit_tk(t_lx *lx)
 			return (0);
 	}
 	tk->flags = lx->tk->flags;
+	tk->heredoc_content = NULL;
 	if (lx->is_next_delimiter)
 		lx->tk->type_tk = TOK_DELIMITER;
 	lx->is_next_delimiter = 0;
