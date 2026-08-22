@@ -58,7 +58,6 @@ static int	is_valid_arg(char *str)
 
 static void	request_exit(t_mms *mms, int status)
 {
-	ft_putstr_fd("exit\n", STDOUT_FILENO);
 	mms->should_exit = 1;
 	mms->exit_status = status;
 }
@@ -80,7 +79,6 @@ t_builts_val	builtin_exit(t_mms *mms, char **args)
 		request_exit(mms, mms->last_status);
 	else if (!is_valid_arg(args[1]))
 	{
-		ft_putstr_fd("exit\n", STDOUT_FILENO);
 		ft_putstr_fd("miniMishell: exit: numeric argument required\n",
 			STDERR_FILENO);
 		return (2);
