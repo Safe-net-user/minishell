@@ -6,7 +6,7 @@
 /*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/24 17:19:57 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/22 14:26:15 by miouali          ###   ########.fr       */
+/*   Updated: 2026/08/22 17:24:53 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,6 @@ char *read_line(void)
         line = readline("miniMishell$: ");
     else
         line = readline("");
-    if (!line)
-        write(2, "DEBUG: readline returned NULL\n", 31);
     return (line);
 }
 

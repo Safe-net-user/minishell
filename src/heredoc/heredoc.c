@@ -6,7 +6,7 @@
 /*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 16:55:56 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/22 14:29:53 by miouali          ###   ########.fr       */
+/*   Updated: 2026/08/22 17:29:13 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,22 @@
 #include "ft_io.h"
 #include "expander.h"
 #include "gnl.h"
+#include "ft_memory.h"
+
+void strip_quotes(char *s)
+{
+    size_t  len;
+
+    len = ft_strlen(s);
+    if (len < 2)
+        return ;
+    if ((s[0] == '\'' && s[len - 1] == '\'')
+        || (s[0] == '"' && s[len - 1] == '"'))
+    {
+        ft_memmove(s, s + 1, len - 2);
+        s[len - 2] = '\0';
+    }
+}
 
 char	*expand_hd_line(t_mms *mms, char *line)
 {
@@ -104,25 +120,27 @@ static char *hd_read_loop(t_mms *mms, char *lim_nl, bool expand)
     return (content);
 }
 
-char	*here_doc(t_mms *mms, t_tk *redir)
+char *here_doc(t_mms *mms, t_tk *redir)
 {
-	char	*lim_nl;
-	char	*content;
-	bool	expand;
+    char    *lim_nl;
+    char    *content;
+    bool    expand;
 
-	set_signaux_heredoc();
-	lim_nl = ft_strdup(redir->value);
-	if (!lim_nl)
-	{
-		set_signaux_interactif();
-		return (NULL);
-	}
-	expand = !is_delim_quoted(redir);
-	content = hd_read_loop(mms, lim_nl, expand);
-	if (!content)
-		return (NULL);
-	free(lim_nl);
-	gnl_reset();
-	set_signaux_interactif();
-	return (content);
+    set_signaux_heredoc();
+    lim_nl = ft_strdup(redir->value);
+    if (!lim_nl)
+    {
+        set_signaux_interactif();
+        return (NULL);
+    }
+    strip_quotes(lim_nl);
+    expand = !is_delim_quoted(redir);
+    content = hd_read_loop(mms, lim_nl, expand);
+    if (!content)
+        return (NULL);
+    free(lim_nl);
+    gnl_reset();
+    set_signaux_interactif();
+    return (content);
 }
+
