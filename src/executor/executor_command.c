@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor_command.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 16:53:07 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/21 15:29:16 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/08/22 20:17:10 by gd-hallu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@
 #include <sys/wait.h>
 #include <sys/stat.h>
 #include <string.h>
+#include "readline/readline.h"
+
 #define _POSIX_C_SOURCE 200809L
 
 int	execute(t_mms *mms, t_ast *node, t_executor *exec)

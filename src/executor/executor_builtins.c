@@ -3,10 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   executor_builtins.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
+/*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/09 17:20:34 by fiaudfiz          #+#    #+#             */
+<<<<<<< Updated upstream
 /*   Updated: 2026/08/22 17:55:00 by miouali          ###   ########.fr       */
+=======
+/*   Updated: 2026/08/22 18:30:03 by gd-hallu         ###   ########.fr       */
+>>>>>>> Stashed changes
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +23,9 @@ int	exec_builtin(t_mms *mms, t_ast *node)
 	if (ft_strcmp(node->tokens->value, "echo") == 0)
 		return (builtin_echo(tks_to_cmd_tab(mms, node->tokens)));
 	else if (ft_strcmp(node->tokens->value, "cd") == 0)
-		return (builtin_cd(mms->env, tks_to_cmd_tab(mms, node->tokens)));
+		return (builtin_cd(mms, tks_to_cmd_tab(mms, node->tokens)));
 	else if (ft_strcmp(node->tokens->value, "pwd") == 0)
-		return (builtin_pwd());
+		return (builtin_pwd(mms));
 	else if (ft_strcmp(node->tokens->value, "export") == 0)
 		return (builtin_export(mms, tks_to_cmd_tab(mms, node->tokens)));
 	else if (ft_strcmp(node->tokens->value, "unset") == 0)
