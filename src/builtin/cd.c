@@ -6,7 +6,7 @@
 /*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/28 12:07:56 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/23 18:06:58 by gd-hallu         ###   ########.fr       */
+/*   Updated: 2026/08/23 18:42:24 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,22 +19,22 @@
 #include <stdio.h>
 #include <unistd.h>
 
-t_builts_val    internal_error(void)
+t_builts_val	internal_error(void)
 {
-    ft_putstr_fd("miniMishell: cd: internal error\n", STDERR_FILENO);
-    return (BUI_ERROR);
+	ft_putstr_fd("miniMishell: cd: internal error\n", STDERR_FILENO);
+	return (BUI_ERROR);
 }
 
-t_builts_val    variable_not_set_error(void)
+t_builts_val	variable_not_set_error(void)
 {
-    ft_putstr_fd("miniMishell: cd: variable not set\n", STDERR_FILENO);
-    return (BUI_ERROR);
+	ft_putstr_fd("miniMishell: cd: variable not set\n", STDERR_FILENO);
+	return (BUI_ERROR);
 }
 
-t_builts_val    too_many_args_error(void)
+t_builts_val	too_many_args_error(void)
 {
-    ft_putstr_fd("miniMishell: cd: too many arguments", STDERR_FILENO);
-    return (BUI_TOO_MANY_ARGS);
+	ft_putstr_fd("miniMishell: cd: too many arguments", STDERR_FILENO);
+	return (BUI_TOO_MANY_ARGS);
 }
 
 static t_builts_val	change_dir(t_mms *mms, char *path)
@@ -45,30 +45,25 @@ static t_builts_val	change_dir(t_mms *mms, char *path)
 	old_pwd = getcwd(NULL, 0);
 	if (!old_pwd)
 		return (internal_error());
-
 	if (chdir(path) < 0)
 	{
 		perror("miniMishell: cd");
 		free(old_pwd);
 		return (BUI_ERROR);
 	}
-
 	new_pwd = getcwd(NULL, 0);
 	if (!new_pwd)
 	{
 		free(old_pwd);
 		return (internal_error());
 	}
-
 	add_env(mms->env, "OLDPWD", old_pwd, EXPORTED);
 	add_env(mms->env, "PWD", new_pwd, EXPORTED);
-
 	free(mms->cwd);
 	mms->cwd = new_pwd;
 	free(old_pwd);
 	return (BUI_SUCCESS);
 }
-
 
 static t_builts_val	cd_home(t_mms *mms)
 {
@@ -82,8 +77,8 @@ static t_builts_val	cd_home(t_mms *mms)
 
 static t_builts_val	cd_oldpwd(t_mms *mms)
 {
-	t_env_entry	*entry;
-	char		*oldpwd;
+	t_env_entry		*entry;
+	char			*oldpwd;
 	t_builts_val	ret;
 
 	entry = get_env(mms->env, "OLDPWD");
@@ -106,7 +101,7 @@ char	*get_new_path(t_mms *mms, char *old_pwd, char *path)
 {
 	char	*tmp;
 	char	*final_path;
-	
+
 	tmp = NULL;
 	final_path = NULL;
 	if (path && path[0] == '/')
@@ -130,44 +125,43 @@ char	*get_new_path(t_mms *mms, char *old_pwd, char *path)
 	return (final_path);
 }
 
-t_builts_val    cd(t_mms *mms, char *path)
+t_builts_val	cd(t_mms *mms, char *path)
 {
-    char    *old_pwd;
-    char    *new_path;
+	char	*old_pwd;
+	char	*new_path;
 
-    old_pwd = getcwd(NULL, 0);
+	old_pwd = getcwd(NULL, 0);
 	new_path = get_new_path(mms, old_pwd, path);
-    if (!old_pwd)
-    {
-		
-        if (chdir(new_path) < 0)
-            add_env(mms->env, "OLDPWD", mms->cwd, EXPORTED);
+	if (!old_pwd)
+	{
+		if (chdir(new_path) < 0)
+			add_env(mms->env, "OLDPWD", mms->cwd, EXPORTED);
 		old_pwd = getcwd(NULL, 0);
 		if (!old_pwd)
 			perror("miniMishell: cd");
-        return (BUI_ERROR);
-    }
-    if (chdir(path) < 0)
-    {
-        perror("miniMishell: cd");
-        add_env(mms->env, "OLDPWD", mms->cwd, EXPORTED);
-        return (BUI_ERROR);
-    }
-    add_env(mms->env, "OLDPWD", old_pwd, EXPORTED);
+		return (BUI_ERROR);
+	}
+	if (chdir(path) < 0)
+	{
+		perror("miniMishell: cd");
+		add_env(mms->env, "OLDPWD", mms->cwd, EXPORTED);
+		return (BUI_ERROR);
+	}
+	add_env(mms->env, "OLDPWD", old_pwd, EXPORTED);
 	free(mms->cwd);
-    ft_strdup(mms->cwd = new_path);
-    return (BUI_SUCCESS);
+	ft_strdup(mms->cwd = new_path);
+	return (BUI_SUCCESS);
 }
 
-t_builts_val    builtin_cd(t_mms *mms, char **av)
+t_builts_val	builtin_cd(t_mms *mms, char **av)
 {
-    if (!mms || !mms->env || !av)
-        return (internal_error());
-    if (av[2])
-        return (too_many_args_error());
-    if (!av[1] || !av[1][0])
-        return (cd_home(mms));
-    if (ft_strcmp(av[1], "-") == 0)
-        return (cd_oldpwd(mms));
-    return (cd(mms, av[1]));
+	if (!mms || !mms->env || !av)
+		return (internal_error());
+	if (av[2])
+		return (too_many_args_error());
+	if (!av[1] || !av[1][0])
+		return (cd_home(mms));
+	if (ft_strcmp(av[1], "-") == 0)
+		return (cd_oldpwd(mms));
+	return (cd(mms, av[1]));
 }
