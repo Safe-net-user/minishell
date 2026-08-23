@@ -6,7 +6,7 @@
 /*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/11 14:43:40 by gd-hallu          #+#    #+#             */
-/*   Updated: 2026/08/22 14:18:50 by miouali          ###   ########.fr       */
+/*   Updated: 2026/08/23 18:32:13 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,18 +46,18 @@ void	free_stack_allocator(t_stack_alloc *sa)
 	free(sa);
 }
 
-void    free_og_struct(t_mms *mms)
+void	free_og_struct(t_mms *mms)
 {
-    if (!mms)
-        return ;
-    free_hash_table(mms->alias);
-    free_hash_table(mms->cmd_path);
-    free_env(mms->env);
-    free_stack_allocator(mms->sa);
-    free(mms->cwd);
-    free(mms->name);
-    free(mms->history_buffer);
-    free(mms);
+	if (!mms)
+		return ;
+	free_hash_table(mms->alias);
+	free_hash_table(mms->cmd_path);
+	free_env(mms->env);
+	free_stack_allocator(mms->sa);
+	free(mms->cwd);
+	free(mms->name);
+	free(mms->history_buffer);
+	free(mms);
 }
 
 int	cleanup_and_exit(t_mms *mms)

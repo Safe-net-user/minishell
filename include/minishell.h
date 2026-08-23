@@ -6,7 +6,7 @@
 /*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/09 15:49:14 by gd-hallu          #+#    #+#             */
-/*   Updated: 2026/08/23 18:19:09 by miouali          ###   ########.fr       */
+/*   Updated: 2026/08/23 18:35:27 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,7 @@ void	stack_reset(t_stack_alloc *sa);
 bool	is_blank(const char *s);
 char	*read_line(void);
 int		process_input(t_mms *mms);
+void	commit_pending_history(t_mms *mms);
 
 /* Parser and executor */
 

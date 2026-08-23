@@ -6,7 +6,7 @@
 /*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/24 17:19:57 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/22 17:24:53 by miouali          ###   ########.fr       */
+/*   Updated: 2026/08/23 18:34:05 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,15 +16,15 @@
 #include <readline/readline.h>
 #include <signal.h>
 
-char *read_line(void)
+char	*read_line(void)
 {
-    char *line;
+	char	*line;
 
-    if (isatty(STDIN_FILENO))
-        line = readline("miniMishell$: ");
-    else
-        line = readline("");
-    return (line);
+	if (isatty(STDIN_FILENO))
+		line = readline("miniMishell$: ");
+	else
+		line = readline("");
+	return (line);
 }
 
 int	ft_isspace(int c)

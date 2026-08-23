@@ -6,7 +6,7 @@
 /*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/09 10:30:51 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/23 18:22:59 by miouali          ###   ########.fr       */
+/*   Updated: 2026/08/23 18:35:01 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,51 +81,41 @@ static int	set_og_struct(t_mms *mms, char **envp)
 	return (1);
 }
 
-static void commit_pending_history(t_mms *mms)
+static int	handle_input(char *result, t_mms *mms)
 {
-    if (mms->history_buffer)
-    {
-        add_history(mms->history_buffer);
-        free(mms->history_buffer);
-        mms->history_buffer = NULL;
-    }
+	if (*result)
+		mms->history_buffer = ft_strdup(result);
+	else
+		mms->history_buffer = NULL;
+	if (is_blank(result))
+	{
+		free(result);
+		commit_pending_history(mms);
+		return (1);
+	}
+	if (lexer(result, mms) != LX_SUCCESS)
+	{
+		mms->last_status = 2;
+		free(result);
+		commit_pending_history(mms);
+		return (1);
+	}
+	free(result);
+	run_parser_and_exec(mms);
+	commit_pending_history(mms);
+	if (mms->should_exit)
+		return (0);
+	return (1);
 }
 
-static int handle_input(char *result, t_mms *mms)
+int	process_input(t_mms *mms)
 {
-    if (*result)
-        mms->history_buffer = ft_strdup(result);
-    else
-        mms->history_buffer = NULL;
-    if (is_blank(result))
-    {
-        free(result);
-        commit_pending_history(mms);
-        return (1);
-    }
-    if (lexer(result, mms) != LX_SUCCESS)
-    {
-        mms->last_status = 2;
-        free(result);
-        commit_pending_history(mms);
-        return (1);
-    }
-    free(result);
-    run_parser_and_exec(mms);
-    commit_pending_history(mms);
-    if (mms->should_exit)
-        return (0);
-    return (1);
-}
+	char	*result;
 
-int process_input(t_mms *mms)
-{
-    char *result;
-
-    result = read_line();
-    if (!result)
-        return (0);
-    return (handle_input(result, mms));
+	result = read_line();
+	if (!result)
+		return (0);
+	return (handle_input(result, mms));
 }
 
 int	main(int ac, char **av, char **envp)

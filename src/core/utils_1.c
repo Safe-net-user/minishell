@@ -6,7 +6,7 @@
 /*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/17 11:37:49 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/23 16:29:20 by miouali          ###   ########.fr       */
+/*   Updated: 2026/08/23 18:35:10 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,16 +20,26 @@ int	get_exit_status(t_mms *mms)
 	return (mms->last_status);
 }
 
-void run_parser_and_exec(t_mms *mms)
+void	run_parser_and_exec(t_mms *mms)
 {
-    t_ast *head;
+	t_ast	*head;
 
-    head = parser(mms);
-    if (head)
-    {
-        mms->current_ast = head;
-        mms->last_status = executor(mms, head);
-        free_ast_values(head);
-        mms->current_ast = NULL;
-    }
+	head = parser(mms);
+	if (head)
+	{
+		mms->current_ast = head;
+		mms->last_status = executor(mms, head);
+		free_ast_values(head);
+		mms->current_ast = NULL;
+	}
+}
+
+void	commit_pending_history(t_mms *mms)
+{
+	if (mms->history_buffer)
+	{
+		add_history(mms->history_buffer);
+		free(mms->history_buffer);
+		mms->history_buffer = NULL;
+	}
 }
