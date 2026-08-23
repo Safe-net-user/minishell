@@ -6,7 +6,7 @@
 /*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/11 14:43:40 by gd-hallu          #+#    #+#             */
-/*   Updated: 2026/08/23 20:15:09 by gd-hallu         ###   ########.fr       */
+/*   Updated: 2026/08/23 20:20:49 by gd-hallu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,7 @@ void	free_og_struct(t_mms *mms)
     free(mms->cwd);
     free(mms->name);
     free(mms->history_buffer);
+	free(mms->st);
     free(mms);
 }
 
