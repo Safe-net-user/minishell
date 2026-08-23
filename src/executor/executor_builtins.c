@@ -6,7 +6,7 @@
 /*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/09 17:20:34 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/20 10:51:42 by miouali          ###   ########.fr       */
+/*   Updated: 2026/08/22 17:55:00 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,10 @@ int	exec_builtin(t_mms *mms, t_ast *node)
 	else if (ft_strcmp(node->tokens->value, "env") == 0)
 		return (builtin_env(mms->env, tks_to_cmd_tab(mms, node->tokens)));
 	else
+	{
+		//printf exit sauf si pipeline
 		return (builtin_exit(mms, tks_to_cmd_tab(mms, node->tokens)));
+	}
 }
 
 int	builtin(t_ast *node)
