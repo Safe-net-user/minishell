@@ -6,12 +6,13 @@
 /*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/17 11:37:49 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/23 18:35:10 by miouali          ###   ########.fr       */
+/*   Updated: 2026/08/23 18:58:53 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "executor.h"
+#include <readline/history.h>
 
 int	get_exit_status(t_mms *mms)
 {
