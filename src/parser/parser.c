@@ -6,7 +6,7 @@
 /*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 14:51:09 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/23 16:26:24 by miouali          ###   ########.fr       */
+/*   Updated: 2026/08/23 17:44:19 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,8 +39,6 @@ static void free_native_token_values(t_tk *first)
     tok = first;
     while (tok && tok->type_tk != TOK_EOF)
     {
-        write(2, "DEBUG: token type=", 19);
-        fprintf(stderr, "%d value=%p\n", tok->type_tk, (void *)tok->value);
         free(tok->value);
         tok = tok->next;
     }
