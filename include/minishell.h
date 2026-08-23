@@ -6,7 +6,7 @@
 /*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/09 15:49:14 by gd-hallu          #+#    #+#             */
-/*   Updated: 2026/08/22 14:11:10 by miouali          ###   ########.fr       */
+/*   Updated: 2026/08/23 18:19:09 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ struct s_mms
 	int				should_exit;
 	int				exit_status;
 	int				last_status;
+	bool			is_pipeline;
 };
 
 /* Signals */

@@ -3,16 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   executor_builtins.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/09 17:20:34 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/23 18:15:05 by gd-hallu         ###   ########.fr       */
+/*   Updated: 2026/08/23 18:26:47 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "executor.h"
 #include "ft_strings.h"
 #include "builtin.h"
+#include <unistd.h>
 
 int	exec_builtin(t_mms *mms, t_ast *node)
 {
@@ -30,7 +31,8 @@ int	exec_builtin(t_mms *mms, t_ast *node)
 		return (builtin_env(mms->env, tks_to_cmd_tab(mms, node->tokens)));
 	else
 	{
-		//printf exit sauf si pipeline
+		if (mms->is_pipeline != 1)
+			write(STDOUT_FILENO, "exit\n", 5);
 		return (builtin_exit(mms, tks_to_cmd_tab(mms, node->tokens)));
 	}
 }

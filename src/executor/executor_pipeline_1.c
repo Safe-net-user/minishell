@@ -6,7 +6,7 @@
 /*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 17:49:46 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/23 17:35:44 by miouali          ###   ########.fr       */
+/*   Updated: 2026/08/23 18:22:28 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,6 +112,7 @@ int	execute_pipeline(t_mms *mms, t_ast *node, t_pipeline *pipeline)
 	int	i;
 
 	(void)node;
+	mms->is_pipeline = 1;
 	i = 0;
 	while (i < pipeline->nb_cmd - 1)
 	{

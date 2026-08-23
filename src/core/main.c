@@ -6,7 +6,7 @@
 /*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/09 10:30:51 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/23 16:29:01 by miouali          ###   ########.fr       */
+/*   Updated: 2026/08/23 18:22:59 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ static	t_mms	*init_og_struct(void)
 	mms->alias = init_hash_table(INIT_SIZE_HT);
 	mms->cmd_path = init_hash_table(INIT_SIZE_HT);
 	mms->sa = init_stack_allocator(INIT_SIZE_SA);
+	mms->is_pipeline = 0;
 	mms->history_buffer = NULL;
 	if (mms->sa)
 		ft_bzero(mms->sa->buffer, INIT_SIZE_SA);
