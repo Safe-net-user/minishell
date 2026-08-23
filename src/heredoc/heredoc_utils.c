@@ -6,7 +6,7 @@
 /*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/20 14:19:45 by miouali           #+#    #+#             */
-/*   Updated: 2026/08/22 16:03:09 by miouali          ###   ########.fr       */
+/*   Updated: 2026/08/23 18:46:08 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,10 +83,10 @@ int	hd_process_line(t_mms *mms, char **content, char *line,
 	return (0);
 }
 
-char *hd_interrupted(t_mms *mms, char *line, char *content, char *lim_nl)
+char	*hd_interrupted(t_mms *mms, char *line, char *content, char *lim_nl)
 {
-    free(line);
-    mms->last_status = 130;
-    hd_cleanup(content, lim_nl);
-    return (NULL);
+	free(line);
+	mms->last_status = 130;
+	hd_cleanup(content, lim_nl);
+	return (NULL);
 }
