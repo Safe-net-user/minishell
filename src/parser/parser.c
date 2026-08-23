@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 14:51:09 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/21 17:00:32 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/08/23 16:26:24 by miouali          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,16 +32,18 @@
 #include <unistd.h>
 #include "ft_strings.h"
 
-static void	free_native_token_values(t_tk *first)
+static void free_native_token_values(t_tk *first)
 {
-	t_tk	*tok;
+    t_tk *tok;
 
-	tok = first;
-	while (tok && tok->type_tk != TOK_EOF)
-	{
-		free(tok->value);
-		tok = tok->next;
-	}
+    tok = first;
+    while (tok && tok->type_tk != TOK_EOF)
+    {
+        write(2, "DEBUG: token type=", 19);
+        fprintf(stderr, "%d value=%p\n", tok->type_tk, (void *)tok->value);
+        free(tok->value);
+        tok = tok->next;
+    }
 }
 
 t_tk	*link_tokens(t_tk *token)
@@ -85,14 +87,16 @@ void	parser_error(t_mms *mms, t_tk *tok)
 	write(2, "'\n", 2);
 }
 
-t_ast	*parser(t_mms *mms)
+t_ast *parser(t_mms *mms)
 {
-	t_tk	*first;
-	t_ast	*ast;
+    t_tk *first;
+    t_tk *head;
+    t_ast *ast;
 
-	first = link_tokens((t_tk *)(mms->sa->buffer + sizeof(t_header)));
-	ast = parse_or_and(mms, &first);
-	if (!ast)
-		free_native_token_values(first);
-	return (ast);
+    first = link_tokens((t_tk *)(mms->sa->buffer + sizeof(t_header)));
+    head = first;
+    ast = parse_or_and(mms, &first);
+    if (!ast)
+        free_native_token_values(head);
+    return (ast);
 }
