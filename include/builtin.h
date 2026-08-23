@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
+/*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/24 15:59:19 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/20 23:39:36 by miouali          ###   ########.fr       */
+/*   Updated: 2026/08/22 18:26:11 by gd-hallu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,12 +33,12 @@ static inline void	swap_addr(t_env_entry *a, t_env_entry *b)
 }
 
 /* ------------- builtin functions -------------*/
-t_builts_val	builtin_cd(t_env *env, char **argv);
+t_builts_val	builtin_cd(t_mms *mms, char **argv);
 t_builts_val	builtin_echo(char **tab);
 t_builts_val	builtin_env(t_env *env, char **args);
 t_builts_val	builtin_exit(t_mms *mms, char **args);
 t_builts_val	builtin_export(t_mms *mms, char **arg);
-t_builts_val	builtin_pwd(void);
+t_builts_val	builtin_pwd(t_mms *mms);
 t_builts_val	builtin_unset(t_mms *mms, char **argv);
 
 /* ------------- utils functions -------------*/
