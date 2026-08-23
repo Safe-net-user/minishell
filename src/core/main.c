@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
+/*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/09 10:30:51 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/23 18:35:01 by miouali          ###   ########.fr       */
+/*   Updated: 2026/08/23 20:08:22 by gd-hallu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,16 +41,18 @@
 #include <signal.h>
 #include "parser.h"
 #include "executor.h"
+#include <termios.h>
 
 static	t_mms	*init_og_struct(void)
 {
 	t_mms	*mms;
-
+	t_st	*st;
+	
+	st = malloc(sizeof(t_st));
 	mms = malloc(sizeof(t_mms));
 	if (!mms)
 		return (0);
 	mms->env = init_env(INIT_SIZE_HT);
-	mms->alias = init_hash_table(INIT_SIZE_HT);
 	mms->cmd_path = init_hash_table(INIT_SIZE_HT);
 	mms->sa = init_stack_allocator(INIT_SIZE_SA);
 	mms->is_pipeline = 0;
@@ -60,9 +62,14 @@ static	t_mms	*init_og_struct(void)
 	mms->cwd = getcwd(NULL, 0);
 	mms->name = ft_strdup("miniMishell");
 	mms->last_status = 0;
-	mms->umask = 0022;
 	mms->should_exit = 0;
-	if (!mms->env || !mms->alias || !mms->cmd_path || !mms->sa || !mms->name)
+	mms->st = st;
+	if (tcgetattr(STDIN_FILENO, mms->st) == -1)
+	{
+		free_og_struct(mms);
+		return (NULL);
+	}
+	if (!mms->env|| !mms->cmd_path || !mms->sa || !mms->name)
 	{
 		free_og_struct(mms);
 		return (NULL);

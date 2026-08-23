@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
+/*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/09 15:49:14 by gd-hallu          #+#    #+#             */
-/*   Updated: 2026/08/23 18:35:27 by miouali          ###   ########.fr       */
+/*   Updated: 2026/08/23 20:08:31 by gd-hallu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,14 @@
 # include "type.h"
 # include "env.h"
 # include "parser.h"
+# include <termios.h>
 
 # define INIT_SIZE_HT 1024
 # define INIT_SIZE_SA 32768
 # define DEFAULT_SB_SIZE 64
+
+
+ typedef struct termios t_st;
 
 /**
  * @struct s_mms
@@ -41,13 +45,12 @@ struct s_mms
 {
 	t_env			*env;
 	t_ht			*cmd_path;
-	t_ht			*alias;
 	t_stack_alloc	*sa;
 	t_ast			*current_ast;
 	char			*name;
 	char			*cwd;
 	char			*history_buffer;
-	mode_t			umask;
+	t_st			*st;
 	int				tty_fd;
 	int				should_exit;
 	int				exit_status;

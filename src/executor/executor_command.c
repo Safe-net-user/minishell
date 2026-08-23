@@ -6,7 +6,7 @@
 /*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 16:53:07 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/22 20:17:10 by gd-hallu         ###   ########.fr       */
+/*   Updated: 2026/08/23 20:01:32 by gd-hallu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 #include <sys/wait.h>
 #include <sys/stat.h>
 #include <string.h>
+#include <termios.h>
 #include "readline/readline.h"
 
 #define _POSIX_C_SOURCE 200809L
@@ -128,5 +129,6 @@ int	execute_cmd(t_mms *mms, t_ast *node)
 	signal(SIGQUIT, SIG_IGN);
 	status = wait_child(exec.pid);
 	set_signaux_interactif();
+	tcsetattr(STDIN_FILENO, TCSADRAIN, mms->st);
 	return (status);
 }
