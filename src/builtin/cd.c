@@ -6,7 +6,7 @@
 /*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/28 12:07:56 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/23 18:42:24 by miouali          ###   ########.fr       */
+/*   Updated: 2026/08/24 18:00:23 by gd-hallu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,11 +50,21 @@ static t_builts_val	change_dir(t_mms *mms, char *path)
 static t_builts_val	cd_home(t_mms *mms)
 {
 	t_env_entry	*entry;
+	char		*old_pwd;
 
+	old_pwd = get_old_pwd(mms);
+	if (!old_pwd)
+		return (internal_error());
 	entry = get_env(mms->env, "HOME");
 	if (!entry || !entry->value)
-		return (variable_not_set_error());
-	return (change_dir(mms, entry->value));
+		return (free(old_pwd), variable_not_set_error());
+	if (chdir(entry->value) < 0)
+	{
+		free(old_pwd);
+		perror("miniMishell: cd");
+		return (BUI_ERROR);
+	}
+	return (update_pwd(mms, old_pwd));
 }
 
 static t_builts_val	cd_oldpwd(t_mms *mms)

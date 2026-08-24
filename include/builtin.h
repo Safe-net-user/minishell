@@ -6,7 +6,7 @@
 /*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/24 15:59:19 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/22 18:26:11 by gd-hallu         ###   ########.fr       */
+/*   Updated: 2026/08/24 18:01:34 by gd-hallu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,5 +56,7 @@ char			*get_new_path(t_mms *mms, char *old_pwd, char *path);
 t_builts_val	too_many_args_error(void);
 t_builts_val	variable_not_set_error(void);
 t_builts_val	internal_error(void);
+char			*get_old_pwd(t_mms *mms);
+t_builts_val	update_pwd(t_mms *mms, char *old_pwd);
 
 #endif
