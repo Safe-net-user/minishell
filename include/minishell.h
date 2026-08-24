@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/09 15:49:14 by gd-hallu          #+#    #+#             */
-/*   Updated: 2026/08/23 20:08:31 by gd-hallu         ###   ########.fr       */
+/*   Updated: 2026/08/24 14:01:23 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,8 @@ bool	is_blank(const char *s);
 char	*read_line(void);
 int		process_input(t_mms *mms);
 void	commit_pending_history(t_mms *mms);
+int	init_og_check(t_mms *mms);
+void	init_og_fds(t_mms *mms);
 
 /* Parser and executor */
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/09 10:30:51 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/23 20:08:22 by gd-hallu         ###   ########.fr       */
+/*   Updated: 2026/08/24 14:02:09 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,15 +43,13 @@
 #include "executor.h"
 #include <termios.h>
 
-static	t_mms	*init_og_struct(void)
+static t_mms	*init_og_struct(void)
 {
 	t_mms	*mms;
-	t_st	*st;
 
-	st = malloc(sizeof(t_st));
 	mms = malloc(sizeof(t_mms));
 	if (!mms)
-		return (0);
+		return (NULL);
 	mms->env = init_env(INIT_SIZE_HT);
 	mms->cmd_path = init_hash_table(INIT_SIZE_HT);
 	mms->sa = init_stack_allocator(INIT_SIZE_SA);
@@ -63,17 +61,9 @@ static	t_mms	*init_og_struct(void)
 	mms->name = ft_strdup("miniMishell");
 	mms->last_status = 0;
 	mms->should_exit = 0;
-	mms->st = st;
-	if (tcgetattr(STDIN_FILENO, mms->st) == -1)
-	{
-		free_og_struct(mms);
+	init_og_fds(mms);
+	if (!init_og_check(mms))
 		return (NULL);
-	}
-	if (!mms->env || !mms->cmd_path || !mms->sa || !mms->name)
-	{
-		free_og_struct(mms);
-		return (NULL);
-	}
 	return (mms);
 }
 

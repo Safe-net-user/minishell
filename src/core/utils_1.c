@@ -3,16 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   utils_1.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
+/*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/17 11:37:49 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/23 18:58:53 by miouali          ###   ########.fr       */
+/*   Updated: 2026/08/24 14:02:22 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "executor.h"
 #include <readline/history.h>
+#include <unistd.h>
 
 int	get_exit_status(t_mms *mms)
 {
@@ -43,4 +44,25 @@ void	commit_pending_history(t_mms *mms)
 		free(mms->history_buffer);
 		mms->history_buffer = NULL;
 	}
+}
+
+void	init_og_fds(t_mms *mms)
+{
+	mms->tty_fd = -1;
+	mms->st = malloc(sizeof(t_st));
+}
+
+int	init_og_check(t_mms *mms)
+{
+	if (!mms->env || !mms->cmd_path || !mms->sa || !mms->name || !mms->st)
+	{
+		free_og_struct(mms);
+		return (0);
+	}
+	if (tcgetattr(STDIN_FILENO, mms->st) == -1)
+	{
+		free_og_struct(mms);
+		return (0);
+	}
+	return (1);
 }
