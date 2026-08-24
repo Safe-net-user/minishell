@@ -53,16 +53,15 @@ int		execute_cmd(t_mms *mms, t_ast *node);
 int		exec_command(char *cmd_path, char **cmd_tab, char **envp);
 int		execute(t_mms *mms, t_ast *node, t_executor *exec);
 void	execute_child(t_mms *mms, t_ast *node);
-int	fork_and_run(t_mms *mms, t_ast *node);
-
+int		fork_and_run(t_mms *mms, t_ast *node);
 
 /* Pipeline */
 
 int		execute_cmd_pipe(t_mms *mms, t_ast *cmd, int fd_in, int fd_out);
 int		execute_pipeline(t_mms *mms, t_ast *node, t_pipeline *pipeline);
-int	fork_pipeline_stage(t_mms *mms, t_pipeline *pipeline, int i,
-		int old_fd_prev);
-int	wait_child(pid_t pid);
+int		fork_pipeline_stage(t_mms *mms, t_pipeline *pipeline, int i,
+			int old_fd_prev);
+int		wait_child(pid_t pid);
 void	pipeline_child(t_mms *mms, t_pipeline *pipeline, int i);
 int		pipeline(t_mms *mms, t_ast *node);
 

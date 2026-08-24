@@ -25,9 +25,7 @@
 # define INIT_SIZE_SA 32768
 # define DEFAULT_SB_SIZE 64
 
-
- typedef struct termios t_st;
-
+typedef struct termios	t_st;
 /**
  * @struct s_mms
  * @brief Global state of the minishell instance.
@@ -78,7 +76,7 @@ bool	is_blank(const char *s);
 char	*read_line(void);
 int		process_input(t_mms *mms);
 void	commit_pending_history(t_mms *mms);
-int	init_og_check(t_mms *mms);
+int		init_og_check(t_mms *mms);
 void	init_og_fds(t_mms *mms);
 
 /* Parser and executor */
@@ -86,6 +84,6 @@ void	init_og_fds(t_mms *mms);
 void	run_parser_and_exec(t_mms *mms);
 int		get_exit_status(t_mms *mms);
 
-extern int	g_signal;
+extern int				g_signal;
 
 #endif
