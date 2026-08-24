@@ -52,5 +52,9 @@ t_builts_val	copy_key(char *dst, char *src, size_t *i);
 t_builts_val	copy_value(char *dst, char *src, size_t *i);
 t_env_entry		*build_sorted_arr(t_env *env);
 int				export_internal_error(t_env_entry *arr);
+char			*get_new_path(t_mms *mms, char *old_pwd, char *path);
+t_builts_val	too_many_args_error(void);
+t_builts_val	variable_not_set_error(void);
+t_builts_val	internal_error(void);
 
 #endif
