@@ -133,6 +133,7 @@ $(SRC)/$(EXECUTOR)/executor_redir.c \
 $(SRC)/$(EXECUTOR)/executor_utils_0.c \
 $(SRC)/$(EXECUTOR)/executor_utils_1.c \
 $(SRC)/$(BUILTIN)/cd.c \
+$(SRC)/$(BUILTIN)/cd_utils.c \
 $(SRC)/$(BUILTIN)/echo.c \
 $(SRC)/$(BUILTIN)/env.c \
 $(SRC)/$(BUILTIN)/exit.c \
