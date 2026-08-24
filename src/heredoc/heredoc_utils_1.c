@@ -6,11 +6,13 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/24 16:05:11 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/24 16:05:32 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/08/24 16:40:29 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "heredoc.h"
+#include "ft_strings.h"
+#include "ft_memory.h"
 #include "expander.h"
 
 void	strip_quotes(char *s)

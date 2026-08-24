@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
+/*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/20 14:57:10 by miouali           #+#    #+#             */
-/*   Updated: 2026/08/20 16:34:34 by miouali          ###   ########.fr       */
+/*   Updated: 2026/08/24 16:39:45 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,5 +26,6 @@ int		hd_process_line(t_mms *mms, char **content, char *line,
 			bool expand);
 char	*hd_interrupted(t_mms *mms, char *line, char *content,
 			char *lim_nl);
+void	strip_quotes(char *s);
 
 #endif
