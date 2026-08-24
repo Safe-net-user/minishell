@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+         #
+#    By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/05/18 23:16:53 by gd-hallu          #+#    #+#              #
-#    Updated: 2026/08/22 15:10:22 by gd-hallu         ###   ########.fr        #
+#    Updated: 2026/08/24 14:46:18 by fiaudfiz         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -132,6 +132,7 @@ $(SRC)/$(EXECUTOR)/executor_pipeline_1.c \
 $(SRC)/$(EXECUTOR)/executor_redir.c \
 $(SRC)/$(EXECUTOR)/executor_utils_0.c \
 $(SRC)/$(EXECUTOR)/executor_utils_1.c \
+$(SRC)/$(EXECUTOR)/executor_utils_2.c \
 $(SRC)/$(BUILTIN)/cd.c \
 $(SRC)/$(BUILTIN)/cd_utils.c \
 $(SRC)/$(BUILTIN)/echo.c \

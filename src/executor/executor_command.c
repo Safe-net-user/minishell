@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor_command.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gd-hallu <gd-hallu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 16:53:07 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/23 20:01:32 by gd-hallu         ###   ########.fr       */
+/*   Updated: 2026/08/24 14:38:46 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ static int	execute_builtin(t_mms *mms, t_ast *node)
 	return (status);
 }
 
-static void	execute_child(t_mms *mms, t_ast *node)
+void	execute_child(t_mms *mms, t_ast *node)
 {
 	t_executor	exec;
 	int			status;
@@ -85,7 +85,7 @@ static void	execute_child(t_mms *mms, t_ast *node)
 	exit(execute(mms, node, &exec));
 }
 
-static int	wait_child(pid_t pid)
+int	wait_child(pid_t pid)
 {
 	int	status;
 
@@ -105,9 +105,6 @@ static int	wait_child(pid_t pid)
 
 int	execute_cmd(t_mms *mms, t_ast *node)
 {
-	t_executor	exec;
-	int			status;
-
 	if (expand_tokens(mms, &node->tokens) == EXP_ERROR)
 	{
 		print_error("expansion failed");
@@ -117,18 +114,5 @@ int	execute_cmd(t_mms *mms, t_ast *node)
 		return (execute_redir_only(mms, node));
 	if (builtin(node))
 		return (execute_builtin(mms, node));
-	exec.pid = fork();
-	if (exec.pid == -1)
-	{
-		perror("miniMishell");
-		return (1);
-	}
-	if (exec.pid == 0)
-		execute_child(mms, node);
-	signal(SIGINT, SIG_IGN);
-	signal(SIGQUIT, SIG_IGN);
-	status = wait_child(exec.pid);
-	set_signaux_interactif();
-	tcsetattr(STDIN_FILENO, TCSADRAIN, mms->st);
-	return (status);
+	return (fork_and_run(mms, node));
 }

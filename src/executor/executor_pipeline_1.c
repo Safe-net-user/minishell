@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor_pipeline_1.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
+/*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 17:49:46 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/23 18:22:28 by miouali          ###   ########.fr       */
+/*   Updated: 2026/08/24 14:42:52 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #include <sys/wait.h>
 #include <errno.h>
 
-static void	pipeline_child(t_mms *mms, t_pipeline *pipeline, int i)
+void	pipeline_child(t_mms *mms, t_pipeline *pipeline, int i)
 {
 	int	fd_in;
 
@@ -38,19 +38,8 @@ static int	create_pipeline_process(t_mms *mms, t_pipeline *pipeline, int i)
 		perror("miniMishell");
 		return (1);
 	}
-	pipeline->pids[i] = fork();
-	if (pipeline->pids[i] == -1)
-	{
-		perror("miniMishell");
-		close(pipeline->fd[0]);
-		close(pipeline->fd[1]);
+	if (fork_pipeline_stage(mms, pipeline, i, old_fd_prev))
 		return (1);
-	}
-	if (pipeline->pids[i] == 0)
-	{
-		pipeline->fd_prev = old_fd_prev;
-		pipeline_child(mms, pipeline, i);
-	}
 	close(pipeline->fd[1]);
 	if (old_fd_prev != -1)
 		close(old_fd_prev);

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   executor_path.c                                    :+:      :+:    :+:   */
+/*   executor_path_0.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 16:56:45 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/21 16:34:04 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/08/24 14:27:39 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,26 +70,13 @@ static char	*search_path(char **path, char *cmd)
 
 char	*find_path(t_mms *mms, t_ast *node, t_executor *exec)
 {
-	char		**path;
-	char		*result;
-	t_env_entry	*entry;
+	char	**path;
+	char	*result;
 
 	(void)exec;
 	if (!node->tokens->value)
 		return (NULL);
-	entry = get_env(mms->env, "PATH");
-	if (!entry)
-	{
-		path = ft_split(".", ':');
-		if (!path)
-			return (NULL);
-		result = search_path(path, node->tokens->value);
-		free_path_arr(path);
-		return (result);
-	}
-	if (!entry->value || !entry->value[0])
-		return (NULL);
-	path = ft_split(entry->value, ':');
+	path = get_search_path(mms);
 	if (!path || !path[0])
 	{
 		free_path_arr(path);
