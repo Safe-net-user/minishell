@@ -56,6 +56,7 @@ struct s_mms
 	int				exit_status;
 	int				last_status;
 	bool			is_pipeline;
+	char			padding[7];
 };
 
 /* Signals */

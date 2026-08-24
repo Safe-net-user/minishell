@@ -46,6 +46,7 @@ typedef struct s_env_add
 	char			*key;
 	char			*str;
 	t_env_flags		flags;
+	char			padding[4];
 }	t_env_add;
 
 struct s_env

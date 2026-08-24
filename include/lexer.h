@@ -125,6 +125,7 @@ typedef struct s_lx
 	size_t	index;
 	int		state;
 	bool	is_next_delimiter;
+	char	padding[3];
 }	t_lx;
 
 typedef t_val_lx	(*t_state_lx_fn)(t_lx *);

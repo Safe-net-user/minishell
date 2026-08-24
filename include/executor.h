@@ -22,6 +22,7 @@ typedef struct s_executor
 	pid_t	pid;
 	int		fd_in;
 	int		fd_out;
+	char	padding[4];
 }	t_executor;
 
 typedef struct s_pipeline
@@ -32,6 +33,7 @@ typedef struct s_pipeline
 	int		fd_prev;
 	int		fd_next;
 	int		fd[2];
+	char	padding[4];
 }	t_pipeline;
 
 typedef struct s_saved_fd

@@ -39,6 +39,7 @@ typedef struct s_exp
 	t_mms		*mms;
 	size_t		index;
 	t_state_exp	state;
+	char		padding[4];
 }	t_exp;
 
 typedef t_val_exp	(*t_exp_variant_fn)(t_exp *);

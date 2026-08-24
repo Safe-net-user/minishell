@@ -48,9 +48,10 @@ typedef struct s_ast
 {
 	t_tk			*tokens;
 	t_tk			*redirect;
-	t_node_type		type;
 	struct s_ast	*left;
 	struct s_ast	*right;
+	t_node_type		type;
+	char			padding[4];
 }	t_ast;
 
 /* Token */
