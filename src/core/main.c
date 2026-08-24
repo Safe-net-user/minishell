@@ -47,7 +47,7 @@ static	t_mms	*init_og_struct(void)
 {
 	t_mms	*mms;
 	t_st	*st;
-	
+
 	st = malloc(sizeof(t_st));
 	mms = malloc(sizeof(t_mms));
 	if (!mms)
@@ -69,7 +69,7 @@ static	t_mms	*init_og_struct(void)
 		free_og_struct(mms);
 		return (NULL);
 	}
-	if (!mms->env|| !mms->cmd_path || !mms->sa || !mms->name)
+	if (!mms->env || !mms->cmd_path || !mms->sa || !mms->name)
 	{
 		free_og_struct(mms);
 		return (NULL);

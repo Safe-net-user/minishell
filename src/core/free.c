@@ -48,16 +48,16 @@ void	free_stack_allocator(t_stack_alloc *sa)
 
 void	free_og_struct(t_mms *mms)
 {
-    if (!mms)
-        return ;
-    free_hash_table(mms->cmd_path);
-    free_env(mms->env);
-    free_stack_allocator(mms->sa);
-    free(mms->cwd);
-    free(mms->name);
-    free(mms->history_buffer);
+	if (!mms)
+		return ;
+	free_hash_table(mms->cmd_path);
+	free_env(mms->env);
+	free_stack_allocator(mms->sa);
+	free(mms->cwd);
+	free(mms->name);
+	free(mms->history_buffer);
 	free(mms->st);
-    free(mms);
+	free(mms);
 }
 
 int	cleanup_and_exit(t_mms *mms)
