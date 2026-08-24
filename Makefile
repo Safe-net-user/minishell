@@ -6,7 +6,7 @@
 #    By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/05/18 23:16:53 by gd-hallu          #+#    #+#              #
-#    Updated: 2026/08/24 14:46:18 by fiaudfiz         ###   ########.fr        #
+#    Updated: 2026/08/24 16:06:41 by fiaudfiz         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -145,7 +145,8 @@ $(SRC)/$(BUILTIN)/export_utils_3.c \
 $(SRC)/$(BUILTIN)/pwd.c \
 $(SRC)/$(BUILTIN)/unset.c \
 $(SRC)/$(HEREDOC)/heredoc.c \
-$(SRC)/$(HEREDOC)/heredoc_utils.c
+$(SRC)/$(HEREDOC)/heredoc_utils_0.c \
+$(SRC)/$(HEREDOC)/heredoc_utils_1.c \
 
 # -------------------- OBJECTS -------------------- #
 OBJECTS 			:= $(patsubst $(SRC)/%.c, $(OBJ)/%.o, $(SOURCES))
