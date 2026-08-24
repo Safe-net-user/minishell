@@ -6,14 +6,16 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/24 14:32:16 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/24 14:54:43 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/08/24 19:04:46 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#define _GNU_SOURCE
 #include "minishell.h"
 #include "executor.h"
 #include <unistd.h>
 #include <signal.h>
+#include <sys/wait.h>
 #include "ft_strings.h"
 
 int	fork_and_run(t_mms *mms, t_ast *node)
@@ -66,4 +68,26 @@ int	fork_pipeline_stage(t_mms *mms, t_pipeline *pipeline, int i,
 		pipeline_child(mms, pipeline, i);
 	}
 	return (0);
+}
+
+void	print_signal_msg(int status)
+{
+	if (!WIFSIGNALED(status))
+		return ;
+	if (WTERMSIG(status) == SIGQUIT)
+	{
+		if (WCOREDUMP(status))
+			write(STDERR_FILENO, "Quit (core dumped)\n", 20);
+		else
+			write(STDERR_FILENO, "Quit\n", 5);
+	}
+	else if (WTERMSIG(status) == SIGINT)
+		write(STDERR_FILENO, "\n", 1);
+}
+
+void	restore_interactive_state(t_mms *mms)
+{
+	set_signaux_interactif();
+	if (tcsetattr(STDIN_FILENO, TCSANOW, mms->st) == -1)
+		perror("tcsetattr failed");
 }

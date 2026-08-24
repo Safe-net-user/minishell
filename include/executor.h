@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/11 11:23:14 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/24 14:42:22 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/08/24 19:17:39 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,8 @@ int		fork_pipeline_stage(t_mms *mms, t_pipeline *pipeline, int i,
 int		wait_child(pid_t pid);
 void	pipeline_child(t_mms *mms, t_pipeline *pipeline, int i);
 int		pipeline(t_mms *mms, t_ast *node);
+int		pipeline_error(t_mms *mms);
+void	restore_interactive_state(t_mms *mms);
 
 /* Command */
 
@@ -75,6 +77,7 @@ char	**hash_table_to_envp(t_ht *ht);
 void	print_error(char *msg);
 void	print_cmd_not_found(char *cmd);
 void	print_exec_error(char *path, char *msg);
+void	print_signal_msg(int status);
 
 /* Path */
 

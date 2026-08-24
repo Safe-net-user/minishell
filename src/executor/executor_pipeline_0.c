@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor_pipeline_0.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miouali <miouali@student.42.fr>            +#+  +:+       +#+        */
+/*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 16:58:40 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/23 18:24:09 by miouali          ###   ########.fr       */
+/*   Updated: 2026/08/24 19:16:53 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,4 +79,11 @@ int	pipeline(t_mms *mms, t_ast *node)
 	}
 	pipeline->fd_prev = -1;
 	return (execute_pipeline(mms, node, pipeline));
+}
+
+int	pipeline_error(t_mms *mms)
+{
+	restore_interactive_state(mms);
+	mms->is_pipeline = 0;
+	return (1);
 }

@@ -6,7 +6,7 @@
 /*   By: fiaudfiz <fiaudfiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 17:49:46 by fiaudfiz          #+#    #+#             */
-/*   Updated: 2026/08/24 14:42:52 by fiaudfiz         ###   ########.fr       */
+/*   Updated: 2026/08/24 19:15:47 by fiaudfiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include <unistd.h>
 #include <sys/wait.h>
 #include <errno.h>
+#include <signal.h>
 
 void	pipeline_child(t_mms *mms, t_pipeline *pipeline, int i)
 {
@@ -89,6 +90,7 @@ static int	wait_pipeline(t_pipeline *pipeline)
 			last_status = status;
 		i++;
 	}
+	print_signal_msg(last_status);
 	if (WIFEXITED(last_status))
 		return (WEXITSTATUS(last_status));
 	if (WIFSIGNALED(last_status))
@@ -99,17 +101,23 @@ static int	wait_pipeline(t_pipeline *pipeline)
 int	execute_pipeline(t_mms *mms, t_ast *node, t_pipeline *pipeline)
 {
 	int	i;
+	int	status;
 
 	(void)node;
 	mms->is_pipeline = 1;
+	signal(SIGINT, SIG_IGN);
+	signal(SIGQUIT, SIG_IGN);
 	i = 0;
 	while (i < pipeline->nb_cmd - 1)
 	{
 		if (create_pipeline_process(mms, pipeline, i))
-			return (1);
+			return (pipeline_error(mms));
 		i++;
 	}
 	if (create_last_process(mms, pipeline))
-		return (1);
-	return (wait_pipeline(pipeline));
+		return (pipeline_error(mms));
+	status = wait_pipeline(pipeline);
+	restore_interactive_state(mms);
+	mms->is_pipeline = 0;
+	return (status);
 }
