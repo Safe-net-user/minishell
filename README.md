@@ -824,7 +824,3 @@ Lors de l’exécution :
 - https://docs.google.com/spreadsheets/d/1BPW7k81LJPhGv2fbi35NIIoOC_mGZXQQJDnV0SjulFs/edit?pli=1&gid=0#gid=0
 - https://whimsical.com/qg38/grammaire-shell-posix-TdaU8GwvT9Fy5HcZRTHakW
 - https://pauillac.inria.fr/~remy/poly/system/camlunix/index.html
-
-A voir la partie env d’un minishell ps1 HOME etc determiner si notre shell est interactif (tty) ui il l’est sinon il execute qu’une cmd
-
-caca
